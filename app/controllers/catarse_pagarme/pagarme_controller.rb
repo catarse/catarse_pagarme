@@ -7,7 +7,10 @@ module CatarsePagarme
     def ipn
     end
 
-    def pay
+    def pay_credit_card
+    end
+
+    def pay_boleto
     end
 
   end
