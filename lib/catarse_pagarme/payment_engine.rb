@@ -5,7 +5,7 @@ module CatarsePagarme
     end
 
     def review_path contribution
-      url_helpes.review_pagarme_path(contribution)
+      url_helpers.review_pagarme_path(contribution)
     end
 
     def locale
@@ -22,7 +22,7 @@ module CatarsePagarme
     protected
 
     def url_helpers
-      CatarseMoip::Engine.routes.url_helpers
+      CatarsePagarme::Engine.routes.url_helpers
     end
   end
 end
