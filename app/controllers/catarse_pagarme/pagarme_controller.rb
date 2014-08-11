@@ -1,5 +1,5 @@
 module CatarsePagarme
-  class PagarmeController < ApplicationController
+  class PagarmeController < CatarsePagarme::ApplicationController
 
     skip_before_filter :force_http
     layout :false
