@@ -11,6 +11,7 @@ module CatarsePagarme
     end
 
     def pay_boleto
+    def pay_slip
     end
 
   end

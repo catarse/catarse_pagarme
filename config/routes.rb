@@ -8,7 +8,7 @@ CatarsePagarme::Engine.routes.draw do
     member do
       get  :review
       post :pay_credit_card
-      post :pay_boleto
+      post :pay_slip
     end
 
   end
