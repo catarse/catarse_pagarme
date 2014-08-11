@@ -19,9 +19,9 @@ module CatarsePagarme
       })
 
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
-    rescue Exception => e
-      Rails.logger.info e.inspect
-      render json: { boleto_url: nil, payment_status: 'failed' }
+    rescue PagarMe::PagarMeError => e
+      render json: { boleto_url: nil, payment_status: 'failed', message: e.message }
+    end
     end
 
     protected
