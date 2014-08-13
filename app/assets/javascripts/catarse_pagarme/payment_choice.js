@@ -17,6 +17,6 @@ App.views.PagarmeForm.addChild('PaymentChoice', {
   activate: function(){
     var that = this.parent;
 
-    that.$('input#payment_type_cards').click();
+    that.$('input#payment_type_credit_card').click();
   }
 });

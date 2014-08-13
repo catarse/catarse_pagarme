@@ -6,13 +6,13 @@
 
       .list_payment
         .input
-          = radio_button_tag 'payment_type', "cards"
-          = label_tag :payment_type_cards, nil, :class => "cards"
+          = radio_button_tag 'payment_type', "credit_card"
+          = label_tag :payment_type_credit_card, nil, :class => "cards"
 
           = radio_button_tag 'payment_type', "slip"
-          = label_tag :payment_type_slip, 'Boleto', :class => "boleto"
+          = label_tag :payment_type_slip, nil, :class => "boleto"
 
-      #payment_type_cards_section.payment_section
+      #payment_type_credit_card_section.payment_section
         h3= t('projects.contributions.review.form.labels.payment_card')
 
         .clearfix
@@ -33,9 +33,10 @@
                   li.name
                     = label_tag :payment_card_name, "Nome do titular do cartão"
                     = text_field_tag :payment_card_name, nil
-                  li.cpf
-                    = label_tag :payment_card_parcels, "Parcelas"
-                    = select_tag :payment_card_parcel, options_for_select((1..6).to_a)
+                  - if @contribution.value >= 100
+                    li.cpf
+                      = label_tag :payment_card_installments, "Parcelas"
+                      = select_tag :payment_card_installments, options_for_select(installments_for_select)
           .div
             span= t('projects.contributions.review.form.labels.number_card')
             .infocard_outside
@@ -57,7 +58,7 @@
         .clearfix
         .bootstrap-twitter
           .loader.hide= image_tag('loading.gif')
-          = submit_tag t('projects.contributions.review.form.labels.submit'), :disabled => true, :class => 'btn btn-primary btn-large', :id => "credit_card_submit"
+          = submit_tag t('projects.contributions.review.form.labels.submit'), :class => 'btn btn-primary btn-large', :id => "credit_card_submit"
 
       #payment_type_slip_section.hide.payment_section
         h3= t('projects.contributions.review.form.labels.payment_boleto')

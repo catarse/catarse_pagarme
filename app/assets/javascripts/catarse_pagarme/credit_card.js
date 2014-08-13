@@ -1,11 +1,45 @@
 App.views.PagarmeForm.addChild('PaymentCard', {
-  el: '#payment_type_cards_section',
+  el: '#payment_type_credit_card_section',
 
   events: {
     'keyup input[type="text"]' : 'creditCardInputValidator',
     'keyup #payment_card_number' : 'onKeyupPaymentCardNumber',
     'click input#credit_card_submit' : 'onSubmit',
-    'keyup #payment_card_cpf' : 'onUserDocumentKeyup'
+  },
+
+  onSubmit: function(e) {
+    var that = this;
+    e.preventDefault();
+    $(e.currentTarget).hide();
+    that.parent.loader.show();
+
+    var data = {
+      payment_card_number: this.$('input#payment_card_number').val(),
+      payment_card_name: this.$('input#payment_card_name').val(),
+      payment_card_date: this.$('input#payment_card_date').val(),
+      payment_card_source: this.$('input#payment_card_source').val(),
+      payment_card_installments: this.$('select#payment_card_installments').val()
+    }
+
+    $.post('/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card', data).success(function(response){
+      console.log(response);
+      that.parent.loader.hide();
+
+      if(response.payment_status == 'failed'){
+        that.parent.message.find('p').html(response.message);
+        that.parent.message.fadeIn('fast')
+
+        $(e.currentTarget).show();
+      } else {
+        var thank_you = $('#project_review').data('thank-you-path');
+
+        if(thank_you){
+          location.href = thank_you;
+        } else {
+          location.href = '/';
+        }
+      }
+    });
   },
 
   activate: function(options){
