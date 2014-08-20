@@ -10,7 +10,7 @@
           = label_tag :payment_type_credit_card, nil, :class => "cards"
 
           = radio_button_tag 'payment_type', "slip"
-          = label_tag :payment_type_slip, nil, :class => "boleto"
+          = label_tag :payment_type_slip, 'Boleto', :class => "boleto"
 
       #payment_type_credit_card_section.payment_section
         h3= t('projects.contributions.review.form.labels.payment_card')
@@ -26,7 +26,6 @@
 
         .choose_card
           .div
-            span= t('projects.contributions.review.form.labels.owner_card')
             .owner_outside
               .owner
                 ol.inputs
@@ -38,7 +37,6 @@
                       = label_tag :payment_card_installments, "Parcelas"
                       = select_tag :payment_card_installments, options_for_select(installments_for_select)
           .div
-            span= t('projects.contributions.review.form.labels.number_card')
             .infocard_outside
               .infocard
                 ol.inputs
@@ -68,6 +66,23 @@
             p.error_msg
             .clearfix
         .bootstrap-twitter
+          .bootstrap-form
+
+            .bootstrap-alert
+              .alert.credit_alert
+                = t('users.current_user_fields.bank_account_hint')
+
+            = simple_form_for current_user, url: 'javascript:void(0)' do |f|
+              .bank_accounts
+                = f.simple_fields_for :bank_account do |bank_form|
+                  = bank_form.input :name, as: :string, input_html: {autocomplete: 'off'}
+                  = bank_form.input :agency, as: :string
+                  = bank_form.input :agency_digit, as: :string
+                  = bank_form.input :account, as: :string
+                  = bank_form.input :account_digit, as: :string
+                  = bank_form.input :user_name, as: :string, input_html: { value: bank_form.object.user_name || current_user.full_name }
+                  = bank_form.input :user_document, as: :string, input_html: { value: bank_form.object.user_document || current_user.cpf }
+                  .clearfix
           .loader.hide= image_tag('loading.gif')
           = submit_tag t('projects.contributions.review.form.labels.build_boleto'), :class => 'btn btn-primary btn-large', :id => "build_boleto"
         .clearfix
