@@ -8,6 +8,7 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
 
   activate: function(options){
     this.PagarmeForm = this.parent;
+    this.$('#user_bank_account_attributes_name').brbanks();
   },
 
   onContentClick: function() {
@@ -28,10 +29,29 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
     $(e.currentTarget).hide();
     that.PagarmeForm.loader.show();
 
-    $.post('/payment/pagarme/'+that.PagarmeForm.contributionId+'/pay_slip').success(function(response){
-      console.log(parent);
+    var bankAccountAttributes = {
+      user: {
+        bank_account_attributes: {
+          name: that.$('input#user_bank_account_attributes_name').val(),
+          agency: that.$('input#user_bank_account_attributes_agency').val(),
+          agency_digit: that.$('input#user_bank_account_attributes_agency_digit').val(),
+          account: that.$('input#user_bank_account_attributes_account').val(),
+          account_digit: that.$('input#user_bank_account_attributes_account_digit').val(),
+          user_name: that.$('input#user_bank_account_attributes_user_name').val(),
+          user_document: that.$('input#user_bank_account_attributes_user_document').val()
+        }
+      }
+    };
+
+    $.post('/payment/pagarme/'+that.PagarmeForm.contributionId+'/pay_slip', bankAccountAttributes).success(function(response){
+      console.log('gerando boleto');
       parent.loader.hide();
-      if(response.boleto_url) {
+      if(response.payment_status == 'failed'){
+        that.parent.message.find('p').html(response.message);
+        that.parent.message.fadeIn('fast')
+
+        $(e.currentTarget).show();
+      } else if(response.boleto_url) {
         var link = $('<a target="__blank">'+response.boleto_url+'</a>')
         link.attr('href', response.boleto_url);
         that.$('.link_content').empty().html(link);
@@ -39,4 +59,5 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
       }
     });
   }
+
 });
