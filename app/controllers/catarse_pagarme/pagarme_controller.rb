@@ -8,6 +8,7 @@ module CatarsePagarme
 
     def review
       contribution
+      current_user.build_bank_account unless current_user.bank_account
     end
 
     def pay_credit_card
@@ -37,11 +38,16 @@ module CatarsePagarme
     end
 
     def pay_slip
-      transaction = charge_transaction({
-        payment_method: 'boleto',
-        amount: delegator.value_for_transaction,
-        postback_url: ipn_pagarme_url(contribution)
-      })
+      slip_attrs = {
+        slip_payment: {
+          payment_method: 'boleto',
+          amount: delegator.value_for_transaction,
+          postback_url: ipn_pagarme_url(contribution)
+        }
+      }.merge!(params[:user])
+
+      transaction = SlipTransaction.new(slip_attrs, contribution)
+      transaction.charge!
 
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e
