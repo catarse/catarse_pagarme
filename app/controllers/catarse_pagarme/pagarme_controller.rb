@@ -44,10 +44,9 @@ module CatarsePagarme
           amount: delegator.value_for_transaction,
           postback_url: ipn_pagarme_url(contribution)
         }
-      }.merge!(params[:user])
+      }.merge!({ user: params[:user] })
 
-      transaction = SlipTransaction.new(slip_attrs, contribution)
-      transaction.charge!
+      transaction = SlipTransaction.new(slip_attrs, contribution).charge!
 
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e

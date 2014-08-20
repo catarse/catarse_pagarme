@@ -6,6 +6,7 @@ module CatarsePagarme
       self.attributes = attributes
       self.contribution = contribution
       self.user = contribution.user
+      puts self.attributes.inspect
       build_default_bank_account
     end
 
@@ -21,7 +22,7 @@ module CatarsePagarme
         payment_id: transaction.id
 
       }
-      contribution.update_attributes(contribution_attributes)
+      contribution.update_attributes(contribution_attrs)
 
       delegator.change_status_by_transaction(transaction.status)
       return transaction
