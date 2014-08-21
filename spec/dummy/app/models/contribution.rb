@@ -12,4 +12,16 @@ class Contribution < ActiveRecord::Base
   def confirm!
     true
   end
+
+  def waiting_confirmation?
+  end
+
+  def waiting
+  end
+
+  def cancel
+  end
+
+  def canceled?
+  end
 end
