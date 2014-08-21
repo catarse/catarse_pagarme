@@ -20,12 +20,34 @@ describe CatarsePagarme::PagarmeController do
     end
 
     context 'with an user' do
-      context 'invalid bank account data' do
+      let(:user) { contribution.user }
+
+      before do
+        controller.stub(:current_user).and_return(user)
+      end
+
+      context 'with valid bank account data' do
+        before do
+          post :pay_slip, { 
+            locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme',
+            user: { bank_account_attributes: { 
+              name: 'bank', agency: '1', agency_digit: '1', account: '1', account_digit: '1', user_name: 'foo', user_document: '1'
+            } } }
+        end
+
+        it 'boleto_url should be filled' do
+          expect(ActiveSupport::JSON.decode(response.body)['boleto_url']).not_to be_nil
+        end
+
+        it 'payment_status should be waiting_payment' do
+          expect(ActiveSupport::JSON.decode(response.body)['payment_status']).to eq 'waiting_payment'
+        end
+      end
+
+      context 'with invalid bank account data' do
         let(:user) { contribution.user }
 
         before do
-          controller.stub(:current_user).and_return(user)
-
           post :pay_slip, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme', user: { bank_account_attributes: { name: '' } } }
         end
 
