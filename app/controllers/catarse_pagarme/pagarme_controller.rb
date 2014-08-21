@@ -27,7 +27,7 @@ module CatarsePagarme
         installments: params[:payment_card_installments]
       }
 
-      if contribution.value < 100
+      if contribution.value < CatarsePagarme.configuration.minimum_value_for_installment
         transaction_attrs.update({ installments: 1 })
       end
 
