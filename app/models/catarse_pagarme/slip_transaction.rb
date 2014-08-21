@@ -24,7 +24,7 @@ module CatarsePagarme
       contribution.update_attributes(contribution_attrs)
 
       delegator.change_status_by_transaction(transaction.status)
-      return transaction
+      transaction
     end
 
     protected
