@@ -29,6 +29,10 @@ describe CatarsePagarme::PagarmeController do
           post :pay_slip, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme', user: { bank_account_attributes: { name: '' } } }
         end
 
+        it 'boleto_url should be nil' do
+          expect(ActiveSupport::JSON.decode(response.body)['boleto_url']).to be_nil
+        end
+
         it 'payment_status should be failed' do
           expect(ActiveSupport::JSON.decode(response.body)['payment_status']).to eq 'failed'
         end

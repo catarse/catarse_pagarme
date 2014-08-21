@@ -47,7 +47,7 @@ module CatarsePagarme
         }
       }.merge!({ user: params[:user] })
 
-      transaction = SlipTransaction.new(slip_attrs, contribution).charge!
+      transaction = SlipTransaction.new(permited_attrs(slip_attrs), contribution).charge!
 
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e

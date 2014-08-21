@@ -16,5 +16,17 @@ module CatarsePagarme
       end
     end
 
+    def permited_attrs(attributes)
+      attrs = ActionController::Parameters.new(attributes)
+      attrs.permit([
+        :payment_method, :amount, :postback_url, 
+        user: [ 
+          bank_account_attributes: [
+            :name, :account, :account_digit, :agency, 
+            :agency_digit, :user_name, :user_document
+          ] 
+        ]
+      ])
+    end
   end
 end
