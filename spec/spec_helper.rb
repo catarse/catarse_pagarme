@@ -29,6 +29,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    PagarMe.stub(:api_key).and_return('ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo')
     PaymentEngines.stub(:configuration).and_return({})
   end
 end
