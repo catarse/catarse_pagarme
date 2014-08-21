@@ -13,7 +13,7 @@ module CatarsePagarme
     end
 
     def pay_credit_card
-      month, year = params[:payment_card_date].split('/') rescue [0, 0]
+      month, year = get_splited_month_and_year
 
       transaction_attrs = {
         payment_method: 'credit_card',
@@ -24,15 +24,15 @@ module CatarsePagarme
         card_cvv: params[:payment_card_source],
         amount: delegator.value_for_transaction,
         postback_url: ipn_pagarme_url(contribution),
+        installments: params[:payment_card_installments]
       }
 
-      if contribution.value >= 100 && params[:payment_card_installments].present?
-        transaction_attrs.merge!({ installments: params[:payment_card_installments]})
-      else
-        transaction_attrs.merge!({ installments: 1 })
+      if contribution.value < 100
+        transaction_attrs.update({ installments: 1 })
       end
 
-      transaction = charge_transaction(transaction_attrs)
+      transaction = CreditCardTransaction.new(transaction_attrs, contribution).charge!
+
       render json: { payment_status: transaction.status }
     rescue Exception => e
       render json: { payment_status: 'failed', message: e.message }
@@ -69,39 +69,19 @@ module CatarsePagarme
 
     protected
 
+    def get_splited_month_and_year
+      params[:payment_card_date].split('/')
+    rescue
+      [0, 0]
+    end
+
     def validate_fingerprint
       if PagarMe::validate_fingerprint(params[:id], params[:fingerprint])
         yield
       end
     end
 
-    def charge_transaction(transaction_attributes = {})
-      transaction = PagarMe::Transaction.new(transaction_attributes)
-      transaction.charge
-
-      contribution_attributes = case transaction_attributes[:payment_method]
-                                when 'boleto' then
-                                  {
-                                    payment_choice: PaymentType::SLIP,
-                                    payment_service_fee: delegator.get_fee(PaymentType::SLIP),
-                                  }
-                                when 'credit_card' then
-                                  {
-                                    payment_choice: PaymentType::CREDIT_CARD, 
-                                    payment_service_fee: delegator.get_fee(PaymentType::CREDIT_CARD) 
-                                  }
-                                else
-                                  {}
-                                end
-
-      contribution_attributes.merge!({ payment_id: transaction.id })
-      contribution.update_attributes(contribution_attributes)
-
-      delegator.change_status_by_transaction(transaction.status)
-
-      return transaction
-    end
-
+    # TODO: Move this for helper file
     def installments_for_select
       delegator.get_installments['installments'].collect do |installment|
         if installment[0].to_i <= 6
