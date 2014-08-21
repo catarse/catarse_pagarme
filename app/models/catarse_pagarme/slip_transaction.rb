@@ -18,8 +18,8 @@ module CatarsePagarme
       contribution_attrs = {
         payment_choice: PaymentType::SLIP,
         payment_service_fee: delegator.get_fee(PaymentType::SLIP),
-        payment_id: transaction.id
-
+        payment_id: transaction.id,
+        payment_method: 'Pagarme'
       }
       contribution.update_attributes(contribution_attrs)
 
