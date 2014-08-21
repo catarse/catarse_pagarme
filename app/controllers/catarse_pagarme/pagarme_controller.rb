@@ -55,7 +55,7 @@ module CatarsePagarme
     end
 
     def ipn
-      validate_fingerprint do
+      if PagarMe::validate_fingerprint(params[:id], params[:fingerprint])
         if contribution
           contribution.payment_notificatons.create(extra_data: params)
           delegator.change_status_by_transaction(params[:current_status])
@@ -73,12 +73,6 @@ module CatarsePagarme
       params[:payment_card_date].split('/')
     rescue
       [0, 0]
-    end
-
-    def validate_fingerprint
-      if PagarMe::validate_fingerprint(params[:id], params[:fingerprint])
-        yield
-      end
     end
 
     # TODO: Move this for helper file
