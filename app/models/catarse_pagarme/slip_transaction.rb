@@ -6,7 +6,6 @@ module CatarsePagarme
       self.attributes = attributes
       self.contribution = contribution
       self.user = contribution.user
-      puts self.attributes.inspect
       build_default_bank_account
     end
 
@@ -31,7 +30,8 @@ module CatarsePagarme
     protected
 
     def update_user_bank_account
-      self.user.update_attributes(self.attributes[:user])
+      self.user.update_attributes(permited_for_bank_account(self.attributes[:user]))
+
       if self.user.errors.present?
         raise ::PagarMe::PagarMeError.new(self.user.errors.full_messages.to_sentence)
       end
@@ -43,6 +43,16 @@ module CatarsePagarme
 
     def delegator
       self.contribution.pagarme_delegator
+    end
+
+    def permited_for_bank_account(attrs)
+      params = ActionController::Parameters.new(attrs)
+      params.permit({
+        bank_account_attributes: [
+          :name, :account, :account_digit, :agency, 
+          :agency_digit, :user_name, :user_document
+        ]
+      })
     end
   end
 end

@@ -2,6 +2,7 @@ module CatarsePagarme
   class PagarmeController < CatarsePagarme::ApplicationController
     include ActionView::Helpers::NumberHelper
 
+    before_filter :authenticate_user!, except: [:review]
     skip_before_filter :force_http
     layout :false
     helper_method :installments_for_select
