@@ -1,4 +1,3 @@
 Rails.application.routes.draw do
-
-  mount CatarsePagarme::Engine => "/catarse_pagarme"
+  mount CatarsePagarme::Engine => "/", as: :catarse_pagarme
 end
