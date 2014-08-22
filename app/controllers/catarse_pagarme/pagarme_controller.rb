@@ -1,11 +1,9 @@
 module CatarsePagarme
   class PagarmeController < CatarsePagarme::ApplicationController
-    include ActionView::Helpers::NumberHelper
 
     before_filter :authenticate_user!, except: [:review]
     skip_before_filter :force_http
     layout :false
-    helper_method :installments_for_select
 
     def review
       contribution
@@ -73,17 +71,6 @@ module CatarsePagarme
       params[:payment_card_date].split('/')
     rescue
       [0, 0]
-    end
-
-    # TODO: Move this for helper file
-    def installments_for_select
-      delegator.get_installments['installments'].collect do |installment|
-        if installment[0].to_i <= 6
-          number = installment[1]['installment']
-          amount = installment[1]['installment_amount'] / 100.to_f
-          ["#{number}x #{number_to_currency(amount, precision: 2)}", number]
-        end
-      end.compact
     end
 
     def contribution
