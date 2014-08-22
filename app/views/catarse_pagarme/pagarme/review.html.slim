@@ -32,10 +32,10 @@
                   li.name
                     = label_tag :payment_card_name, "Nome do titular do cartão"
                     = text_field_tag :payment_card_name, nil
-                  - if @contribution.value >= 100
+                  - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
                     li.cpf
                       = label_tag :payment_card_installments, "Parcelas"
-                      = select_tag :payment_card_installments, options_for_select(installments_for_select)
+                      = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
           .div
             .infocard_outside
               .infocard
