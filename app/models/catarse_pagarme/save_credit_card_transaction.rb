@@ -1,5 +1,5 @@
 module CatarsePagarme
-  class SubscriptionCreditCardTransaction
+  class SaveCreditCardTransaction
     attr_accessor :attributes, :contribution, 
       :transaction, :user, :subscription
 
