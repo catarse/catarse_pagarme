@@ -28,7 +28,8 @@ App.views.PagarmeForm.addChild('PaymentCard', {
 
     if($paymentSubscriptionCard.length > 0) {
       var data = {
-        subscription_id: $paymentSubscriptionCard.val();
+        subscription_id: $paymentSubscriptionCard.val(),
+        payment_card_installments: this.$('.my_credit_cards select#payment_card_installments').val()
       }
     } else {
       var data = {
@@ -41,7 +42,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     }
 
 
-    if(this.$('input#payment_save_card').prop('checked') && $paymentSubscriptionCard.length > 0) {
+    if(this.$('input#payment_save_card').prop('checked') || $paymentSubscriptionCard.length > 0) {
       var url = '/payment/pagarme/'+that.parent.contributionId+'/pay_with_subscription'
     } else {
       var url = '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card'
