@@ -11,17 +11,7 @@ module CatarsePagarme
     end
 
     def pay_credit_card
-      transaction_attrs = {
-        payment_method: 'credit_card',
-        card_number: params[:payment_card_number],
-        card_holder_name: params[:payment_card_name],
-        card_expiration_month: splited_month_and_year[0],
-        card_expiration_year: splited_month_and_year[1],
-        card_cvv: params[:payment_card_source],
-        amount: delegator.value_for_transaction,
-        postback_url: ipn_pagarme_url(contribution),
-        installments: params[:payment_card_installments]
-      }
+      transaction_attrs = build_default_credit_card_hash
 
       if contribution.value < CatarsePagarme.configuration.minimum_value_for_installment
         transaction_attrs.update({ installments: 1 })
@@ -64,6 +54,20 @@ module CatarsePagarme
     end
 
     protected
+
+    def build_default_credit_card_hash
+      {
+        payment_method: 'credit_card',
+        card_number: params[:payment_card_number],
+        card_holder_name: params[:payment_card_name],
+        card_expiration_month: splited_month_and_year[0],
+        card_expiration_year: splited_month_and_year[1],
+        card_cvv: params[:payment_card_source],
+        amount: delegator.value_for_transaction,
+        postback_url: ipn_pagarme_url(contribution),
+        installments: params[:payment_card_installments]
+      }
+    end
 
     def splited_month_and_year
       params[:payment_card_date].split('/')
