@@ -10,6 +10,17 @@ module CatarsePagarme
       current_user.build_bank_account unless current_user.bank_account
     end
 
+    def pay_with_subscription
+      transaction_attrs = build_default_credit_card_hash
+      transaction_attrs.update({ customer: { email: current_user.email } })
+
+      transaction = SubscriptionCreditCardTransaction.new(transaction_attrs, contribution).charge!
+
+      render json: { payment_status: transaction.status }
+    rescue Exception => e
+      render json: { payment_status: 'failed', message: e.message }
+    end
+
     def pay_credit_card
       transaction_attrs = build_default_credit_card_hash
 

@@ -55,7 +55,11 @@
 
         .clearfix
         .bootstrap-twitter
+          div class="save_card #{(current_user.credit_cards.present? ? 'hide' : '')}"
+            = check_box_tag :payment_save_card, 1, false
+            = label_tag :payment_save_card, 'Quero salvar meu cartão nos próximos apoios.'
           .loader.hide= image_tag('loading.gif')
+            .clearfix
           = submit_tag t('projects.contributions.review.form.labels.submit'), :class => 'btn btn-primary btn-large', :id => "credit_card_submit"
 
       #payment_type_slip_section.hide.payment_section
