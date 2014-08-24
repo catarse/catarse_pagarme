@@ -7,22 +7,47 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     'click input#credit_card_submit' : 'onSubmit',
   },
 
+  activate: function(options){
+    // Set credit card fields masks
+    var that = this;
+    this.pagarmeForm = this.parent;
+    this.$('input#payment_card_date').mask('99/99');
+    this.$('input#payment_card_birth').mask('99/99/9999');
+    this.$('input#payment_card_cpf').mask("999.999.999-99");
+    this.$('input#payment_card_phone').mask("(99) 9999-9999?9");
+  },
+
+
   onSubmit: function(e) {
     var that = this;
     e.preventDefault();
     $(e.currentTarget).hide();
     that.parent.loader.show();
 
-    var data = {
-      payment_card_number: this.$('input#payment_card_number').val(),
-      payment_card_name: this.$('input#payment_card_name').val(),
-      payment_card_date: this.$('input#payment_card_date').val(),
-      payment_card_source: this.$('input#payment_card_source').val(),
-      payment_card_installments: this.$('select#payment_card_installments').val()
+    var $paymentSubscriptionCard = this.$('.my_credit_cards input:radio[name=payment_subscription_card]:checked')
+
+    if($paymentSubscriptionCard.length > 0) {
+      var data = {
+        subscription_id: $paymentSubscriptionCard.val();
+      }
+    } else {
+      var data = {
+        payment_card_number: this.$('input#payment_card_number').val(),
+        payment_card_name: this.$('input#payment_card_name').val(),
+        payment_card_date: this.$('input#payment_card_date').val(),
+        payment_card_source: this.$('input#payment_card_source').val(),
+        payment_card_installments: this.$('select#payment_card_installments').val()
+      }
     }
 
-    $.post('/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card', data).success(function(response){
-      console.log(response);
+
+    if(this.$('input#payment_save_card').prop('checked') && $paymentSubscriptionCard.length > 0) {
+      var url = '/payment/pagarme/'+that.parent.contributionId+'/pay_with_subscription'
+    } else {
+      var url = '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card'
+    }
+
+    $.post(url, data).success(function(response){
       that.parent.loader.hide();
 
       if(response.payment_status == 'failed'){
@@ -40,15 +65,6 @@ App.views.PagarmeForm.addChild('PaymentCard', {
         }
       }
     });
-  },
-
-  activate: function(options){
-    // Set credit card fields masks
-    this.pagarmeForm = this.parent;
-    this.$('input#payment_card_date').mask('99/99');
-    this.$('input#payment_card_birth').mask('99/99/9999');
-    this.$('input#payment_card_cpf').mask("999.999.999-99");
-    this.$('input#payment_card_phone').mask("(99) 9999-9999?9");
   },
 
   onKeyupPaymentCardNumber: function(e){

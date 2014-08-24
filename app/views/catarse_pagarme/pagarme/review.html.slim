@@ -25,33 +25,47 @@
         .clearfix
 
         .choose_card
-          .div
-            .owner_outside
-              .owner
-                ol.inputs
-                  li.name
-                    = label_tag :payment_card_name, "Nome do titular do cartão"
-                    = text_field_tag :payment_card_name, nil
-                  - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
-                    li.cpf
-                      = label_tag :payment_card_installments, "Parcelas"
-                      = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
-          .div
-            .infocard_outside
-              .infocard
-                ol.inputs
-                  li.number
-                    = label_tag :payment_card_number, 'Número do cartão' 
-                    = text_field_tag :payment_card_number, nil
-                  li.flag
-                    = label_tag :payment_card_flag, 'Bandeira'
-                    = text_field_tag :payment_card_flag, nil, { disabled: true }
-                  li.source
-                    = label_tag :payment_card_source, 'Código de Segurança'
-                    = text_field_tag :payment_card_source, nil
-                  li.date
-                    = label_tag :payment_card_date, 'Data de Expiração'
-                    = text_field_tag :payment_card_date, nil
+          ul class="my_credit_cards #{(current_user.credit_cards.present? ? '' : 'hide')}"
+            - current_user.credit_cards.each do |credit_card|
+              li.credit_card
+                .radio_button
+                  = radio_button_tag :payment_subscription_card, credit_card.object_id
+                .select_installments
+                  = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
+                .card_info
+                  = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
+                .card_brand
+                  = credit_card.card_brand
+                .clearfix
+
+          div class="type_card_data #{(current_user.credit_cards.present? ? 'hide' : '')}"
+            .div
+              .owner_outside
+                .owner
+                  ol.inputs
+                    li.name
+                      = label_tag :payment_card_name, "Nome do titular do cartão"
+                      = text_field_tag :payment_card_name, nil
+                    - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
+                      li.cpf
+                        = label_tag :payment_card_installments, "Parcelas"
+                        = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
+            .div
+              .infocard_outside
+                .infocard
+                  ol.inputs
+                    li.number
+                      = label_tag :payment_card_number, 'Número do cartão' 
+                      = text_field_tag :payment_card_number, nil
+                    li.flag
+                      = label_tag :payment_card_flag, 'Bandeira'
+                      = text_field_tag :payment_card_flag, nil, { disabled: true }
+                    li.source
+                      = label_tag :payment_card_source, 'Código de Segurança'
+                      = text_field_tag :payment_card_source, nil
+                    li.date
+                      = label_tag :payment_card_date, 'Data de Expiração'
+                      = text_field_tag :payment_card_date, nil
 
         .clearfix
         .bootstrap-twitter
