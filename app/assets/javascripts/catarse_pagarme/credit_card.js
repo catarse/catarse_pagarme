@@ -9,13 +9,9 @@ App.views.PagarmeForm.addChild('PaymentCard', {
   },
 
   activate: function(options){
-    // Set credit card fields masks
     var that = this;
     this.pagarmeForm = this.parent;
     this.$('input#payment_card_date').mask('99/99');
-    this.$('input#payment_card_birth').mask('99/99/9999');
-    this.$('input#payment_card_cpf').mask("999.999.999-99");
-    this.$('input#payment_card_phone').mask("(99) 9999-9999?9");
   },
 
   showCreditCardForm: function(e) {
