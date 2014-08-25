@@ -16,7 +16,6 @@ module CatarsePagarme
       if has_subscription?
         transaction = SubscriptionTransaction.new(transaction_attrs, contribution).charge!
       else
-        transaction_attrs.update({ customer: { email: current_user.email } })
         transaction = SaveCreditCardTransaction.new(transaction_attrs, contribution).charge!
       end
 
@@ -88,7 +87,10 @@ module CatarsePagarme
           card_cvv: params[:payment_card_source],
           amount: delegator.value_for_transaction,
           postback_url: ipn_pagarme_url(contribution),
-          installments: params[:payment_card_installments]
+          installments: params[:payment_card_installments],
+          customer: {
+            email: current_user.email
+          }
         }
       end
     end

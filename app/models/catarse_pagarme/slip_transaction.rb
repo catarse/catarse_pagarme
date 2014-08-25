@@ -1,30 +1,23 @@
 module CatarsePagarme
-  class SlipTransaction
-    attr_accessor :attributes, :contribution, :user
-
+  class SlipTransaction < TransactionBase
     def initialize(attributes, contribution)
-      self.attributes = attributes
-      self.contribution = contribution
-      self.user = contribution.user
+      super
       build_default_bank_account
     end
 
     def charge!
       update_user_bank_account
 
-      transaction = PagarMe::Transaction.new(self.attributes[:slip_payment])
-      transaction.charge
+      self.transaction = PagarMe::Transaction.new(self.attributes[:slip_payment])
+      self.transaction.charge
 
-      contribution_attrs = {
-        payment_choice: PaymentType::SLIP,
-        payment_service_fee: delegator.get_fee(PaymentType::SLIP),
-        payment_id: transaction.id,
-        payment_method: 'Pagarme'
-      }
-      contribution.update_attributes(contribution_attrs)
+      change_contribution_state
 
-      delegator.change_status_by_transaction(transaction.status)
-      transaction
+      self.transaction
+    end
+
+    def payment_method
+      PaymentType::SLIP
     end
 
     protected
@@ -39,10 +32,6 @@ module CatarsePagarme
 
     def build_default_bank_account
       self.user.build_bank_account unless self.user.bank_account
-    end
-
-    def delegator
-      self.contribution.pagarme_delegator
     end
   end
 end
