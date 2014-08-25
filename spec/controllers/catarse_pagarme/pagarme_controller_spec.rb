@@ -8,6 +8,18 @@ describe CatarsePagarme::PagarmeController do
 
   let(:project) { create(:project, goal: 10_000, state: 'online') }
   let(:contribution) { create(:contribution, value: 10, project: project) }
+  describe "pay with a saved credit card" do
+    context 'without an user' do
+      let(:user) { nil }
+
+      it 'should raise a error' do
+        expect {
+          post :pay_with_subscription, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme' }
+        }.to raise_error('invalid user')
+      end
+    end
+
+  end
 
   describe 'pay and save credit card' do
     context 'without an user' do
