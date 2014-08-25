@@ -5,7 +5,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     'keyup input[type="text"]' : 'creditCardInputValidator',
     'keyup #payment_card_number' : 'onKeyupPaymentCardNumber',
     'click input#credit_card_submit' : 'onSubmit',
-    'click a.use_another-card ': 'showCreditCardForm'
+    'click a.use_another-card': 'showCreditCardForm'
   },
 
   activate: function(options){
@@ -28,22 +28,42 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     });
   },
 
+  getUrl: function(){
+    var that = this;
+    var url = '';
+
+    if(that.$('input#payment_save_card').prop('checked') || that.hasSelectedSomeCard()) {
+      url = '/payment/pagarme/'+that.parent.contributionId+'/pay_with_subscription';
+    } else {
+      url = '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card';
+    }
+
+    return url;
+  },
+
+  selectedCard: function() {
+    return this.$('.my_credit_cards input:radio[name=payment_subscription_card]:checked');
+  },
+
+  hasSelectedSomeCard: function() {
+    return this.selectedCard().length > 0;
+  },
 
   onSubmit: function(e) {
     var that = this;
+    var data = {}
+
     e.preventDefault();
     $(e.currentTarget).hide();
     that.parent.loader.show();
 
-    var $paymentSubscriptionCard = this.$('.my_credit_cards input:radio[name=payment_subscription_card]:checked')
-
-    if($paymentSubscriptionCard.length > 0) {
-      var data = {
-        subscription_id: $paymentSubscriptionCard.val(),
+    if(that.hasSelectedSomeCard()) {
+      data = {
+        subscription_id: that.selectedCard().val(),
         payment_card_installments: this.$('.my_credit_cards select#payment_card_installments').val()
       }
     } else {
-      var data = {
+      data = {
         payment_card_number: this.$('input#payment_card_number').val(),
         payment_card_name: this.$('input#payment_card_name').val(),
         payment_card_date: this.$('input#payment_card_date').val(),
@@ -52,14 +72,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
       }
     }
 
-
-    if(this.$('input#payment_save_card').prop('checked') || $paymentSubscriptionCard.length > 0) {
-      var url = '/payment/pagarme/'+that.parent.contributionId+'/pay_with_subscription'
-    } else {
-      var url = '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card'
-    }
-
-    $.post(url, data).success(function(response){
+    $.post(that.getUrl(), data).success(function(response){
       that.parent.loader.hide();
 
       if(response.payment_status == 'failed'){
