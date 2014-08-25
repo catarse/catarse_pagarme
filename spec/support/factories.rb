@@ -21,6 +21,13 @@ FactoryGirl.define do
     f.bio "This is Foo bar's biography."
   end
 
+  factory :credi_card do |f|
+    f.subscription_id { generate(:uid) }
+    f.association :user, factory: :user
+    f.last_digits '1235'
+    f.card_brand 'visa'
+  end
+
   factory :category do |f|
     f.name_pt { generate(:name) }
   end

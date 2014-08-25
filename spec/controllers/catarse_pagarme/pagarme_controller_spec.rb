@@ -8,6 +8,8 @@ describe CatarsePagarme::PagarmeController do
 
   let(:project) { create(:project, goal: 10_000, state: 'online') }
   let(:contribution) { create(:contribution, value: 10, project: project) }
+  let(:credit_card) { create(:credit_card, subscription_id: '1542')}
+
   describe "pay with a saved credit card" do
     context 'without an user' do
       let(:user) { nil }
@@ -19,6 +21,22 @@ describe CatarsePagarme::PagarmeController do
       end
     end
 
+    context 'with an user' do
+      let(:user) { contribution.user }
+      context 'when subscription_id not associated with contribution user' do
+        before do
+          post :pay_with_subscription, { locale: :pt, subscription_id: '1542', project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme' }
+        end
+
+        it 'payment_status should be failed' do
+          expect(ActiveSupport::JSON.decode(response.body)['payment_status']).to eq('failed')
+        end
+
+        it 'message should be filled' do
+          expect(ActiveSupport::JSON.decode(response.body)['message']).to eq('invalid subscription')
+        end
+      end
+    end
   end
 
   describe 'pay and save credit card' do
