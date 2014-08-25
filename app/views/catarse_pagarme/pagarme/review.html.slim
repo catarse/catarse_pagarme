@@ -29,7 +29,7 @@
             - current_user.credit_cards.each do |credit_card|
               li.credit_card
                 .radio_button
-                  = radio_button_tag :payment_subscription_card, credit_card.object_id
+                  = radio_button_tag :payment_subscription_card, credit_card.subscription_id
                 .select_installments
                   = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
                 .card_info

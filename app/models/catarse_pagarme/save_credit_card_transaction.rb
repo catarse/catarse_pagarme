@@ -43,11 +43,11 @@ module CatarsePagarme
 
     def save_user_credit_card
       credit_cards = self.user.credit_cards
-      unless credit_cards.where(object_id: self.subscription.id.to_s).present?
+      unless credit_cards.where(subscription_id: self.subscription.id.to_s).present?
         credit_cards.create!({
           last_digits: self.subscription.card_last_digits,
           card_brand: self.subscription.card_brand,
-          object_id: self.subscription.id
+          subscription_id: self.subscription.id
         })
       end
     end
