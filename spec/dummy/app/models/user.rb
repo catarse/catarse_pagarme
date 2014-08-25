@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_many :projects
   has_many :contributions
+  has_many :credit_cards
   has_one :user_total
   has_one :bank_account
 

@@ -12,6 +12,7 @@ class Contribution < ActiveRecord::Base
   def confirm!
     true
   end
+  alias :confirm :confirm!
 
   def waiting_confirmation?
   end
