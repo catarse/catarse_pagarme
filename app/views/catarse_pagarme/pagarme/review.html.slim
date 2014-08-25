@@ -38,6 +38,9 @@
                   = credit_card.card_brand
                 .clearfix
 
+          a href='javascript:void(0)' class="use_another-card #{(current_user.credit_cards.present? ? '' : 'hide')}"
+            | Utilizar outro cartão
+
           div class="type_card_data #{(current_user.credit_cards.present? ? 'hide' : '')}"
             .div
               .owner_outside

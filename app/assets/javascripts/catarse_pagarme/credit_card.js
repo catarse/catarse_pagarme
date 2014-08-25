@@ -5,6 +5,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     'keyup input[type="text"]' : 'creditCardInputValidator',
     'keyup #payment_card_number' : 'onKeyupPaymentCardNumber',
     'click input#credit_card_submit' : 'onSubmit',
+    'click a.use_another-card ': 'showCreditCardForm'
   },
 
   activate: function(options){
@@ -15,6 +16,20 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     this.$('input#payment_card_birth').mask('99/99/9999');
     this.$('input#payment_card_cpf').mask("999.999.999-99");
     this.$('input#payment_card_phone').mask("(99) 9999-9999?9");
+  },
+
+  showCreditCardForm: function(e) {
+    var that = this;
+    e.preventDefault();
+
+    that.$('ul.my_credit_cards').hide();
+    that.$('a.use_another-card ').hide();
+    that.$('.type_card_data').show();
+    that.$('.save_card').show();
+
+    $.each(that.$('.my_credit_cards input:radio[name=payment_subscription_card]'), function(i, item) {
+      $(item).prop('checked', false);
+    });
   },
 
 
