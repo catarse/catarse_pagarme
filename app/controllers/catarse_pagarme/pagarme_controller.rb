@@ -70,29 +70,28 @@ module CatarsePagarme
     protected
 
     def build_default_credit_card_hash
+      hash = {
+        payment_method: 'credit_card',
+        card_number: params[:payment_card_number],
+        card_holder_name: params[:payment_card_name],
+        card_expiration_month: splited_month_and_year[0],
+        card_expiration_year: splited_month_and_year[1],
+        card_cvv: params[:payment_card_source],
+        amount: delegator.value_for_transaction,
+        postback_url: ipn_pagarme_url(contribution),
+        installments: params[:payment_card_installments],
+        customer: {
+          email: current_user.email
+        }
+      }
+
       if has_subscription?
-        {
+        hash.update({
           subscription_id: params[:subscription_id],
-          postback_url: ipn_pagarme_url(contribution),
-          installments: params[:payment_card_installments],
-          amount: delegator.value_for_transaction
-        }
-      else
-        {
-          payment_method: 'credit_card',
-          card_number: params[:payment_card_number],
-          card_holder_name: params[:payment_card_name],
-          card_expiration_month: splited_month_and_year[0],
-          card_expiration_year: splited_month_and_year[1],
-          card_cvv: params[:payment_card_source],
-          amount: delegator.value_for_transaction,
-          postback_url: ipn_pagarme_url(contribution),
-          installments: params[:payment_card_installments],
-          customer: {
-            email: current_user.email
-          }
-        }
+        })
       end
+
+      hash
     end
 
     def has_subscription?
