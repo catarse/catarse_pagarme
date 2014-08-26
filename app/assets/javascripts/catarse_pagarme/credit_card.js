@@ -49,17 +49,12 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     return this.selectedCard().length > 0;
   },
 
-  onSubmit: function(e) {
-    var that = this;
-    var data = {}
+  getPaymentData: function() { 
+    var data = {};
 
-    e.preventDefault();
-    $(e.currentTarget).hide();
-    that.parent.loader.show();
-
-    if(that.hasSelectedSomeCard()) {
+    if(this.hasSelectedSomeCard()) {
       data = {
-        subscription_id: that.selectedCard().val(),
+        subscription_id: this.selectedCard().val(),
         payment_card_installments: this.$('.my_credit_cards select#payment_card_installments').val()
       }
     } else {
@@ -72,7 +67,17 @@ App.views.PagarmeForm.addChild('PaymentCard', {
       }
     }
 
-    $.post(that.getUrl(), data).success(function(response){
+    return data;
+  },
+
+  onSubmit: function(e) {
+    var that = this;
+
+    e.preventDefault();
+    $(e.currentTarget).hide();
+    that.parent.loader.show();
+
+    $.post(that.getUrl(), that.getPaymentData()).success(function(response){
       that.parent.loader.hide();
 
       if(response.payment_status == 'failed'){
