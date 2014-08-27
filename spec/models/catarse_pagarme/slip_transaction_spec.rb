@@ -43,7 +43,7 @@ describe CatarsePagarme::SlipTransaction do
 
   before do
     PagarMe::Transaction.stub(:new).and_return(pagarme_transaction)
-    CatarsePagarme::PagarmeDelegator.any_instance.stub(:change_status_by_transaction).and_return(true)
+    CatarsePagarme::ContributionDelegator.any_instance.stub(:change_status_by_transaction).and_return(true)
   end
 
   context "#user" do
@@ -69,7 +69,7 @@ describe CatarsePagarme::SlipTransaction do
         slip_transaction.should_receive(:update_user_bank_account).and_call_original
         slip_transaction.user.should_receive(:update_attributes).and_return(true)
         contribution.should_receive(:update_attributes).and_call_original
-        CatarsePagarme::PagarmeDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
+        CatarsePagarme::ContributionDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
 
         slip_transaction.charge!
         contribution.reload

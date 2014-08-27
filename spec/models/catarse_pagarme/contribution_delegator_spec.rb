@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe CatarsePagarme::PagarmeDelegator do
+describe CatarsePagarme::ContributionDelegator do
   let(:contribution) { create(:contribution, value: 10) }
   let(:delegator) { contribution.pagarme_delegator }
 
-  context "instance of CatarsePagarme::PagarmeDelegator" do
-    it { expect(delegator).to be_a CatarsePagarme::PagarmeDelegator }
+  context "instance of CatarsePagarme::ContributionDelegator" do
+    it { expect(delegator).to be_a CatarsePagarme::ContributionDelegator }
   end
 
   context "#value_for_transaction" do

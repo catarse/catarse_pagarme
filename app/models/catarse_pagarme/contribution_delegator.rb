@@ -1,5 +1,5 @@
 module CatarsePagarme
-  class PagarmeDelegator
+  class ContributionDelegator
     attr_accessor :contribution
 
     def initialize(contribution)

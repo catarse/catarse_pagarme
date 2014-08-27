@@ -3,7 +3,7 @@ module CatarsePagarme::ContributionConcern
 
   included do
     def pagarme_delegator
-      CatarsePagarme::PagarmeDelegator.new(self)
+      CatarsePagarme::ContributionDelegator.new(self)
     end
   end
 end

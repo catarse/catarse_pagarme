@@ -29,7 +29,7 @@ describe CatarsePagarme::CreditCardTransaction do
 
   before do
     PagarMe::Transaction.stub(:new).and_return(pagarme_transaction)
-    CatarsePagarme::PagarmeDelegator.any_instance.stub(:change_status_by_transaction).and_return(true)
+    CatarsePagarme::ContributionDelegator.any_instance.stub(:change_status_by_transaction).and_return(true)
     CatarsePagarme.configuration.stub(:credit_card_tax).and_return(0.01)
   end
 
@@ -37,7 +37,7 @@ describe CatarsePagarme::CreditCardTransaction do
     describe 'with valid attributes' do
       before do
         contribution.should_receive(:update_attributes).and_call_original
-        CatarsePagarme::PagarmeDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
+        CatarsePagarme::ContributionDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
 
         card_transaction.charge!
         contribution.reload
