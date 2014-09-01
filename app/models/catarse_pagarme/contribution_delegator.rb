@@ -23,8 +23,26 @@ module CatarsePagarme
       (self.contribution.value * 100).to_i
     end
 
+    def value_with_installment_tax(installment)
+      current_installment = get_installment(installment)
+
+      if current_installment.present?
+        current_installment['amount']
+      else
+        value_for_transaction
+      end
+    end
+
+    def get_installment(installment_number)
+      installment = get_installments['installments'].select do |installment|
+        !installment[installment_number.to_s].nil?
+      end
+
+      installment[installment_number.to_s]
+    end
+
     def get_installments
-      PagarMe::Transaction.calculate_installments({
+      @installments ||= PagarMe::Transaction.calculate_installments({
         amount: self.value_for_transaction,
         interest_rate: CatarsePagarme.configuration.interest_rate
       })

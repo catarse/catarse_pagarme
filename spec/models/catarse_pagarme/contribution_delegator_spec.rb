@@ -16,6 +16,19 @@ describe CatarsePagarme::ContributionDelegator do
     end
   end
 
+  context "#value_with_installment_tax" do
+    let(:installment) { 5 }
+    subject { delegator.value_with_installment_tax(installment)}
+
+    before do
+      CatarsePagarme.configuration.stub(:interest_rate).and_return(1.8)
+    end
+
+    it "should return the contribution value with installments tax" do
+      expect(subject).to eq(1047)
+    end
+  end
+
   context "#get_fee" do
     before do
       CatarsePagarme.configuration.stub(:slip_tax).and_return(2.00)

@@ -24,10 +24,6 @@ module CatarsePagarme
     def pay_credit_card
       transaction_attrs = build_default_credit_card_hash
 
-      if contribution.value < CatarsePagarme.configuration.minimum_value_for_installment
-        transaction_attrs.update({ installments: 1 })
-      end
-
       transaction = CreditCardTransaction.new(transaction_attrs, contribution).charge!
 
       render json: { payment_status: transaction.status }
@@ -74,9 +70,9 @@ module CatarsePagarme
         card_expiration_month: splited_month_and_year[0],
         card_expiration_year: splited_month_and_year[1],
         card_cvv: params[:payment_card_source],
-        amount: delegator.value_for_transaction,
+        amount: delegator.value_with_installment_tax(get_installment),
         postback_url: ipn_pagarme_url(contribution),
-        installments: params[:payment_card_installments],
+        installments: get_installment,
         customer: {
           email: current_user.email
         }
@@ -89,6 +85,16 @@ module CatarsePagarme
       end
 
       hash
+    end
+
+    def get_installment
+      if contribution.value < CatarsePagarme.configuration.minimum_value_for_installment
+        1
+      elsif params[:payment_card_installments].to_i > 0
+        params[:payment_card_installments].to_i
+      else
+        1
+      end
     end
 
     def has_subscription?
