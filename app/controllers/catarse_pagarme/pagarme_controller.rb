@@ -13,11 +13,8 @@ module CatarsePagarme
     def pay_with_subscription
       transaction_attrs = build_default_credit_card_hash
 
-      if has_subscription?
-        transaction = SubscriptionTransaction.new(transaction_attrs, contribution).charge!
-      else
-        transaction = SaveCreditCardTransaction.new(transaction_attrs, contribution).charge!
-      end
+      kclass = (has_subscription? ? SubscriptionTransaction : SaveCreditCardTransaction)
+      transaction = kclass.new(transaction_attrs, contribution).charge!
 
       render json: { payment_status: transaction.status }
     rescue Exception => e
