@@ -37,7 +37,7 @@ module CatarsePagarme
           payment_method: 'boleto',
           amount: delegator.value_for_transaction,
           postback_url: ipn_pagarme_url(contribution)
-        }
+        }.update(metadata_hash).update(customer_hash)
       }.merge!({ user: params[:user] })
 
       transaction = SlipTransaction.new(permited_attrs(slip_attrs), contribution).charge!
@@ -73,10 +73,9 @@ module CatarsePagarme
         amount: delegator.value_with_installment_tax(get_installment),
         postback_url: ipn_pagarme_url(contribution),
         installments: get_installment,
-        customer: {
-          email: current_user.email
-        }
       }
+      hash.update(customer_hash)
+      hash.update(metadata_hash)
 
       if has_subscription?
         hash.update({
@@ -85,6 +84,27 @@ module CatarsePagarme
       end
 
       hash
+    end
+
+    def customer_hash
+      user = contribution.user
+
+      {
+        customer: {
+          email: user.email,
+          name: user.name
+        }
+      }
+    end
+
+    def metadata_hash
+      {
+        metadata: {
+          project_name: contribution.project.name,
+          project_status: contribution.project.state,
+          compensation_date: contribution.created_at + 30.days
+        }
+      }
     end
 
     def get_installment

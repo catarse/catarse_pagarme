@@ -8,8 +8,8 @@ module CatarsePagarme
       self.slip_tax = 0
       self.credit_card_tax = 0
       self.interest_rate = 0
-      self.max_installments = 6
-      self.minimum_value_for_installment = 100
+      self.max_installments = 12
+      self.minimum_value_for_installment = 10
     end
   end
 end
