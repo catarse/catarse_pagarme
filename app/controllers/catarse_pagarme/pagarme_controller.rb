@@ -1,10 +1,6 @@
 module CatarsePagarme
   class PagarmeController < CatarsePagarme::ApplicationController
 
-    before_filter :authenticate_user!, except: [:review]
-    skip_before_filter :force_http
-    layout :false
-
     def review
       contribution
       current_user.build_bank_account unless current_user.bank_account
@@ -125,20 +121,6 @@ module CatarsePagarme
       params[:payment_card_date].split('/')
     rescue
       [0, 0]
-    end
-
-    def contribution
-      conditions = {id: params[:id] }
-
-      unless params[:action] == 'ipn'
-        conditions.merge!({user_id: current_user.id})
-      end
-
-      @contribution ||= PaymentEngines.find_payment(conditions)
-    end
-
-    def delegator
-      contribution.pagarme_delegator
     end
   end
 end
