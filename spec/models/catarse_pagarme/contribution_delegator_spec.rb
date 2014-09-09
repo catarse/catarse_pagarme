@@ -25,7 +25,7 @@ describe CatarsePagarme::ContributionDelegator do
     end
 
     it "should return the contribution value with installments tax" do
-      expect(subject).to eq(1047)
+      expect(subject).to eq(1057)
     end
   end
 
