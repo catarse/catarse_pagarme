@@ -3,7 +3,10 @@ require "pagarme"
 module CatarsePagarme
   class ApplicationController < ActionController::Base
 
+    before_filter :authenticate_user!
     before_action :configure_pagarme
+    skip_before_filter :force_http
+    layout :false
 
     protected
     def configure_pagarme
@@ -30,6 +33,20 @@ module CatarsePagarme
           ]
         ]
       ])
+    end
+
+    def contribution
+      conditions = {id: params[:id] }
+
+      unless params[:controller] == 'catarse_pagarme/notifications'
+        conditions.merge!({user_id: current_user.id})
+      end
+
+      @contribution ||= PaymentEngines.find_payment(conditions)
+    end
+
+    def delegator
+      contribution.pagarme_delegator
     end
   end
 end
