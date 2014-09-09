@@ -43,19 +43,6 @@ module CatarsePagarme
       render json: { boleto_url: nil, payment_status: 'failed', message: e.message }
     end
 
-    def ipn
-      if PagarMe::validate_fingerprint(params[:id], params[:fingerprint])
-        if contribution
-          contribution.payment_notificatons.create(extra_data: params)
-          delegator.change_status_by_transaction(params[:current_status])
-
-          return render nothing: { status: 200 }
-        end
-
-        return render nothing: { status: 404 }
-      end
-    end
-
     protected
 
     def build_default_credit_card_hash

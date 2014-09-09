@@ -3,8 +3,8 @@ CatarsePagarme::Engine.routes.draw do
 
     member do
       get  :review
-      post :ipn
       post :pay_credit_card
+      post :ipn, to: 'notifications#create'
       post :pay_slip
       post :pay_with_subscription
     end
