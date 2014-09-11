@@ -8,7 +8,7 @@ module CatarsePagarme
     def charge!
       update_user_bank_account
 
-      self.transaction = PagarMe::Transaction.new(self.attributes[:slip_payment])
+      self.transaction = PagarMe::Transaction.new(self.attributes)
       self.transaction.charge
 
       change_contribution_state
@@ -23,7 +23,7 @@ module CatarsePagarme
     protected
 
     def update_user_bank_account
-      self.user.update_attributes(self.attributes[:user])
+      self.user.update_attributes(self.attributes.delete(:user))
 
       if self.user.errors.present?
         raise ::PagarMe::PagarMeError.new(self.user.errors.full_messages.to_sentence)

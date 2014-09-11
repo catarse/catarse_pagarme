@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CatarsePagarme::PagarmeController do
+describe CatarsePagarme::SlipController do
   before do
     PaymentEngines.stub(:find_payment).and_return(contribution)
     controller.stub(:current_user).and_return(user)
@@ -16,7 +16,7 @@ describe CatarsePagarme::PagarmeController do
 
       it 'should raise a error' do
         expect {
-          post :pay_slip, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme' }
+          post :create, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme' }
         }.to raise_error('invalid user')
       end
     end
@@ -26,7 +26,7 @@ describe CatarsePagarme::PagarmeController do
 
       context 'with valid bank account data' do
         before do
-          post :pay_slip, {
+          post :create, {
             locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme',
             user: { bank_account_attributes: {
               name: 'bank', agency: '1', agency_digit: '1', account: '1', account_digit: '1', user_name: 'foo', user_document: '1'
@@ -46,7 +46,7 @@ describe CatarsePagarme::PagarmeController do
         let(:user) { contribution.user }
 
         before do
-          post :pay_slip, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme', user: { bank_account_attributes: { name: '' } } }
+          post :create, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme', user: { bank_account_attributes: { name: '' } } }
         end
 
         it 'boleto_url should be nil' do
@@ -64,4 +64,5 @@ describe CatarsePagarme::PagarmeController do
     end
   end
 end
+
 
