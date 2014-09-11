@@ -44,11 +44,11 @@ App.views.PagarmeForm.addChild('PaymentCard', {
   getAjaxType: function() {
     var type = 'POST';
 
-    if(that.hasSelectedSomeCard()) {
+    if(this.hasSelectedSomeCard()) {
       type = 'PUT'
     }
     return type;
-  }
+  },
 
   selectedCard: function() {
     return this.$('.my_credit_cards input:radio[name=payment_subscription_card]:checked');
@@ -87,7 +87,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     that.parent.loader.show();
 
     $.ajax({
-      type: that.getAjaxTye(),
+      type: that.getAjaxType(),
       url: that.getUrl(),
       data: that.getPaymentData(),
       success: function(response){
