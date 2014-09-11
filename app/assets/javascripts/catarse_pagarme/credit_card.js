@@ -41,6 +41,15 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     return url;
   },
 
+  getAjaxType: function() {
+    var type = 'POST';
+
+    if(that.hasSelectedSomeCard()) {
+      type = 'PUT'
+    }
+    return type;
+  }
+
   selectedCard: function() {
     return this.$('.my_credit_cards input:radio[name=payment_subscription_card]:checked');
   },
@@ -49,7 +58,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     return this.selectedCard().length > 0;
   },
 
-  getPaymentData: function() { 
+  getPaymentData: function() {
     var data = {};
 
     if(this.hasSelectedSomeCard()) {
@@ -77,21 +86,26 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     $(e.currentTarget).hide();
     that.parent.loader.show();
 
-    $.post(that.getUrl(), that.getPaymentData()).success(function(response){
-      that.parent.loader.hide();
+    $.ajax({
+      type: that.getAjaxTye(),
+      url: that.getUrl(),
+      data: that.getPaymentData(),
+      success: function(response){
+        that.parent.loader.hide();
 
-      if(response.payment_status == 'failed'){
-        that.parent.message.find('p').html(response.message);
-        that.parent.message.fadeIn('fast')
+        if(response.payment_status == 'failed'){
+          that.parent.message.find('p').html(response.message);
+          that.parent.message.fadeIn('fast')
 
-        $(e.currentTarget).show();
-      } else {
-        var thank_you = $('#project_review').data('thank-you-path');
-
-        if(thank_you){
-          location.href = thank_you;
+          $(e.currentTarget).show();
         } else {
-          location.href = '/';
+          var thank_you = $('#project_review').data('thank-you-path');
+
+          if(thank_you){
+            location.href = thank_you;
+          } else {
+            location.href = '/';
+          }
         }
       }
     });
