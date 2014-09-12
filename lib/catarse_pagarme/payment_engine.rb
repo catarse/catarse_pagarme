@@ -17,6 +17,9 @@ module CatarsePagarme
     end
 
     def direct_refund contribution
+      if contribution.is_credit_card?
+        contribution.pagarme_delegator.refund
+      end
     end
 
     protected

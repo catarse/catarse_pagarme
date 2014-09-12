@@ -1,8 +1,9 @@
 module CatarsePagarme
   class ContributionDelegator
-    attr_accessor :contribution
+    attr_accessor :contribution, transaction
 
     def initialize(contribution)
+      configure_pagarme
       self.contribution = contribution
     end
 
@@ -19,6 +20,10 @@ module CatarsePagarme
       end
     end
 
+    def refund
+      transaction.refund
+    end
+
     def value_for_transaction
       (self.contribution.value * 100).to_i
     end
@@ -31,6 +36,10 @@ module CatarsePagarme
       else
         value_for_transaction
       end
+    end
+
+    def transaction
+      @transaction ||= ::PagarMe::Transaction.find_by_id(self.contribution.payment_id)
     end
 
     def get_installment(installment_number)
@@ -54,6 +63,12 @@ module CatarsePagarme
       else
         (self.contribution.value * CatarsePagarme.configuration.credit_card_tax.to_f) + 0.39
       end
+    end
+
+    protected
+
+    def configure_pagarme
+      ::PagarMe.api_key = CatarsePagarme.configuration.api_key
     end
   end
 end
