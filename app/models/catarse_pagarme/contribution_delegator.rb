@@ -1,6 +1,6 @@
 module CatarsePagarme
   class ContributionDelegator
-    attr_accessor :contribution, transaction
+    attr_accessor :contribution, :transaction
 
     def initialize(contribution)
       configure_pagarme
