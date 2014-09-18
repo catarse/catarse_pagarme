@@ -8,11 +8,13 @@ module CatarsePagarme
           contribution.payment_notifications.create(extra_data: params.to_json)
           delegator.change_status_by_transaction(params[:current_status])
 
-          return render nothing: true, status: 200
+          render nothing: true, status: 200
         end
 
-        return render nothing: true, status: 404
+        render nothing: true, status: 404
       end
+
+      render nothing: true, status: 404
     end
   end
 end
