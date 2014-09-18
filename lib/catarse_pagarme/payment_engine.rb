@@ -22,6 +22,14 @@ module CatarsePagarme
       end
     end
 
+    def can_generate_second_slip?
+      true
+    end
+
+    def second_slip_path(contribution)
+      url_helpers.second_slip_pagarme_path(contribution)
+    end
+
     protected
 
     def url_helpers

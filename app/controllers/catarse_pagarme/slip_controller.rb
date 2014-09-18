@@ -1,5 +1,5 @@
 module CatarsePagarme
-  class SlipController < ApplicationController
+  class SlipController < CatarsePagarme::ApplicationController
 
     def create
       transaction = SlipTransaction.new(permitted_attributes, contribution).charge!
@@ -7,6 +7,11 @@ module CatarsePagarme
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e
       render json: { boleto_url: nil, payment_status: 'failed', message: e.message }
+    end
+
+    def update
+      transaction = SlipTransaction.new(permitted_attributes, contribution).charge!
+      render text: transaction.boleto_url
     end
 
     protected

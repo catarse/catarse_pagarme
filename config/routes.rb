@@ -3,6 +3,7 @@ CatarsePagarme::Engine.routes.draw do
 
     member do
       get  :review
+      put :second_slip, to: 'slip#update'
       post :ipn, to: 'notifications#create'
       post :pay_credit_card, to: 'credit_cards#create'
       post :pay_slip, to: 'slip#create'
