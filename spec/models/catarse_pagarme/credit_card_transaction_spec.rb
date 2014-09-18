@@ -8,6 +8,8 @@ describe CatarsePagarme::CreditCardTransaction do
     transaction.stub(:id).and_return('abcd')
     transaction.stub(:charge).and_return(true)
     transaction.stub(:status).and_return('paid')
+    transaction.stub(:boleto_url).and_return(nil)
+    transaction.stub(:installments).and_return(3)
     transaction
   }
 
@@ -55,9 +57,13 @@ describe CatarsePagarme::CreditCardTransaction do
         expect(contribution.payment_method).to eq('Pagarme')
       end
 
+      it "should update contribution installments" do
+        expect(contribution.installments).to eq(3)
+      end
+
       it "should update contribution payment_choice" do
         expect(contribution.payment_choice).to eq(CatarsePagarme::PaymentType::CREDIT_CARD)
-      end      
+      end
     end
   end
 

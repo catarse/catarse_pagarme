@@ -7,10 +7,12 @@ describe CatarsePagarme::SlipTransaction do
     transaction.stub(:id).and_return('abcd')
     transaction.stub(:charge).and_return(true)
     transaction.stub(:status).and_return('paid')
+    transaction.stub(:boleto_url).and_return('boleto url')
+    transaction.stub(:installments).and_return(nil)
     transaction
   }
   let(:valid_attributes) do
-    { 
+    {
       slip_payment: {
         payment_method: 'boleto',
         amount: contribution.pagarme_delegator.value_for_transaction,
@@ -26,7 +28,7 @@ describe CatarsePagarme::SlipTransaction do
   end
 
   let(:invalid_attributes) do
-    { 
+    {
       slip_payment: {
         payment_method: 'boleto',
         amount: contribution.pagarme_delegator.value_for_transaction,
@@ -53,14 +55,14 @@ describe CatarsePagarme::SlipTransaction do
 
   context "#charge!" do
     context "with invalid attributes" do
-      let(:slip_transaction) { 
-        CatarsePagarme::SlipTransaction.new(invalid_attributes, contribution) 
+      let(:slip_transaction) {
+        CatarsePagarme::SlipTransaction.new(invalid_attributes, contribution)
       }
 
-      it "should raises an error" do 
-        expect { 
-          slip_transaction.charge! 
-        }.to raise_error(PagarMe::PagarMeError) 
+      it "should raises an error" do
+        expect {
+          slip_transaction.charge!
+        }.to raise_error(PagarMe::PagarMeError)
       end
     end
 
@@ -85,6 +87,10 @@ describe CatarsePagarme::SlipTransaction do
 
       it "should update contribution payment_method" do
         expect(contribution.payment_method).to eq('Pagarme')
+      end
+
+      it "should update contribution slip_url" do
+        expect(contribution.slip_url).to eq('boleto url')
       end
 
       it "should update contribution payment_choice" do

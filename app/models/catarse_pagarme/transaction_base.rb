@@ -20,10 +20,12 @@ module CatarsePagarme
 
     def attributes_to_contribution
       {
-        payment_choice: payment_method, 
+        payment_choice: payment_method,
         payment_service_fee: delegator.get_fee(payment_method),
         payment_id: self.transaction.id,
-        payment_method: 'Pagarme'
+        payment_method: 'Pagarme',
+        slip_url: self.transaction.boleto_url,
+        installments: self.transaction.installments
       }
     end
 
