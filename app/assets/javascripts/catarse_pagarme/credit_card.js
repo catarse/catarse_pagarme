@@ -64,19 +64,26 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     if(this.hasSelectedSomeCard()) {
       data = {
         subscription_id: this.selectedCard().val(),
-        payment_card_installments: this.$('.my_credit_cards select#payment_card_installments').val()
-      }
+        payment_card_installments: this.getInstallments() }
     } else {
       data = {
         payment_card_number: this.$('input#payment_card_number').val(),
         payment_card_name: this.$('input#payment_card_name').val(),
         payment_card_date: this.$('input#payment_card_date').val(),
         payment_card_source: this.$('input#payment_card_source').val(),
-        payment_card_installments: this.$('select#payment_card_installments').val()
+        payment_card_installments: this.getInstallments()
       }
     }
 
     return data;
+  },
+
+  getInstallments: function() {
+    if(this.hasSelectedSomeCard()) {
+      return this.$('.my_credit_cards select#payment_card_installments').val();
+    } else {
+      return this.$('.type_card_data select#payment_card_installments').val();
+    }
   },
 
   onSubmit: function(e) {
