@@ -48,34 +48,34 @@
                 .owner
                   ol.inputs
                     li.name
-                      = label_tag :payment_card_name, "Nome do titular do cartão"
+                      = label_tag :payment_card_name, t('projects.contributions.edit.form_labels.payment_card_name')
                       = text_field_tag :payment_card_name, nil
                     - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
                       li.cpf
-                        = label_tag :payment_card_installments, "Parcelas"
+                        = label_tag :payment_card_installments, t('projects.contributions.edit.form_labels.payment_card_installments')
                         = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
             .div
               .infocard_outside
                 .infocard
                   ol.inputs
                     li.number
-                      = label_tag :payment_card_number, 'Número do cartão' 
+                      = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number')
                       = text_field_tag :payment_card_number, nil
                     li.flag
-                      = label_tag :payment_card_flag, 'Bandeira'
+                      = label_tag :payment_card_flag, t('projects.contributions.edit.form_labels.payment_card_flag')
                       = text_field_tag :payment_card_flag, nil, { disabled: true }
                     li.source
-                      = label_tag :payment_card_source, 'Código de Segurança'
+                      = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source')
                       = text_field_tag :payment_card_source, nil
                     li.date
-                      = label_tag :payment_card_date, 'Data de Expiração'
+                      = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date')
                       = text_field_tag :payment_card_date, nil
 
         .clearfix
         .bootstrap-twitter
           div class="save_card #{(current_user.credit_cards.present? ? 'hide' : '')}"
             = check_box_tag :payment_save_card, 1, false
-            = label_tag :payment_save_card, 'Quero salvar meu cartão nos próximos apoios.'
+            = label_tag :payment_save_card, t('projects.contributions.edit.payment_save_card')
           .loader.hide= image_tag('loading.gif')
             .clearfix
           = submit_tag t('projects.contributions.review.form.labels.submit'), :class => 'btn btn-primary btn-large', :id => "credit_card_submit"
