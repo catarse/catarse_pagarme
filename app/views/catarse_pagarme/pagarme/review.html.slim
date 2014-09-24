@@ -26,10 +26,10 @@
 
         .choose_card
           ul class="my_credit_cards #{(current_user.credit_cards.present? ? '' : 'hide')}"
-            - current_user.credit_cards.each do |credit_card|
+            - current_user.credit_cards.each_with_index do |credit_card, i|
               li.credit_card
                 .radio_button
-                  = radio_button_tag :payment_subscription_card, credit_card.subscription_id
+                  = radio_button_tag :payment_subscription_card, credit_card.subscription_id, { checked: (i == 0) } 
                 .select_installments
                   = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
                 .card_info
