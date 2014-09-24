@@ -11,6 +11,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
   activate: function(options){
     var that = this;
     this.pagarmeForm = this.parent;
+    this.message = this.$('.alert-danger');
     this.$('input#payment_card_date').mask('99/99');
   },
 
@@ -101,8 +102,8 @@ App.views.PagarmeForm.addChild('PaymentCard', {
         that.parent.loader.hide();
 
         if(response.payment_status == 'failed'){
-          that.parent.message.find('p').html(response.message);
-          that.parent.message.fadeIn('fast')
+          that.message.find('p').html(response.message);
+          that.message.fadeIn('fast')
 
           $(e.currentTarget).show();
         } else {

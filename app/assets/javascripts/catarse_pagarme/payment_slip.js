@@ -8,6 +8,7 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
 
   activate: function(options){
     this.PagarmeForm = this.parent;
+    this.message = this.$('.alert-danger');
     this.$('#user_bank_account_attributes_name').brbanks();
   },
 
@@ -44,11 +45,10 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
     };
 
     $.post('/payment/pagarme/'+that.PagarmeForm.contributionId+'/pay_slip', bankAccountAttributes).success(function(response){
-      console.log('gerando boleto');
       parent.loader.hide();
       if(response.payment_status == 'failed'){
-        that.parent.message.find('p').html(response.message);
-        that.parent.message.fadeIn('fast')
+        that.message.find('p').html(response.message);
+        that.message.fadeIn('fast')
 
         $(e.currentTarget).show();
       } else if(response.boleto_url) {
