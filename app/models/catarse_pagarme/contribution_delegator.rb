@@ -61,7 +61,7 @@ module CatarsePagarme
       if payment_method == PaymentType::SLIP
         CatarsePagarme.configuration.slip_tax
       else
-        (self.contribution.value * CatarsePagarme.configuration.credit_card_tax.to_f) + 0.39
+        (self.contribution.value * CatarsePagarme.configuration.credit_card_tax.to_f) + CatarsePagarme.configuration.credit_card_cents_fee
       end
     end
 

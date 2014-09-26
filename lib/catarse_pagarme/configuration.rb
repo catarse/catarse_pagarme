@@ -1,7 +1,7 @@
 module CatarsePagarme
   class Configuration
     attr_accessor :api_key, :slip_tax, :credit_card_tax, :interest_rate,
-      :max_installments, :minimum_value_for_installment
+      :max_installments, :minimum_value_for_installment, :credit_card_cents_fee
 
     def initialize
       self.api_key = ''
@@ -10,6 +10,7 @@ module CatarsePagarme
       self.interest_rate = 0
       self.max_installments = 12
       self.minimum_value_for_installment = 10
+      self.credit_card_cents_fee = 0.39
     end
   end
 end
