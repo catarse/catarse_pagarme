@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     catarse_pagarme (0.0.1)
-      pagarme (~> 1.9.4)
+      pagarme (~> 1.9.5)
       rails (~> 4.0)
 
 GEM
@@ -53,7 +53,7 @@ GEM
     minitest (5.4.0)
     multi_json (1.10.1)
     netrc (0.7.7)
-    pagarme (1.9.4)
+    pagarme (1.9.6)
       multi_json
       rest-client
     pg (0.17.1)
@@ -97,7 +97,7 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.1.3)
+    sprockets-rails (2.1.4)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
