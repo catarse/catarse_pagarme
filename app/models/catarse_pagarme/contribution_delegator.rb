@@ -21,7 +21,11 @@ module CatarsePagarme
     end
 
     def refund
-      transaction.refund
+      if contribution.is_credit_card?
+        transaction.refund
+      else
+        transaction.refund(bank_account_attributes)
+      end
     end
 
     def value_for_transaction
@@ -66,6 +70,22 @@ module CatarsePagarme
     end
 
     protected
+
+    def bank_account_attributes
+      bank = contribution.user.bank_account
+
+      {
+        bank_account: {
+          bank_code: (bank.bank_code || bank.name),
+          agencia: bank.agency,
+          agencia_dv: bank.agency_digit,
+          conta: bank.account,
+          conta_dv: bank.account_digit,
+          legal_name: bank.user_name,
+          document_number: bank.user_document
+        }
+      }
+    end
 
     def configure_pagarme
       ::PagarMe.api_key = CatarsePagarme.configuration.api_key
