@@ -20,8 +20,8 @@ describe CatarsePagarme::SlipTransaction do
       }, user: {
         bank_account_attributes: {
           name: 'foo', agency: '1', agency_digit: '1',
-          account: '1', account_digit: '1', user_name: 'foo',
-          user_document: 'bar'
+          account: '1', account_digit: '1', owner_name: 'foo',
+          owner_document: 'bar'
         }
       }
     }

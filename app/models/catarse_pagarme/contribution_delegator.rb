@@ -81,8 +81,8 @@ module CatarsePagarme
           agencia_dv: bank.agency_digit,
           conta: bank.account,
           conta_dv: bank.account_digit,
-          legal_name: bank.user_name,
-          document_number: bank.user_document
+          legal_name: bank.owner_name,
+          document_number: bank.owner_document
         }
       }
     end

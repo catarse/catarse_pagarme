@@ -38,8 +38,8 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
           agency_digit: that.$('input#user_bank_account_attributes_agency_digit').val(),
           account: that.$('input#user_bank_account_attributes_account').val(),
           account_digit: that.$('input#user_bank_account_attributes_account_digit').val(),
-          user_name: that.$('input#user_bank_account_attributes_user_name').val(),
-          user_document: that.$('input#user_bank_account_attributes_user_document').val()
+          owner_name: that.$('input#user_bank_account_attributes_owner_name').val(),
+          owner_document: that.$('input#user_bank_account_attributes_owner_document').val()
         }
       }
     };

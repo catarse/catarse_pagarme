@@ -25,7 +25,7 @@ module CatarsePagarme
         payment_id: self.transaction.id,
         payment_method: 'Pagarme',
         slip_url: self.transaction.boleto_url,
-        installments: self.transaction.installments
+        installments: (self.transaction.installments || 1)
       }
     end
 

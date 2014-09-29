@@ -29,7 +29,7 @@ describe CatarsePagarme::SlipController do
           post :create, {
             locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme',
             user: { bank_account_attributes: {
-              name: 'bank', agency: '1', agency_digit: '1', account: '1', account_digit: '1', user_name: 'foo', user_document: '1'
+              name: 'bank', agency: '1', agency_digit: '1', account: '1', account_digit: '1', owner_name: 'foo', owner_document: '1'
             } } }
         end
 
