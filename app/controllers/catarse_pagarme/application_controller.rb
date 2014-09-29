@@ -23,13 +23,12 @@ module CatarsePagarme
       attrs = ActionController::Parameters.new(attributes)
       attrs.permit([
         slip_payment: [:payment_method, :amount, :postback_url,
-                       metadata: [:project_name, :project_status, :compensation_date],
                        customer: [:name, :email]
         ],
         user: [
           bank_account_attributes: [
             :name, :account, :account_digit, :agency,
-            :agency_digit, :user_name, :user_document
+            :agency_digit, :owner_name, :owner_document
           ]
         ]
       ])
