@@ -63,9 +63,9 @@ module CatarsePagarme
 
     def get_fee(payment_method)
       if payment_method == PaymentType::SLIP
-        CatarsePagarme.configuration.slip_tax
+        CatarsePagarme.configuration.slip_tax.to_f
       else
-        (self.contribution.value * CatarsePagarme.configuration.credit_card_tax.to_f) + CatarsePagarme.configuration.credit_card_cents_fee
+        (self.contribution.value * CatarsePagarme.configuration.credit_card_tax.to_f) + CatarsePagarme.configuration.credit_card_cents_fee.to_f
       end
     end
 
