@@ -19,7 +19,7 @@ describe CatarsePagarme::SlipTransaction do
         postback_url: 'http://test.foo'
       }, user: {
         bank_account_attributes: {
-          name: 'foo', agency: '1', agency_digit: '1',
+          bank_id: 1, agency: '1', agency_digit: '1',
           account: '1', account_digit: '1', owner_name: 'foo',
           owner_document: 'bar'
         }
@@ -35,7 +35,7 @@ describe CatarsePagarme::SlipTransaction do
         postback_url: 'http://test.foo'
       }, user: {
         bank_account_attributes: {
-          name: ''
+          owner_name: ''
         }
       }
     }

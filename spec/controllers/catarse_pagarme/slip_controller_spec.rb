@@ -4,6 +4,7 @@ describe CatarsePagarme::SlipController do
   before do
     PaymentEngines.stub(:find_payment).and_return(contribution)
     controller.stub(:current_user).and_return(user)
+    Bank.create(name: 'foo', code: '123')
   end
 
   let(:project) { create(:project, goal: 10_000, state: 'online') }
@@ -29,7 +30,7 @@ describe CatarsePagarme::SlipController do
           post :create, {
             locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme',
             user: { bank_account_attributes: {
-              name: 'bank', agency: '1', agency_digit: '1', account: '1', account_digit: '1', owner_name: 'foo', owner_document: '1'
+              bank_id: Bank.first.id, agency: '1', agency_digit: '1', account: '1', account_digit: '1', owner_name: 'foo', owner_document: '1'
             } } }
         end
 
@@ -46,7 +47,7 @@ describe CatarsePagarme::SlipController do
         let(:user) { contribution.user }
 
         before do
-          post :create, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme', user: { bank_account_attributes: { name: '' } } }
+          post :create, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme', user: { bank_account_attributes: { owner_name: '' } } }
         end
 
         it 'boleto_url should be nil' do
