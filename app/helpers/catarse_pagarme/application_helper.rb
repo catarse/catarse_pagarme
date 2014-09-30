@@ -8,7 +8,13 @@ module CatarsePagarme
         installment_number = installment[0].to_i
         if installment_number <= CatarsePagarme.configuration.max_installments
           amount = installment[1]['installment_amount'] / 100.0
-          [format_instalment_text(installment_number, amount), installment_number]
+
+          optional_text = nil
+          if installment_number != 1
+            optional_text = I18n.t('projects.contributions.edit.installment_with_tax')
+          end
+
+          ["#{format_instalment_text(installment_number, amount)} #{optional_text}", installment_number]
         end
       end
 
@@ -16,7 +22,7 @@ module CatarsePagarme
     end
 
     def format_instalment_text(number, amount)
-      [number, number_to_currency(amount, precision: 2)].join('x ')
+      [number, number_to_currency(amount, precision: 2)].join("x ")
     end
 
   end

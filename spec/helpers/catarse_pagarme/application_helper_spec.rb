@@ -12,7 +12,7 @@ describe CatarsePagarme::ApplicationHelper do
   context "#installments_for_select" do
     subject { installments_for_select(contribution) }
     it { expect(subject.size).to eq(6) }
-    it { expect(subject[0][0]).to eq('1x $100.00') }
+    it { expect(subject[0][0]).to eq('1x $100.00 ') }
     it { expect(subject[0][1]).to eq(1) }
   end
 
