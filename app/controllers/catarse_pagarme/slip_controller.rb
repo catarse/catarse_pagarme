@@ -20,7 +20,7 @@ module CatarsePagarme
       {
         payment_method: 'boleto',
         amount: delegator.value_for_transaction,
-        postback_url: ipn_pagarme_url(contribution, host: CatarsePagarme.configuration.host),
+        postback_url: ipn_pagarme_url(contribution, host: CatarsePagarme.configuration.host, subdomain: CatarsePagarme.configuration.subdomain),
         customer: {
           email: contribution.user.email,
           name: contribution.user.name
