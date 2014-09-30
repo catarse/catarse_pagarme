@@ -1,6 +1,7 @@
 module CatarsePagarme
-  class NotificationsController < ApplicationController
+  class NotificationsController < CatarsePagarme::ApplicationController
     skip_before_filter :authenticate_user!
+    skip_before_filter :force_http
 
     def create
       if PagarMe::validate_fingerprint(contribution.try(:payment_id), params[:fingerprint])
