@@ -4,7 +4,7 @@ module CatarsePagarme
   class ApplicationController < ActionController::Base
 
     before_filter :authenticate_user!
-    before_action :configure_pagarme
+    before_filter :configure_pagarme
     skip_before_filter :force_http
     layout :false
 
