@@ -1,5 +1,5 @@
 module CatarsePagarme
-  class CreditCardBaseController < ApplicationController
+  class CreditCardBaseController < CatarsePagarme::ApplicationController
 
     protected
 
