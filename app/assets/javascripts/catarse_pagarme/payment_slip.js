@@ -33,7 +33,7 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
     var bankAccountAttributes = {
       user: {
         bank_account_attributes: {
-          name: that.$('input#user_bank_account_attributes_name').val(),
+          bank_id: that.$('select#user_bank_account_attributes_bank_id').val(),
           agency: that.$('input#user_bank_account_attributes_agency').val(),
           agency_digit: that.$('input#user_bank_account_attributes_agency_digit').val(),
           account: that.$('input#user_bank_account_attributes_account').val(),

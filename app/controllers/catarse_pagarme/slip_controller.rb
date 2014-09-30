@@ -33,7 +33,7 @@ module CatarsePagarme
       attrs.permit(:payment_method, :amount, :postback_url, customer: [:name, :email],
         user: [
           bank_account_attributes: [
-            :name, :account, :account_digit, :agency,
+            :bank_id, :account, :account_digit, :agency,
             :agency_digit, :owner_name, :owner_document
           ]
         ])
