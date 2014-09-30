@@ -36,7 +36,7 @@ module CatarsePagarme
         card_expiration_year: splited_month_and_year[1],
         card_cvv: params[:payment_card_source],
         amount: delegator.value_with_installment_tax(get_installment),
-        postback_url: ipn_pagarme_url(contribution),
+        postback_url: ipn_pagarme_url(contribution, host: CatarsePagarme.configuration.host),
         installments: get_installment,
         customer: {
           email: contribution.user.email,
