@@ -19,6 +19,7 @@ module CatarsePagarme
     def slip_attributes
       {
         payment_method: 'boleto',
+        boleto_expiration_date: 2.days.from_now.to_i,
         amount: delegator.value_for_transaction,
         postback_url: ipn_pagarme_url(contribution, host: CatarsePagarme.configuration.host, subdomain: CatarsePagarme.configuration.subdomain),
         customer: {
@@ -30,7 +31,7 @@ module CatarsePagarme
 
     def permitted_attributes
       attrs = ActionController::Parameters.new(slip_attributes)
-      attrs.permit(:payment_method, :amount, :postback_url, customer: [:name, :email],
+      attrs.permit(:boleto_expiration_date, :payment_method, :amount, :postback_url, customer: [:name, :email],
         user: [
           bank_account_attributes: [
             :bank_id, :account, :account_digit, :agency,
