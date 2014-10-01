@@ -1,6 +1,6 @@
 module CatarsePagarme
   class Configuration
-    attr_accessor :api_key, :slip_tax, :credit_card_tax, :interest_rate, :host, :subdomain,
+    attr_accessor :api_key, :slip_tax, :credit_card_tax, :interest_rate, :host, :subdomain, :protocol,
       :max_installments, :minimum_value_for_installment, :credit_card_cents_fee
 
     def initialize
@@ -13,6 +13,7 @@ module CatarsePagarme
       self.credit_card_cents_fee = 0.39
       self.host = 'catarse.me'
       self.subdomain = 'www'
+      self.protocol = 'http'
     end
   end
 end
