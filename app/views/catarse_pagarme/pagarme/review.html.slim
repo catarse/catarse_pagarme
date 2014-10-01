@@ -97,7 +97,7 @@
             = simple_form_for current_user, url: 'javascript:void(0)' do |f|
               .bank_accounts
                 = f.simple_fields_for :bank_account do |bank_form|
-                  = bank_form.input :bank_id, as: :select, collection: Bank.all, input_html: { style: 'width: 150px' }
+                  = bank_form.input :bank_id, as: :select, collection: Bank.to_collection, input_html: { style: 'width: 150px' }
                   = bank_form.input :agency, as: :string
                   = bank_form.input :agency_digit, as: :string
                   = bank_form.input :account, as: :string
