@@ -19,7 +19,7 @@ module CatarsePagarme
     def slip_attributes
       {
         payment_method: 'boleto',
-        boleto_expiration_date: 2.days.from_now.to_i,
+        boleto_expiration_date: 2.days.from_now,
         amount: delegator.value_for_transaction,
         postback_url: ipn_pagarme_url(contribution, host: CatarsePagarme.configuration.host,
                                       subdomain: CatarsePagarme.configuration.subdomain,
