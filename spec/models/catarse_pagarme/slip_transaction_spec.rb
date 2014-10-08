@@ -9,6 +9,7 @@ describe CatarsePagarme::SlipTransaction do
     transaction.stub(:status).and_return('paid')
     transaction.stub(:boleto_url).and_return('boleto url')
     transaction.stub(:installments).and_return(nil)
+    transaction.stub(:acquirer_name).and_return('pagarme')
     transaction
   }
   let(:valid_attributes) do
