@@ -11,6 +11,7 @@ module CatarsePagarme
 
     def change_contribution_state
       self.contribution.update_attributes(attributes_to_contribution)
+      self.contribution.payment_notifications.create(extra_data: self.transaction.to_json)
       delegator.change_status_by_transaction(self.transaction.status)
     end
 
