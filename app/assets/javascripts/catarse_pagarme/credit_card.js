@@ -5,7 +5,6 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     'keyup input[type="text"]' : 'creditCardInputValidator',
     'keyup #payment_card_number' : 'onKeyupPaymentCardNumber',
     'click input#credit_card_submit' : 'onSubmit',
-    'click #payment_subscription_card_0': 'showCreditCardForm',
     'change .creditcard-records' : 'onChangeCard'
   },
 
@@ -13,6 +12,12 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     var $target = $(event.currentTarget);
     $target.siblings().removeClass('selected');
     $target.addClass('selected');
+    if($(event.target).val() == 0){
+      this.$('.type_card_data').slideDown('slow');
+    }
+    else{
+      this.$('.type_card_data').slideUp('slow');
+    }
   },
 
   activate: function(options){
@@ -20,11 +25,6 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     this.pagarmeForm = this.parent;
     this.message = this.$('.alert-danger');
     this.$('input#payment_card_date').mask('99/99');
-  },
-
-  showCreditCardForm: function(e) {
-    var that = this;
-    that.$('.type_card_data').slideDown('slow');
   },
 
   getUrl: function(){
