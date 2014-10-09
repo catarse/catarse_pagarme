@@ -5,7 +5,14 @@ App.views.PagarmeForm.addChild('PaymentCard', {
     'keyup input[type="text"]' : 'creditCardInputValidator',
     'keyup #payment_card_number' : 'onKeyupPaymentCardNumber',
     'click input#credit_card_submit' : 'onSubmit',
-    'click a.use_another-card': 'showCreditCardForm'
+    'click #payment_subscription_card_0': 'showCreditCardForm',
+    'change .creditcard-records' : 'onChangeCard'
+  },
+
+  onChangeCard: function(event){
+    var $target = $(event.currentTarget);
+    $target.siblings().removeClass('selected');
+    $target.addClass('selected');
   },
 
   activate: function(options){
@@ -17,16 +24,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
 
   showCreditCardForm: function(e) {
     var that = this;
-    e.preventDefault();
-
-    that.$('ul.my_credit_cards').hide();
-    that.$('a.use_another-card ').hide();
-    that.$('.type_card_data').show();
-    that.$('.save_card').show();
-
-    $.each(that.$('.my_credit_cards input:radio[name=payment_subscription_card]'), function(i, item) {
-      $(item).prop('checked', false);
-    });
+    that.$('.type_card_data').slideDown('slow');
   },
 
   getUrl: function(){
@@ -52,7 +50,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
   },
 
   selectedCard: function() {
-    return this.$('.my_credit_cards input:radio[name=payment_subscription_card]:checked');
+    return this.$('input:radio[data-stored][name=payment_subscription_card]:checked');
   },
 
   hasSelectedSomeCard: function() {
@@ -81,7 +79,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
 
   getInstallments: function() {
     if(this.hasSelectedSomeCard()) {
-      return this.$('.my_credit_cards select#payment_card_installments').val();
+      return this.$('.my-credit-cards .selected select#payment_card_installments').val();
     } else {
       return this.$('.type_card_data select#payment_card_installments').val();
     }
@@ -120,7 +118,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
   },
 
   onKeyupPaymentCardNumber: function(e){
-    this.$('input#payment_card_flag').val(this.getCardFlag($(e.currentTarget).val()))
+    this.$('#payment_card_flag').html(this.getCardFlag($(e.currentTarget).val()))
   },
 
   getCardFlag: function(number) {
