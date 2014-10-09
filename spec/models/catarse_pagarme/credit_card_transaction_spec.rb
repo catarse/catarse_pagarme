@@ -10,6 +10,7 @@ describe CatarsePagarme::CreditCardTransaction do
     transaction.stub(:status).and_return('paid')
     transaction.stub(:boleto_url).and_return(nil)
     transaction.stub(:installments).and_return(3)
+    transaction.stub(:acquirer_name).and_return('stone')
     transaction
   }
 

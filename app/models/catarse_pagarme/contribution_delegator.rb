@@ -61,11 +61,13 @@ module CatarsePagarme
       })
     end
 
-    def get_fee(payment_method)
+    def get_fee(payment_method, acquirer_name = nil)
       if payment_method == PaymentType::SLIP
         CatarsePagarme.configuration.slip_tax.to_f
       else
-        (self.contribution.value * CatarsePagarme.configuration.credit_card_tax.to_f) + CatarsePagarme.configuration.credit_card_cents_fee.to_f
+        if acquirer_name != 'cielo'
+          (self.contribution.value * CatarsePagarme.configuration.credit_card_tax.to_f) + CatarsePagarme.configuration.credit_card_cents_fee.to_f
+        end
       end
     end
 
