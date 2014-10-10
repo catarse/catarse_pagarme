@@ -3,110 +3,110 @@
   = form_tag 'javascript:void(0);', :class => 'pagarme' do
 
     .next_step_after_valid_document
+      .w-row.list_payment.w-form
+        .w-col.w-col-7.w-col-small-7.back-payment-moip-options-column
+          = radio_button_tag 'payment_type', "credit_card", false, class: 'w-radio-input back-payment-radio-button'
+          = label_tag :payment_type_credit_card, nil, class: "cards w-form-label" do
+            = image_tag 'catarse_bootstrap/payment_cards.jpg'
+        .w-col.w-col-5.w-col-small-5.back-payment-moip-options-column
+          = radio_button_tag 'payment_type', "slip", false, class: 'w-radio-input back-payment-radio-button'
+          = label_tag :payment_type_slip, class: "boleto w-form-label" do
+            = image_tag 'catarse_bootstrap/payment_boleto.jpg'
 
-      .list_payment
-        .input
-          = radio_button_tag 'payment_type', "credit_card"
-          = label_tag :payment_type_credit_card, nil, :class => "cards"
-
-          = radio_button_tag 'payment_type', "slip"
-          = label_tag :payment_type_slip, 'Boleto', :class => "boleto"
-
+    .formwrapper 
       #payment_type_credit_card_section.payment_section
-        h3= t('projects.contributions.review.form.labels.payment_card')
-
-        .clearfix
-
-        .bootstrap-twitter style="float: none;"
-          .alert.alert-danger.hide
-            p.error_msg
-            .clearfix
-
-        .clearfix
-
-        .choose_card
-          ul class="my_credit_cards #{(current_user.credit_cards.present? ? '' : 'hide')}"
-            - current_user.credit_cards.each_with_index do |credit_card, i|
-              li.credit_card
-                .radio_button
-                  = radio_button_tag :payment_subscription_card, credit_card.subscription_id, { checked: (i == 0) } 
-                .select_installments
-                  = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
-                .card_info
+        div[class="my-credit-cards w-form back-payment-form-creditcard formwrapper records-choice #{(current_user.credit_cards.present? ? '' : 'w-hidden')}"]
+          - current_user.credit_cards.each_with_index do |credit_card, i|
+            .w-row.creditcard-records
+              .w-col.w-col-1
+                .w-radio.w-clearfix.back-payment-credit-card-radio-field
+                  = radio_button_tag :payment_subscription_card, credit_card.subscription_id, i == 0, {"data-stored" => true}
+              .w-col.w-col-2
+                .fontsize-small.fontweight-semibold.text-success
+                  = credit_card.card_brand.upcase
+              .w-col.w-col-5
+                .fontsize-small.fontweight-semibold.u-marginbottom-20
                   = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
-                .card_brand
-                  = credit_card.card_brand
-                .clearfix
+              .w-col.w-col-4
+                = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
+          .w-row.creditcard-records
+            .w-col.w-col-1
+              .w-radio.w-clearfix.back-payment-credit-card-radio-field
+                = radio_button_tag :payment_subscription_card, 0
+            .w-col.w-col-11
+              .fontsize-small.fontweight-semibold.fontcolor-secondary
+                = t('projects.contributions.edit.form_labels.user_another_card')
+        div[class="w-form formwrapper type_card_data #{(current_user.credit_cards.present? ? 'w-hidden' : '')}"]
+          .w-row
+            .w-col.w-col-12
+              .field-label.fontweight-semibold
+                = label_tag :payment_card_name, t('projects.contributions.edit.form_labels.payment_card_name'), class: 'field-label fontweight-semibold'
+                = text_field_tag :payment_card_name, nil, class: 'w-input text-field'
+          .w-row
+            .w-col.w-col-6.w-sub-col
+              = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
+              .card-brand.prefix.text-field
+                #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center
+                  |&nbsp;
+              .card-number
+                = text_field_tag :payment_card_number, nil, class: 'w-input text-field postfix'
+            .w-col.w-col-6
+              .w-row
+                .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col-middle
+                  = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold'
+                  = text_field_tag :payment_card_source, nil, class: 'w-input text-field'
+                .w-col.w-col-6.w-col-small-6.w-col-tiny-6
+                  = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date'), class: 'field-label fontweight-semibold'
+                  = text_field_tag :payment_card_date, nil, class: 'w-input text-field'
+          - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
+            .w-row
+              .w-col.w-col-6.w-sub-col
+                = label_tag :payment_card_installments, t('projects.contributions.edit.form_labels.payment_card_installments'), class: 'field-label fontweight-semibold'
+                = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field'
+          .w-checkbox.w-clearfix
+            = check_box_tag :payment_save_card, 1, false, class: 'w-checkbox-input'
+            = label_tag :payment_save_card, t('projects.contributions.edit.payment_save_card'), class: 'w-form-label'
+        .w-row
+          .w-col.w-col-12
+            .payment-error-message.card.card-error.u-radius.zindex-10.u-marginbottom-30.w-hidden
+              .fontsize-smaller.fontweight-bold.u-marginbottom-10= t('projects.contributions.edit.review_errors_title')
+              .message-text.fontsize-smaller = t('.review_errors')
+        .w-row
+          .w-col.w-col-push-3.w-col-6
+            #card-loading.loader.u-text-center.w-col.w-col-12.u-marginbottom-30 = image_tag "catarse_bootstrap/loader.gif"
+            = submit_tag t('projects.contributions.review.form.labels.submit'), :class => 'btn btn-large u-marginbottom-20', :id => "credit_card_submit"
+            = render partial: 'terms'
 
-          .bootstrap-twitter
-            a href='javascript:void(0)' class="btn use_another-card #{(current_user.credit_cards.present? ? '' : 'hide')}"
-              | Utilizar outro cartão
-
-          div class="type_card_data #{(current_user.credit_cards.present? ? 'hide' : '')}"
-            .div
-              .owner_outside
-                .owner
-                  ol.inputs
-                    li.name
-                      = label_tag :payment_card_name, t('projects.contributions.edit.form_labels.payment_card_name')
-                      = text_field_tag :payment_card_name, nil
-                    - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
-                      li.cpf
-                        = label_tag :payment_card_installments, t('projects.contributions.edit.form_labels.payment_card_installments')
-                        = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
-            .div
-              .infocard_outside
-                .infocard
-                  ol.inputs
-                    li.number
-                      = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number')
-                      = text_field_tag :payment_card_number, nil
-                    li.flag
-                      = label_tag :payment_card_flag, t('projects.contributions.edit.form_labels.payment_card_flag')
-                      = text_field_tag :payment_card_flag, nil, { disabled: true }
-                    li.source
-                      = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source')
-                      = text_field_tag :payment_card_source, nil
-                    li.date
-                      = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date')
-                      = text_field_tag :payment_card_date, nil
-
-        .clearfix
-        .bootstrap-twitter
-          div class="save_card #{(current_user.credit_cards.present? ? 'hide' : '')}"
-            = check_box_tag :payment_save_card, 1, false
-            = label_tag :payment_save_card, t('projects.contributions.edit.payment_save_card')
-          .loader.hide= image_tag('loading.gif')
-            .clearfix
-          = submit_tag t('projects.contributions.review.form.labels.submit'), :class => 'btn btn-primary btn-large', :id => "credit_card_submit"
-
-      #payment_type_slip_section.hide.payment_section
-        h3= t('projects.contributions.review.form.labels.payment_boleto')
-        .clearfix
-        .bootstrap-twitter style="float: none;"
-          .alert.alert-danger.hide
-            p.error_msg
-            .clearfix
-        .bootstrap-twitter
-          .bootstrap-form
-
-            .bootstrap-alert
-              .alert.credit_alert
-                = t('users.current_user_fields.bank_account_hint')
-
-            = simple_form_for current_user, url: 'javascript:void(0)' do |f|
-              .bank_accounts
-                = f.simple_fields_for :bank_account do |bank_form|
-                  = bank_form.input :bank_id, as: :select, collection: Bank.to_collection, input_html: { style: 'width: 150px' }
-                  = bank_form.input :agency, as: :string
-                  = bank_form.input :agency_digit, as: :string
-                  = bank_form.input :account, as: :string
-                  = bank_form.input :account_digit, as: :string
-                  = bank_form.input :owner_name, as: :string, input_html: { value: bank_form.object.owner_name || current_user.full_name }
-                  = bank_form.input :owner_document, as: :string, input_html: { value: bank_form.object.owner_document || current_user.cpf }
-                  .clearfix
-          .loader.hide= image_tag('loading.gif')
-          = submit_tag t('projects.contributions.review.form.labels.build_boleto'), :class => 'btn btn-primary btn-large', :id => "build_boleto"
-        .clearfix
-        p.subtitle.hide= t('projects.contributions.review.form.labels.payment_boleto_subtitle')
-        .link_content
+      #payment_type_slip_section.payment_section.w-hidden
+        = simple_form_for current_user, url: 'javascript:void(0)' do |f|
+          .bank_accounts
+            = f.simple_fields_for :bank_account do |bank_form|
+              .w-row
+                = bank_form.input :bank_id, as: :select, collection: Bank.order(:code, :name).to_collection, wrapper_html: {class: 'w-col w-col-12'}
+              .w-row
+                = bank_form.input :agency, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8'}
+                = bank_form.input :agency_digit, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-sub-col w-col-2 w-col-small-4'}
+                = bank_form.input :account, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8'}
+                = bank_form.input :account_digit, as: :string, wrapper_html: {class: 'w-col w-col-2 w-col-small-4'}
+              .w-row
+                = bank_form.input :owner_name, as: :string, input_html: { value: bank_form.object.owner_name || current_user.full_name }, wrapper_html: {class: 'w-col w-sub-col w-col-6'}
+                = bank_form.input :owner_document, as: :string, input_html: { value: bank_form.object.owner_document || current_user.cpf }, wrapper_html: {class: 'w-col w-col-6'}
+        .w-row
+          .w-col.w-col-12
+            .card.card-message.u-radius.fontsize-small.zindex-10.u-marginbottom-30
+              | Após clicar no botão abaixo, você receberá um link com o boleto para completar o pagamento.
+        .w-row
+          .w-col.w-col-12
+            .payment-error-message.card.card-error.u-radius.zindex-10.u-marginbottom-30.w-hidden
+              .fontsize-smaller.fontweight-bold.u-marginbottom-10= t('projects.contributions.edit.review_errors_title')
+              .message-text.fontsize-smaller = t('.review_errors')
+        .w-row
+          .w-col.w-col-12
+            #payment-slip-link.card.card-message.fontsize-small.u-radius.u-marginbottom-30.zindex-10.w-hidden
+              .link_content.fontsize-smaller
+              .fontsize-smaller Você também receberá um email com esse boleto.
+        .w-row
+          .w-col.w-col-push-3.w-col-6
+            #card-loading.loader.u-text-center.w-col.w-col-12.u-marginbottom-30 = image_tag "catarse_bootstrap/loader.gif"
+            = submit_tag t('projects.contributions.review.form.labels.build_boleto'), :class => 'btn btn-large u-marginbottom-20', :id => "build_boleto"
+            = render partial: 'terms'
