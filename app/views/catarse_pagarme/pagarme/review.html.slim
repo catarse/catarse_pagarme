@@ -67,6 +67,11 @@
             = check_box_tag :payment_save_card, 1, false, class: 'w-checkbox-input'
             = label_tag :payment_save_card, t('projects.contributions.edit.payment_save_card'), class: 'w-form-label'
         .w-row
+          .w-col.w-col-12
+            .payment-error-message.card.card-error.u-radius.zindex-10.u-marginbottom-30.w-hidden
+              .fontsize-smaller.fontweight-bold.u-marginbottom-10= t('projects.contributions.edit.review_errors_title')
+              .message-text.fontsize-smaller = t('.review_errors')
+        .w-row
           .w-col.w-col-push-3.w-col-6
             #card-loading.loader.u-text-center.w-col.w-col-12.u-marginbottom-30 = image_tag "catarse_bootstrap/loader.gif"
             = submit_tag t('projects.contributions.review.form.labels.submit'), :class => 'btn btn-large u-marginbottom-20', :id => "credit_card_submit"
