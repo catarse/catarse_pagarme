@@ -21,9 +21,9 @@ module CatarsePagarme
         payment_method: 'boleto',
         boleto_expiration_date: 2.days.from_now,
         amount: delegator.value_for_transaction,
-        postback_url: ipn_pagarme_url(contribution, host: CatarsePagarme.configuration.host,
-                                      subdomain: CatarsePagarme.configuration.subdomain,
-                                      protocol: CatarsePagarme.configuration.protocol),
+        postback_url: ipn_pagarme_index_url(host: CatarsePagarme.configuration.host,
+                                            subdomain: CatarsePagarme.configuration.subdomain,
+                                            protocol: CatarsePagarme.configuration.protocol),
         customer: {
           email: contribution.user.email,
           name: contribution.user.name

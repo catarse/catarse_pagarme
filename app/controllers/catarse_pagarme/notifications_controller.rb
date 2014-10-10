@@ -15,5 +15,11 @@ module CatarsePagarme
 
       render nothing: true, status: 404
     end
+
+    protected
+
+    def contribution
+      @contribution ||=  PaymentEngines.find_payment({ payment_id: params[:id] })
+    end
   end
 end
