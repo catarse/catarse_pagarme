@@ -101,7 +101,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
 
         if(response.payment_status == 'failed'){
           that.message.find('.message-text').html(response.message);
-          that.message.fadeIn('fast')
+          that.message.slideDown('slow')
 
           $(e.currentTarget).show();
         } else {

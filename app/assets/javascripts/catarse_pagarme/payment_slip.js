@@ -8,7 +8,7 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
 
   activate: function(options){
     this.PagarmeForm = this.parent;
-    this.message = this.$('.alert-danger');
+    this.message = this.$('.payment-error-message');
     this.$('#user_bank_account_attributes_name').brbanks();
   },
 
@@ -47,15 +47,15 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
     $.post('/payment/pagarme/'+that.PagarmeForm.contributionId+'/pay_slip', bankAccountAttributes).success(function(response){
       parent.loader.hide();
       if(response.payment_status == 'failed'){
-        that.message.find('p').html(response.message);
-        that.message.fadeIn('fast')
+        that.message.find('.message-text').html(response.message);
+        that.message.slideDown('slow')
 
         $(e.currentTarget).show();
       } else if(response.boleto_url) {
-        var link = $('<a target="__blank">'+response.boleto_url+'</a>')
+        var link = $('<a class="alt-link" target="__blank">'+response.boleto_url+'</a>')
         link.attr('href', response.boleto_url);
         that.$('.link_content').empty().html(link);
-        that.$('.payment_section:visible .subtitle').fadeIn('fast');
+        that.$('#payment-slip-link').slideDown('slow');
       }
     });
   }
