@@ -10,6 +10,7 @@ describe CatarsePagarme::SlipTransaction do
     transaction.stub(:boleto_url).and_return('boleto url')
     transaction.stub(:installments).and_return(nil)
     transaction.stub(:acquirer_name).and_return('pagarme')
+    transaction.stub(:tid).and_return('123123')
     transaction
   }
   let(:valid_attributes) do
@@ -96,6 +97,14 @@ describe CatarsePagarme::SlipTransaction do
 
       it "should update contribution payment_choice" do
         expect(contribution.payment_choice).to eq(CatarsePagarme::PaymentType::SLIP)
+      end
+
+      it "should update contribution acquirer_name" do
+        expect(contribution.acquirer_name).to eq('pagarme')
+      end
+
+      it "should update contribution acquirer_tid" do
+        expect(contribution.acquirer_tid).to eq('123123')
       end
     end
   end

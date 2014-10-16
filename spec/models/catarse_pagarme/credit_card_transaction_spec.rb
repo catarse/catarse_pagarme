@@ -11,6 +11,7 @@ describe CatarsePagarme::CreditCardTransaction do
     transaction.stub(:boleto_url).and_return(nil)
     transaction.stub(:installments).and_return(3)
     transaction.stub(:acquirer_name).and_return('stone')
+    transaction.stub(:tid).and_return('123123')
     transaction
   }
 
@@ -64,6 +65,14 @@ describe CatarsePagarme::CreditCardTransaction do
 
       it "should update contribution payment_choice" do
         expect(contribution.payment_choice).to eq(CatarsePagarme::PaymentType::CREDIT_CARD)
+      end
+
+      it "should update contribution acquirer_name" do
+        expect(contribution.acquirer_name).to eq('stone')
+      end
+
+      it "should update contribution acquirer_tid" do
+        expect(contribution.acquirer_tid).to eq('123123')
       end
     end
   end
