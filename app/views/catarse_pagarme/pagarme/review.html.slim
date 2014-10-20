@@ -95,7 +95,7 @@
                 = bank_form.input :owner_document, as: :string, input_html: { value: bank_form.object.owner_document || current_user.cpf }, wrapper_html: {class: 'w-col w-col-6'}
         .w-row
           .w-col.w-col-12
-            .card.card-message.u-radius.fontsize-small.zindex-10.u-marginbottom-30
+            #payment-slip-instructions.card.card-message.u-radius.fontsize-small.zindex-10.u-marginbottom-30
               | Após clicar no botão abaixo, você receberá um link com o boleto para completar o pagamento.
         .w-row
           .w-col.w-col-12

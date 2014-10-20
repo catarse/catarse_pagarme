@@ -28,6 +28,7 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
 
     e.preventDefault();
     $(e.currentTarget).hide();
+    this.$('#payment-slip-instructions').slideUp('slow');
     that.PagarmeForm.loader.show();
 
     var bankAccountAttributes = {
