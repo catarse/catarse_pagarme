@@ -47,15 +47,17 @@
           .w-row
             .w-col.w-col-6.w-sub-col
               = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
-              .card-brand.prefix.text-field
-                #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center
-                  |&nbsp;
-              .card-number
-                = text_field_tag :payment_card_number, nil, class: 'w-input text-field postfix'
+              .w-row
+                .w-col.w-col-9.w-col-small-9.w-col-tiny-9
+                  = text_field_tag :payment_card_number, nil, class: 'w-input text-field prefix'
+                .w-col.w-col-3.w-col-small-3.w-col-tiny-3.text-field.postfix.no-hover
+                  #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center
+                    |&nbsp;
             .w-col.w-col-6
               .w-row
                 .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col-middle
-                  = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold'
+                  = label_tag :payment_card_source, 'Cód. Segurança', class: 'field-label fontweight-semibold w-hidden-medium'
+                  = label_tag :payment_card_source, 'CVC', class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
                   = text_field_tag :payment_card_source, nil, class: 'w-input text-field'
                 .w-col.w-col-6.w-col-small-6.w-col-tiny-6
                   = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date'), class: 'field-label fontweight-semibold'
