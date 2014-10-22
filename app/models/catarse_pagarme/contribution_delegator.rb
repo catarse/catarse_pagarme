@@ -42,6 +42,10 @@ module CatarsePagarme
       end
     end
 
+    def value_for_installment(installment)
+      get_installment(installment).try(:[], "installment_amount")
+    end
+
     def transaction
       @transaction ||= ::PagarMe::Transaction.find_by_id(self.contribution.payment_id)
     end
