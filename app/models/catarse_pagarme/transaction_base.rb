@@ -27,7 +27,7 @@ module CatarsePagarme
         payment_method: 'Pagarme',
         slip_url: self.transaction.boleto_url,
         installments: (self.transaction.installments || 1),
-        installment_value: (delegator.value_with_installment_tax(self.transaction.installments || 1) / 100),
+        installment_value: (delegator.value_with_installment_tax(self.transaction.installments || 1) / 100.0).to_f,
         acquirer_name: self.transaction.acquirer_name,
         acquirer_tid: self.transaction.tid
       }
