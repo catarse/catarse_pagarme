@@ -31,7 +31,8 @@
                 .radio_button
                   = radio_button_tag :payment_subscription_card, credit_card.subscription_id, { checked: (i == 0) } 
                 .select_installments
-                  = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
+                  - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
+                    = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution))
                 .card_info
                   = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
                 .card_brand
