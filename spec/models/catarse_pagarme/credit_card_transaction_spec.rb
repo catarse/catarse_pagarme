@@ -74,6 +74,10 @@ describe CatarsePagarme::CreditCardTransaction do
       it "should update contribution acquirer_tid" do
         expect(contribution.acquirer_tid).to eq('123123')
       end
+
+      it "should update contribution installment_value" do
+        expect(contribution.installment_value).to_not be_nil
+      end
     end
   end
 
