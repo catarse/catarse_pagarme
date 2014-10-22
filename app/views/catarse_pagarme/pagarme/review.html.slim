@@ -30,7 +30,8 @@
                 .fontsize-small.fontweight-semibold.u-marginbottom-20
                   = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
               .w-col.w-col-4
-                = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
+                - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
+                  = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
           .w-row.creditcard-records
             .w-col.w-col-1
               .w-radio.w-clearfix.back-payment-credit-card-radio-field
