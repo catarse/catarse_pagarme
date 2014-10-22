@@ -56,8 +56,8 @@
             .w-col.w-col-6
               .w-row
                 .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col-middle
-                  = label_tag :payment_card_source, 'Cód. Segurança', class: 'field-label fontweight-semibold w-hidden-medium'
-                  = label_tag :payment_card_source, 'CVC', class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
+                  = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold w-hidden-medium'
+                  = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source_short'), class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
                   = text_field_tag :payment_card_source, nil, class: 'w-input text-field'
                 .w-col.w-col-6.w-col-small-6.w-col-tiny-6
                   = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date'), class: 'field-label fontweight-semibold'
@@ -82,16 +82,18 @@
             = render partial: 'terms'
 
       #payment_type_slip_section.payment_section.w-hidden
+        .card.card-message.u-radius.zindex-10.fontsize-small.u-marginbottom-30
+          = t('projects.contributions.edit.payment_slip_disclaimer')
         = simple_form_for current_user, url: 'javascript:void(0)' do |f|
           .bank_accounts
             = f.simple_fields_for :bank_account do |bank_form|
               .w-row
                 = bank_form.input :bank_id, as: :select, collection: Bank.order(:code, :name).to_collection, wrapper_html: {class: 'w-col w-col-12'}
               .w-row
-                = bank_form.input :agency, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8'}
-                = bank_form.input :agency_digit, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-sub-col w-col-2 w-col-small-4'}
-                = bank_form.input :account, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8'}
-                = bank_form.input :account_digit, as: :string, wrapper_html: {class: 'w-col w-col-2 w-col-small-4'}
+                = bank_form.input :agency, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}
+                = bank_form.input :agency_digit, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-sub-col w-col-2 w-col-small-4 w-col-tiny-4'}
+                = bank_form.input :account, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}
+                = bank_form.input :account_digit, as: :string, wrapper_html: {class: 'w-col w-col-2 w-col-small-4 w-col-tiny-4'}
               .w-row
                 = bank_form.input :owner_name, as: :string, input_html: { value: bank_form.object.owner_name || current_user.full_name }, wrapper_html: {class: 'w-col w-sub-col w-col-6'}
                 = bank_form.input :owner_document, as: :string, input_html: { value: bank_form.object.owner_document || current_user.cpf }, wrapper_html: {class: 'w-col w-col-6'}
