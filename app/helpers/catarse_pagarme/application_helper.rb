@@ -6,7 +6,7 @@ module CatarsePagarme
 
       collection = installments.map do |installment|
         installment_number = installment[0].to_i
-        if installment_number <= CatarsePagarme.configuration.max_installments
+        if installment_number <= CatarsePagarme.configuration.max_installments.to_i
           amount = installment[1]['installment_amount'] / 100.0
 
           optional_text = nil
