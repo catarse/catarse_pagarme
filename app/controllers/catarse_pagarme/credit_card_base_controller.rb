@@ -18,7 +18,7 @@ module CatarsePagarme
     end
 
     def get_installment
-      if contribution.value < CatarsePagarme.configuration.minimum_value_for_installment
+      if contribution.value.to_f < CatarsePagarme.configuration.minimum_value_for_installment.to_f
         1
       elsif params[:payment_card_installments].to_i > 0
         params[:payment_card_installments].to_i

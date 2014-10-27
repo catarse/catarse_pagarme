@@ -30,7 +30,7 @@
                 .fontsize-small.fontweight-semibold.u-marginbottom-20
                   = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
               .w-col.w-col-4
-                - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
+                - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
                   = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
           .w-row.creditcard-records
             .w-col.w-col-1
@@ -63,7 +63,7 @@
                 .w-col.w-col-6.w-col-small-6.w-col-tiny-6
                   = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date'), class: 'field-label fontweight-semibold'
                   = text_field_tag :payment_card_date, nil, class: 'w-input text-field'
-          - if @contribution.value >= CatarsePagarme.configuration.minimum_value_for_installment
+          - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
             .w-row
               .w-col.w-col-6.w-sub-col
                 = label_tag :payment_card_installments, t('projects.contributions.edit.form_labels.payment_card_installments'), class: 'field-label fontweight-semibold'
