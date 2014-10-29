@@ -53,9 +53,10 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
 
         $(e.currentTarget).show();
       } else if(response.boleto_url) {
-        var link = $('<a class="alt-link" target="__blank">'+response.boleto_url+'</a>')
+        var link = $('<a class="alt-link" target="__blank">Clique aqui para ver o boleto e completar o pagamento.</a>')
         link.attr('href', response.boleto_url);
         that.$('.link_content').empty().html(link);
+        that.$('> div:not(.after-success)').hide();
         that.$('#payment-slip-link').slideDown('slow');
       }
     });
