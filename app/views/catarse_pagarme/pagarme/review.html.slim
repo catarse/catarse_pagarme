@@ -49,7 +49,7 @@
             = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
             .w-row
               .w-col.w-col-9.w-col-small-9.w-col-tiny-9
-                = text_field_tag :payment_card_number, nil, class: 'w-input text-field prefix'
+                = phone_field_tag :payment_card_number, nil, class: 'w-input text-field prefix'
               .w-col.w-col-3.w-col-small-3.w-col-tiny-3.text-field.postfix.no-hover
                 #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center
                   |&nbsp;
@@ -58,10 +58,10 @@
               .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col-middle
                 = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold w-hidden-medium'
                 = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source_short'), class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
-                = text_field_tag :payment_card_source, nil, class: 'w-input text-field'
+                = phone_field_tag :payment_card_source, nil, class: 'w-input text-field'
               .w-col.w-col-6.w-col-small-6.w-col-tiny-6
                 = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date'), class: 'field-label fontweight-semibold'
-                = number_field_tag :payment_card_date, nil, class: 'w-input text-field'
+                = phone_field_tag :payment_card_date, nil, class: 'w-input text-field'
         - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
           .w-row
             .w-col.w-col-6.w-sub-col
@@ -91,13 +91,13 @@
               .w-row
                 = bank_form.input :bank_id, as: :select, collection: Bank.order(:code, :name).to_collection, wrapper_html: {class: 'w-col w-col-12'}
               .w-row
-                = bank_form.input :agency, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}
-                = bank_form.input :agency_digit, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-sub-col w-col-2 w-col-small-4 w-col-tiny-4'}
-                = bank_form.input :account, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}
-                = bank_form.input :account_digit, as: :string, wrapper_html: {class: 'w-col w-col-2 w-col-small-4 w-col-tiny-4'}
+                = bank_form.input :agency, as: :tel, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}
+                = bank_form.input :agency_digit, as: :tel, wrapper_html: {class: 'w-col w-sub-col-middle w-sub-col w-col-2 w-col-small-4 w-col-tiny-4'}
+                = bank_form.input :account, as: :tel, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}
+                = bank_form.input :account_digit, as: :tel, wrapper_html: {class: 'w-col w-col-2 w-col-small-4 w-col-tiny-4'}
               .w-row
                 = bank_form.input :owner_name, as: :string, input_html: { value: bank_form.object.owner_name || current_user.full_name }, wrapper_html: {class: 'w-col w-sub-col w-col-6'}
-                = bank_form.input :owner_document, as: :string, input_html: { value: bank_form.object.owner_document || current_user.cpf }, wrapper_html: {class: 'w-col w-col-6'}
+                = bank_form.input :owner_document, as: :tel, input_html: { value: bank_form.object.owner_document || current_user.cpf }, wrapper_html: {class: 'w-col w-col-6'}
       .w-row
         .w-col.w-col-12
           .payment-error-message.card.card-error.u-radius.zindex-10.u-marginbottom-30.w-hidden
