@@ -8,7 +8,13 @@ module CatarsePagarme
         contribution.payment_notifications.create(extra_data: params.to_json)
 
         if PagarMe::validate_fingerprint(contribution.try(:payment_id), params[:fingerprint])
-          delegator.change_status_by_transaction(params[:current_status])
+
+          if params[:current_status] == 'paid' && params[:desired_status] == 'refunded'
+            contribution.try(:invalid_refund)
+          else
+            delegator.change_status_by_transaction(params[:current_status])
+          end
+
           return render nothing: true, status: 200
         end
       end
