@@ -1,11 +1,12 @@
-App.views.PagarmeForm.addChild('PaymentCard', {
-  el: '#payment_type_credit_card_section',
+App.views.Pagarme.addChild('PaymentCard', _.extend({
+  el: '#payment_type_credit_card_section form',
 
   events: {
     'keyup input[type="text"]' : 'creditCardInputValidator',
-    'keyup #payment_card_number' : 'onKeyupPaymentCardNumber',
+    'input #payment_card_number' : 'onKeyupPaymentCardNumber',
     'click input#credit_card_submit' : 'onSubmit',
-    'change .creditcard-records' : 'onChangeCard'
+    'change .creditcard-records' : 'onChangeCard',
+    'blur input' : 'checkInput'
   },
 
   onChangeCard: function(event){
@@ -22,7 +23,7 @@ App.views.PagarmeForm.addChild('PaymentCard', {
 
   activate: function(options){
     var that = this;
-    this.pagarmeForm = this.parent;
+    this.setupForm();
     this.message = this.$('.payment-error-message');
     this.formatCreditCardInputs();
     window.app.maskAllElements();
@@ -94,10 +95,11 @@ App.views.PagarmeForm.addChild('PaymentCard', {
 
   onSubmit: function(e) {
     var that = this;
-
     e.preventDefault();
 
-    
+    if(!this.validate()){
+      return false;
+    }
 
     $(e.currentTarget).hide();
     that.parent.loader.show();
@@ -128,10 +130,12 @@ App.views.PagarmeForm.addChild('PaymentCard', {
   },
 
   onKeyupPaymentCardNumber: function(e){
-    this.$('#payment_card_flag').html(this.getCardFlag($(e.currentTarget).val()))
+    var number = $(e.currentTarget).val();
+    this.$('#payment_card_flag').html(this.getCardFlag(number))
   },
 
   getCardFlag: function(number) {
-    return $.payment.cardType(number).toUpperCase();
+    var flag = $.payment.cardType(number);
+    return flag && flag.toUpperCase();
   }
-});
+}, Skull.Form));
