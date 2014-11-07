@@ -18,26 +18,28 @@
     = form_tag 'javascript:void(0);', :class => 'pagarme' do
       div[class="my-credit-cards w-form back-payment-form-creditcard records-choice #{(current_user.credit_cards.present? ? '' : 'w-hidden')}"]
         - current_user.credit_cards.each_with_index do |credit_card, i|
+          = label_tag "payment_subscription_card_#{credit_card.subscription_id}" do
+            .w-row.creditcard-records
+              .w-col.w-col-1
+                .w-radio.w-clearfix.back-payment-credit-card-radio-field
+                  = radio_button_tag :payment_subscription_card, credit_card.subscription_id, i == 0, {"data-stored" => true}
+              .w-col.w-col-2
+                .fontsize-small.fontweight-semibold.text-success
+                  = credit_card.card_brand.upcase
+              .w-col.w-col-5
+                .fontsize-small.fontweight-semibold.u-marginbottom-20
+                  = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
+              .w-col.w-col-4
+                - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
+                  = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
+        = label_tag :payment_subscription_card_0 do
           .w-row.creditcard-records
             .w-col.w-col-1
               .w-radio.w-clearfix.back-payment-credit-card-radio-field
-                = radio_button_tag :payment_subscription_card, credit_card.subscription_id, i == 0, {"data-stored" => true}
-            .w-col.w-col-2
-              .fontsize-small.fontweight-semibold.text-success
-                = credit_card.card_brand.upcase
-            .w-col.w-col-5
-              .fontsize-small.fontweight-semibold.u-marginbottom-20
-                = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
-            .w-col.w-col-4
-              - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
-                = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
-        .w-row.creditcard-records
-          .w-col.w-col-1
-            .w-radio.w-clearfix.back-payment-credit-card-radio-field
-              = radio_button_tag :payment_subscription_card, 0
-          .w-col.w-col-11
-            .fontsize-small.fontweight-semibold.fontcolor-secondary
-              = t('projects.contributions.edit.form_labels.user_another_card')
+                = radio_button_tag :payment_subscription_card, 0
+            .w-col.w-col-11
+              .fontsize-small.fontweight-semibold.fontcolor-secondary
+                = t('projects.contributions.edit.form_labels.user_another_card')
       div[class="w-form formwrapper type_card_data #{(current_user.credit_cards.present? ? 'w-hidden' : '')}"]
         .w-row
           .w-col.w-col-12
