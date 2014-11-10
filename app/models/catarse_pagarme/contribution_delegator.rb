@@ -20,6 +20,15 @@ module CatarsePagarme
       end
     end
 
+    def fill_acquirer_data
+      if !contribution.acquirer_name.present? || !contribution.acquirer_tid.present?
+        contribution.update_attributes({
+          acquirer_name: transaction.acquirer_name,
+          acquirer_tid: transaction.acquirer_tid
+        })
+      end
+    end
+
     def refund
       if contribution.is_credit_card?
         transaction.refund
