@@ -1,11 +1,12 @@
-App.views.PagarmeForm.addChild('PaymentCard', {
-  el: '#payment_type_credit_card_section',
+App.views.Pagarme.addChild('PaymentCard', _.extend({
+  el: '#payment_type_credit_card_section form',
 
   events: {
     'keyup input[type="text"]' : 'creditCardInputValidator',
-    'keyup #payment_card_number' : 'onKeyupPaymentCardNumber',
+    'input #payment_card_number' : 'onKeyupPaymentCardNumber',
     'click input#credit_card_submit' : 'onSubmit',
-    'change .creditcard-records' : 'onChangeCard'
+    'change .creditcard-records' : 'onChangeCard',
+    'blur input' : 'checkInput'
   },
 
   onChangeCard: function(event){
@@ -22,9 +23,16 @@ App.views.PagarmeForm.addChild('PaymentCard', {
 
   activate: function(options){
     var that = this;
-    this.pagarmeForm = this.parent;
+    this.setupForm();
     this.message = this.$('.payment-error-message');
-    this.$('input#payment_card_date').mask('99/99');
+    this.formatCreditCardInputs();
+    window.app.maskAllElements();
+  },
+
+  formatCreditCardInputs: function(){
+    this.$('#payment_card_number').payment('formatCardNumber');
+    this.$('#payment_card_date').payment('formatCardExpiry');
+    this.$('#payment_card_source').payment('formatCardCVC');
   },
 
   getUrl: function(){
@@ -87,8 +95,12 @@ App.views.PagarmeForm.addChild('PaymentCard', {
 
   onSubmit: function(e) {
     var that = this;
-
     e.preventDefault();
+
+    if(!this.validate()){
+      return false;
+    }
+
     $(e.currentTarget).hide();
     that.parent.loader.show();
 
@@ -118,23 +130,12 @@ App.views.PagarmeForm.addChild('PaymentCard', {
   },
 
   onKeyupPaymentCardNumber: function(e){
-    this.$('#payment_card_flag').html(this.getCardFlag($(e.currentTarget).val()))
+    var number = $(e.currentTarget).val();
+    this.$('#payment_card_flag').html(this.getCardFlag(number))
   },
 
   getCardFlag: function(number) {
-    var cc = (number + '').replace(/\s/g, ''); //remove space
-
-    if ((/^(34|37)/).test(cc) && cc.length == 15) {
-      return 'AMEX'; //AMEX begins with 34 or 37, and length is 15.
-    } else if ((/^(51|52|53|54|55)/).test(cc) && cc.length == 16) {
-      return 'MASTER'; //MasterCard beigins with 51-55, and length is 16.
-    } else if ((/^(4)/).test(cc) && (cc.length == 13 || cc.length == 16)) {
-      return 'VISA'; //VISA begins with 4, and length is 13 or 16.
-    } else if ((/^(300|301|302|303|304|305|36|38)/).test(cc) && cc.length == 14) {
-      return 'DINERS'; //Diners Club begins with 300-305 or 36 or 38, and length is 14.
-    } else if ((/^(38)/).test(cc) && cc.length == 19) {
-      return 'HIPER';
-    }
-    return '';
+    var flag = $.payment.cardType(number);
+    return flag && flag.toUpperCase();
   }
-});
+}, Skull.Form));

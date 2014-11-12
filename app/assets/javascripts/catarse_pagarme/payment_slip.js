@@ -1,13 +1,14 @@
-App.views.PagarmeForm.addChild('PaymentSlip', {
-  el: '#payment_type_slip_section',
+App.views.Pagarme.addChild('PaymentSlip', _.extend({
+  el: '#payment_type_slip_section form',
 
   events: {
     'click input#build_boleto' : 'onBuildBoletoClick',
     'click .link_content a' : 'onContentClick',
+    'blur input' : 'checkInput'
   },
 
   activate: function(options){
-    this.PagarmeForm = this.parent;
+    this.setupForm();
     this.message = this.$('.payment-error-message');
     this.$('#user_bank_account_attributes_name').brbanks();
   },
@@ -24,12 +25,17 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
 
   onBuildBoletoClick: function(e){
     var that = this;
+
+    if(!this.validate()){
+      return false;
+    }
+
     var parent = this.parent;
 
     e.preventDefault();
     $(e.currentTarget).hide();
     this.$('#payment-slip-instructions').slideUp('slow');
-    that.PagarmeForm.loader.show();
+    that.parent.loader.show();
 
     var bankAccountAttributes = {
       user: {
@@ -45,7 +51,7 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
       }
     };
 
-    $.post('/payment/pagarme/'+that.PagarmeForm.contributionId+'/pay_slip', bankAccountAttributes).success(function(response){
+    $.post('/payment/pagarme/'+that.parent.contributionId+'/pay_slip', bankAccountAttributes).success(function(response){
       parent.loader.hide();
       if(response.payment_status == 'failed'){
         that.message.find('.message-text').html(response.message);
@@ -62,4 +68,4 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
     });
   }
 
-});
+}, Skull.Form));

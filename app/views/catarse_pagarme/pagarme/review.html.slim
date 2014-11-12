@@ -1,67 +1,77 @@
 = javascript_include_tag 'catarse_pagarme'
 #catarse_pagarme_form
-  = form_tag 'javascript:void(0);', :class => 'pagarme' do
 
-    .next_step_after_valid_document
-      .w-row.list_payment.w-form
-        .w-col.w-col-7.w-col-small-7.back-payment-moip-options-column
-          .w-radio.w-clearfix
-            = radio_button_tag 'payment_type', "credit_card", false, class: 'w-radio-input back-payment-radio-button'
-            = label_tag :payment_type_credit_card, nil, class: "cards w-form-label" do
-              = image_tag 'catarse_bootstrap/payment_cards_pagarme.png'
-        .w-col.w-col-5.w-col-small-5.back-payment-moip-options-column
-          .w-radio.w-clearfix
-            = radio_button_tag 'payment_type', "slip", false, class: 'w-radio-input back-payment-radio-button'
-            = label_tag :payment_type_slip, class: "boleto w-form-label" do
-              = image_tag 'catarse_bootstrap/payment_boleto.png'
+  .next_step_after_valid_document
+    .w-row.list_payment.w-form
+      .w-col.w-col-7.w-col-small-7.back-payment-moip-options-column
+        .w-radio.w-clearfix
+          = radio_button_tag 'payment_type', "credit_card", false, class: 'w-radio-input back-payment-radio-button'
+          = label_tag :payment_type_credit_card, nil, class: "cards w-form-label" do
+            = image_tag 'catarse_bootstrap/payment_cards_pagarme.png'
+      .w-col.w-col-5.w-col-small-5.back-payment-moip-options-column
+        .w-radio.w-clearfix
+          = radio_button_tag 'payment_type', "slip", false, class: 'w-radio-input back-payment-radio-button'
+          = label_tag :payment_type_slip, class: "boleto w-form-label" do
+            = image_tag 'catarse_bootstrap/payment_boleto.png'
 
-    #payment_type_credit_card_section.payment_section
+  #payment_type_credit_card_section.payment_section
+    = form_tag 'javascript:void(0);', :class => 'pagarme' do
       div[class="my-credit-cards w-form back-payment-form-creditcard records-choice #{(current_user.credit_cards.present? ? '' : 'w-hidden')}"]
         - current_user.credit_cards.each_with_index do |credit_card, i|
+          = label_tag "payment_subscription_card_#{credit_card.subscription_id}" do
+            .w-row.creditcard-records
+              .w-col.w-col-1
+                .w-radio.w-clearfix.back-payment-credit-card-radio-field
+                  = radio_button_tag :payment_subscription_card, credit_card.subscription_id, i == 0, {"data-stored" => true}
+              .w-col.w-col-2
+                .fontsize-small.fontweight-semibold.text-success
+                  = credit_card.card_brand.upcase
+              .w-col.w-col-5
+                .fontsize-small.fontweight-semibold.u-marginbottom-20
+                  = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
+              .w-col.w-col-4
+                - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
+                  = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
+        = label_tag :payment_subscription_card_0 do
           .w-row.creditcard-records
             .w-col.w-col-1
               .w-radio.w-clearfix.back-payment-credit-card-radio-field
-                = radio_button_tag :payment_subscription_card, credit_card.subscription_id, i == 0, {"data-stored" => true}
-            .w-col.w-col-2
-              .fontsize-small.fontweight-semibold.text-success
-                = credit_card.card_brand.upcase
-            .w-col.w-col-5
-              .fontsize-small.fontweight-semibold.u-marginbottom-20
-                = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
-            .w-col.w-col-4
-              - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
-                = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
-        .w-row.creditcard-records
-          .w-col.w-col-1
-            .w-radio.w-clearfix.back-payment-credit-card-radio-field
-              = radio_button_tag :payment_subscription_card, 0
-          .w-col.w-col-11
-            .fontsize-small.fontweight-semibold.fontcolor-secondary
-              = t('projects.contributions.edit.form_labels.user_another_card')
+                = radio_button_tag :payment_subscription_card, 0
+            .w-col.w-col-11
+              .fontsize-small.fontweight-semibold.fontcolor-secondary
+                = t('projects.contributions.edit.form_labels.user_another_card')
       div[class="w-form formwrapper type_card_data #{(current_user.credit_cards.present? ? 'w-hidden' : '')}"]
         .w-row
           .w-col.w-col-12
             .field-label.fontweight-semibold
               = label_tag :payment_card_name, t('projects.contributions.edit.form_labels.payment_card_name'), class: 'field-label fontweight-semibold'
-              = text_field_tag :payment_card_name, nil, class: 'w-input text-field'
+              = text_field_tag :payment_card_name, nil, class: 'w-input text-field', required: true
+              .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_name"]
+                | Por favor digite o nome escrito no cartão
         .w-row
           .w-col.w-col-6.w-sub-col
             = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
             .w-row
               .w-col.w-col-9.w-col-small-9.w-col-tiny-9
-                = text_field_tag :payment_card_number, nil, class: 'w-input text-field prefix'
+                = phone_field_tag :payment_card_number, nil, class: 'w-input text-field prefix', required: true
               .w-col.w-col-3.w-col-small-3.w-col-tiny-3.text-field.postfix.no-hover
                 #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center
                   |&nbsp;
+            .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_number"]
+              | Por favor verifique o número do cartão de crédito
           .w-col.w-col-6
             .w-row
               .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col-middle
                 = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold w-hidden-medium'
                 = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source_short'), class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
-                = text_field_tag :payment_card_source, nil, class: 'w-input text-field'
+                = phone_field_tag :payment_card_source, nil, class: 'w-input text-field', required: true
+                .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_source"]
+                  | Veja o código de segurança do cartão abaixo da tarja magnética
               .w-col.w-col-6.w-col-small-6.w-col-tiny-6
                 = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date'), class: 'field-label fontweight-semibold'
-                = number_field_tag :payment_card_date, nil, class: 'w-input text-field'
+                = phone_field_tag :payment_card_date, nil, class: 'w-input text-field', required: true
+                .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_date"]
+                  | Qual a data de expiração no cartão?
         - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
           .w-row
             .w-col.w-col-6.w-sub-col
@@ -81,23 +91,23 @@
           = submit_tag t('projects.contributions.review.form.labels.submit'), :class => 'btn btn-large u-marginbottom-20', :id => "credit_card_submit"
           = render partial: 'terms'
 
-    #payment_type_slip_section.payment_section.w-hidden
+  #payment_type_slip_section.payment_section.w-hidden
+    = simple_form_for current_user, url: 'javascript:void(0)' do |f|
       .card.card-message.u-radius.zindex-10.fontsize-small.u-marginbottom-30
         = t('projects.contributions.edit.payment_slip_disclaimer')
       .formwrapper
-        = simple_form_for current_user, url: 'javascript:void(0)' do |f|
-          .bank_accounts
-            = f.simple_fields_for :bank_account do |bank_form|
-              .w-row
-                = bank_form.input :bank_id, as: :select, collection: Bank.order(:code, :name).to_collection, wrapper_html: {class: 'w-col w-col-12'}
-              .w-row
-                = bank_form.input :agency, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}
-                = bank_form.input :agency_digit, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-sub-col w-col-2 w-col-small-4 w-col-tiny-4'}
-                = bank_form.input :account, as: :string, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}
-                = bank_form.input :account_digit, as: :string, wrapper_html: {class: 'w-col w-col-2 w-col-small-4 w-col-tiny-4'}
-              .w-row
-                = bank_form.input :owner_name, as: :string, input_html: { value: bank_form.object.owner_name || current_user.full_name }, wrapper_html: {class: 'w-col w-sub-col w-col-6'}
-                = bank_form.input :owner_document, as: :string, input_html: { value: bank_form.object.owner_document || current_user.cpf }, wrapper_html: {class: 'w-col w-col-6'}
+        .bank_accounts
+          = f.simple_fields_for :bank_account do |bank_form|
+            .w-row
+              = bank_form.input :bank_id, as: :select, collection: Bank.order(:code, :name).to_collection, wrapper_html: {class: 'w-col w-col-12'}, input_html: {required: true}, validation_text: true 
+            .w-row
+              = bank_form.input :agency, as: :tel, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}, input_html: {required: true}, validation_text: true 
+              = bank_form.input :agency_digit, as: :tel, wrapper_html: {class: 'w-col w-sub-col-middle w-sub-col w-col-2 w-col-small-4 w-col-tiny-4'}
+              = bank_form.input :account, as: :tel, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}, input_html: {required: true}, validation_text: true 
+              = bank_form.input :account_digit, as: :tel, wrapper_html: {class: 'w-col w-col-2 w-col-small-4 w-col-tiny-4'}, input_html: {required: true}, validation_text: true 
+            .w-row
+              = bank_form.input :owner_name, as: :string, input_html: { required: true, value: bank_form.object.owner_name || current_user.full_name }, wrapper_html: {class: 'w-col w-sub-col w-col-6'}, validation_text: true 
+              = bank_form.input :owner_document, as: :tel, input_html: { required: true, value: bank_form.object.owner_document || current_user.cpf }, wrapper_html: {class: 'w-col w-col-6'}, validation_text: true 
       .w-row
         .w-col.w-col-12
           .payment-error-message.card.card-error.u-radius.zindex-10.u-marginbottom-30.w-hidden

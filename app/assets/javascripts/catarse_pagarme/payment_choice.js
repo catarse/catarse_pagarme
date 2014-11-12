@@ -1,4 +1,4 @@
-App.views.PagarmeForm.addChild('PaymentChoice', {
+App.views.Pagarme.addChild('PaymentChoice', {
   el: '.list_payment',
 
   events: {
