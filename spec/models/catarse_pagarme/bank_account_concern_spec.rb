@@ -8,9 +8,22 @@ end
 
 describe FakeBankAccount do
   let(:bank) { create(:bank) }
+
   let(:valid_attr) do
     vb = build(:bank_account, bank: bank)
     vb.attributes
+  end
+
+  let(:valid_attr_on_pagarme) do
+    {
+      bank_id: bank.id,
+      agency: '1732',
+      agency_dv: '8',
+      account: '25483',
+      account_dv: 'X',
+      owner_name: 'Lorem Ipsum',
+      owner_document: '111.111.111-11'
+    }
   end
 
   describe "validate :must_be_valid_on_pagarme" do
@@ -22,8 +35,13 @@ describe FakeBankAccount do
         expect(local_bank_account.valid?).to be_true
       end
 
-      it "local_bank_account should be valid" do
+      it "bank_account_on_pagarme should be not valid with these attrs" do
         expect(bank_account_on_pagarme.valid?).to be_false
+      end
+
+      it "bank_account_on_pagarme should be valid with another attrs" do
+        subject { FakeBankAccount.new(valid_attr_on_pagarme).valid? }
+        expect(subject).to be_true
       end
     end
   end
