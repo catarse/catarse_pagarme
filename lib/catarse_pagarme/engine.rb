@@ -5,6 +5,7 @@ module CatarsePagarme
     config.to_prepare do
       ::Contribution.send(:include, CatarsePagarme::ContributionConcern)
       ::CreditCard.send(:include, CatarsePagarme::CreditCardConcern)
+      ::BankAccount.senf(:include, CatarsePagarme::BankAccountConcern)
     end
   end
 end
