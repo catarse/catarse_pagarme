@@ -3,6 +3,8 @@ module CatarsePagarme::BankAccountConcern
 
   included do
 
+    validate :must_be_valid_on_pagarme
+
     def must_be_valid_on_pagarme
       pagarme_errors.each do |p_error|
         _attr = attributes_parsed_from_pagarme[p_error.parameter_name.to_sym]

@@ -2,8 +2,6 @@ require 'spec_helper'
 
 class FakeBankAccount < BankAccount
   include CatarsePagarme::BankAccountConcern
-
-  validate :must_be_valid_on_pagarme
 end
 
 describe FakeBankAccount do
