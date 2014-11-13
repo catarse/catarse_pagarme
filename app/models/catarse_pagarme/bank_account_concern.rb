@@ -21,7 +21,7 @@ module CatarsePagarme::BankAccountConcern
       begin
         bank_account.create
 
-        true
+        []
       rescue Exception => e
         e.errors
       end
