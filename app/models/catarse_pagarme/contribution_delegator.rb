@@ -24,7 +24,7 @@ module CatarsePagarme
       if !contribution.acquirer_name.present? || !contribution.acquirer_tid.present?
         contribution.update_attributes({
           acquirer_name: transaction.acquirer_name,
-          acquirer_tid: transaction.acquirer_tid
+          acquirer_tid: transaction.tid
         })
       end
     end
