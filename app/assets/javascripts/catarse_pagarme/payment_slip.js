@@ -8,6 +8,8 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
   },
 
   activate: function(options){
+    this.$('#user_bank_account_attributes_owner_document').data('custom-validation', app.reviewForm.onUserDocumentChange);
+    this.$('#user_bank_account_attributes_owner_document').on('focus', app.reviewForm.onUserDocumentFocus)
     this.setupForm();
     this.message = this.$('.payment-error-message');
     this.$('#user_bank_account_attributes_name').brbanks();
