@@ -44,7 +44,7 @@ App.views.PagarmeForm.addChild('PaymentSlip', {
       }
     };
 
-    $.post('/payment/pagarme/'+that.PagarmeForm.contributionId+'/pay_slip', bankAccountAttributes).success(function(response){
+    $.post('/payment/pagarme/'+that.PagarmeForm.contributionId+'/pay_slip.json', bankAccountAttributes, null, 'json').success(function(response){
       parent.loader.hide();
       if(response.payment_status == 'failed'){
         that.message.find('p').html(response.message);
