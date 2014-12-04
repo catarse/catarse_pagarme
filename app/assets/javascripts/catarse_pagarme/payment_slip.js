@@ -53,7 +53,7 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
       }
     };
 
-    $.post('/payment/pagarme/'+that.parent.contributionId+'/pay_slip', bankAccountAttributes).success(function(response){
+    $.post('/payment/pagarme/'+that.parent.contributionId+'/pay_slip.json', bankAccountAttributes, null, 'json').success(function(response){
       parent.loader.hide();
       if(response.payment_status == 'failed'){
         that.message.find('.message-text').html(response.message);
