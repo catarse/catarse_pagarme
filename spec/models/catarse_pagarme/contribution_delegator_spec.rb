@@ -33,6 +33,9 @@ describe CatarsePagarme::ContributionDelegator do
     before do
       CatarsePagarme.configuration.stub(:slip_tax).and_return(2.00)
       CatarsePagarme.configuration.stub(:credit_card_tax).and_return(0.01)
+      CatarsePagarme.configuration.stub(:pagarme_tax).and_return(0.0063)
+      CatarsePagarme.configuration.stub(:cielo_tax).and_return(0.038)
+      CatarsePagarme.configuration.stub(:stone_tax).and_return(0.0307)
     end
 
     context 'when choice is slip' do
@@ -42,7 +45,7 @@ describe CatarsePagarme::ContributionDelegator do
 
     context 'when choice is credit card' do
       subject { delegator.get_fee(CatarsePagarme::PaymentType::CREDIT_CARD).to_f }
-      it { expect(subject).to eq(0.49) }
+      it { expect(subject).to eq(0.83) }
     end
   end
 
