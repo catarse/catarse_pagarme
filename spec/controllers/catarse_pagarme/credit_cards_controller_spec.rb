@@ -27,12 +27,12 @@ describe CatarsePagarme::CreditCardsController do
         before do
           post :create, {
             locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme',
-            payment_card_date: '10/17', payment_card_number: '4901720080344448', payment_card_name: 'Foo bar',
-            payment_card_source: '143', payment_card_installments: '1' }
+            payment_card_date: '10/17', payment_card_number: '4012888888881881', payment_card_name: 'Foo bar',
+            payment_card_source: '574', payment_card_installments: '1' }
 
         end
 
-        it 'payment_status should be filled and not failed' do
+        it 'payment_status should be filled' do
           expect(ActiveSupport::JSON.decode(response.body)['payment_status']).not_to be_nil
         end
 

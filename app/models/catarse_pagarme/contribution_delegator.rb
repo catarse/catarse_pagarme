@@ -1,6 +1,7 @@
 module CatarsePagarme
   class ContributionDelegator
     attr_accessor :contribution, :transaction
+    include FeeCalculatorConcern
 
     def initialize(contribution)
       configure_pagarme
@@ -72,34 +73,6 @@ module CatarsePagarme
         amount: self.value_for_transaction,
         interest_rate: CatarsePagarme.configuration.interest_rate
       })
-    end
-
-    def get_fee(payment_method, acquirer_name = nil)
-      value = self.contribution.value
-      installment_value = self.contribution.installment_value
-      installments = self.contribution.installments
-      cents_fee = CatarsePagarme.configuration.credit_card_cents_fee.to_f
-      pagarme_tax = CatarsePagarme.configuration.pagarme_tax.to_f
-      cielo_tax = CatarsePagarme.configuration.cielo_tax.to_f
-      stone_tax = CatarsePagarme.configuration.stone_tax.to_f
-
-      if payment_method == PaymentType::SLIP
-        CatarsePagarme.configuration.slip_tax.to_f
-      else
-        if acquirer_name == 'stone'
-          if installments > 1
-            (((installment_value * installments) * pagarme_tax) + cents_fee).round(2) + ((installment_value * stone_tax).round(2) * installments)
-          else
-            ((value * pagarme_tax) + cents_fee).round(2) + (value * stone_tax).round(2)
-          end
-        else
-          if installments > 1
-            (((installment_value * installments) * pagarme_tax) + cents_fee).round(2) + ((installment_value * cielo_tax).round(2) * installments)
-          else
-            ((value * pagarme_tax) + cents_fee).round(2) + (value * cielo_tax).round(2)
-          end
-        end
-      end
     end
 
     protected

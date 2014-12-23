@@ -40,7 +40,7 @@ describe CatarsePagarme::CreditCardTransaction do
   describe '#charge!' do
     describe 'with valid attributes' do
       before do
-        contribution.should_receive(:update_attributes).and_call_original
+        contribution.should_receive(:update_attributes).at_least(1).and_call_original
         CatarsePagarme::ContributionDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
 
         card_transaction.charge!
@@ -52,7 +52,7 @@ describe CatarsePagarme::CreditCardTransaction do
       end
 
       it "should update contribution payment_service_fee" do
-        expect(contribution.payment_service_fee.to_f).to eq(1.39)
+        expect(contribution.payment_service_fee.to_f).to eq(4.08)
       end
 
       it "should update contribution payment_method" do

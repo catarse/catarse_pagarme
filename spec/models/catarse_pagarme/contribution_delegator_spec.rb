@@ -30,12 +30,22 @@ describe CatarsePagarme::ContributionDelegator do
   end
 
   context "#get_fee" do
+    let(:fake_transaction) {
+      t = double
+      t.stub(:card_brand).and_return('visa')
+      t.stub(:acquirer_name).and_return('stone')
+      t.stub(:acquirer_tid).and_return('404040404')
+      t
+    }
+
     before do
       CatarsePagarme.configuration.stub(:slip_tax).and_return(2.00)
       CatarsePagarme.configuration.stub(:credit_card_tax).and_return(0.01)
       CatarsePagarme.configuration.stub(:pagarme_tax).and_return(0.0063)
       CatarsePagarme.configuration.stub(:cielo_tax).and_return(0.038)
       CatarsePagarme.configuration.stub(:stone_tax).and_return(0.0307)
+
+      delegator.stub(:transaction).and_return(fake_transaction)
     end
 
     context 'when choice is slip' do
