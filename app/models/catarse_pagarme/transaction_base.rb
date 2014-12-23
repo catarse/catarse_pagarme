@@ -11,6 +11,7 @@ module CatarsePagarme
 
     def change_contribution_state
       self.contribution.update_attributes(attributes_to_contribution)
+      update_fee
       self.contribution.payment_notifications.create(extra_data: self.transaction.to_json)
       delegator.change_status_by_transaction(self.transaction.status)
     end
@@ -22,7 +23,6 @@ module CatarsePagarme
     def attributes_to_contribution
       {
         payment_choice: payment_method,
-        payment_service_fee: delegator.get_fee(payment_method, self.transaction.acquirer_name),
         payment_id: self.transaction.id,
         payment_method: 'Pagarme',
         slip_url: self.transaction.boleto_url,
@@ -31,6 +31,12 @@ module CatarsePagarme
         acquirer_name: self.transaction.acquirer_name,
         acquirer_tid: self.transaction.tid
       }
+    end
+
+    def update_fee
+      self.contribution.update_attributes({
+        payment_service_fee: delegator.get_fee(payment_method, self.transaction.acquirer_name),
+      })
     end
 
     def delegator

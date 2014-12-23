@@ -1,8 +1,16 @@
 require 'spec_helper'
 
 describe CatarsePagarme::NotificationsController do
+  let(:fake_transaction) {
+    t = double
+    t.stub(:card_brand).and_return('visa')
+    t.stub(:acquirer_name).and_return('stone')
+    t.stub(:tid).and_return('404040404')
+    t
+  }
   before do
     PagarMe.stub(:validate_fingerprint).and_return(true)
+    PagarMe::Transaction.stub(:find_by_id).and_return(fake_transaction)
   end
 
   let(:project) { create(:project, goal: 10_000, state: 'online') }

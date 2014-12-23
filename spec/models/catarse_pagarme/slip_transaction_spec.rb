@@ -8,7 +8,7 @@ describe CatarsePagarme::SlipTransaction do
     transaction.stub(:charge).and_return(true)
     transaction.stub(:status).and_return('paid')
     transaction.stub(:boleto_url).and_return('boleto url')
-    transaction.stub(:installments).and_return(nil)
+    transaction.stub(:installments).and_return(1)
     transaction.stub(:acquirer_name).and_return('pagarme')
     transaction.stub(:tid).and_return('123123')
     transaction
@@ -72,7 +72,7 @@ describe CatarsePagarme::SlipTransaction do
       before do
         slip_transaction.should_receive(:update_user_bank_account).and_call_original
         slip_transaction.user.should_receive(:update_attributes).and_return(true)
-        contribution.should_receive(:update_attributes).and_call_original
+        contribution.should_receive(:update_attributes).at_least(1).and_call_original
         CatarsePagarme::ContributionDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
 
         slip_transaction.charge!
