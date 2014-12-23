@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (1.4.9)
+    catarse_pagarme (1.5.0)
       pagarme (~> 1.9.8)
       rails (~> 4.0)
 
