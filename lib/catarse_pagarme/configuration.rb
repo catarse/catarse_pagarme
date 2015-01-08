@@ -2,7 +2,8 @@ module CatarsePagarme
   class Configuration
     attr_accessor :api_key, :slip_tax, :credit_card_tax, :interest_rate, :host, :subdomain, :protocol,
       :max_installments, :minimum_value_for_installment, :credit_card_cents_fee, :pagarme_tax, :stone_tax,
-      :cielo_tax, :cielo_installment_diners_tax, :cielo_installment_not_diners_tax
+      :cielo_tax, :cielo_installment_diners_tax, :cielo_installment_not_diners_tax,
+      :cielo_installment_amex_tax, :cielo_installment_not_amex_tax
 
     def initialize
       self.api_key = ''
