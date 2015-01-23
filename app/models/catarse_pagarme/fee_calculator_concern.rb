@@ -12,10 +12,10 @@ module CatarsePagarme::FeeCalculatorConcern
         else
           if self.transaction.card_brand == 'amex'
             self.contribution.installments > 1 ? tax_calc_for_installment(cielo_installment_amex_tax) : tax_calc(cielo_installment_not_amex_tax)
+          else
+            current_tax = self.transaction.card_brand == 'diners' ? installment_diners_tax : installment_not_diners_tax
+            self.contribution.installments > 1 ? tax_calc_for_installment(current_tax) : tax_calc(cielo_tax)
           end
-
-          current_tax = self.transaction.card_brand == 'diners' ? installment_diners_tax : installment_not_diners_tax
-          self.contribution.installments > 1 ? tax_calc_for_installment(current_tax) : tax_calc(cielo_tax)
         end
       end
     end
