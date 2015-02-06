@@ -4,15 +4,16 @@ describe CatarsePagarme::CreditCardTransaction do
   let(:contribution) { create(:contribution, value: 100) }
 
   let(:pagarme_transaction) {
-    transaction = double
-    transaction.stub(:id).and_return('abcd')
-    transaction.stub(:charge).and_return(true)
-    transaction.stub(:status).and_return('paid')
-    transaction.stub(:boleto_url).and_return(nil)
-    transaction.stub(:installments).and_return(3)
-    transaction.stub(:acquirer_name).and_return('stone')
-    transaction.stub(:tid).and_return('123123')
-    transaction
+    double({
+      id: 'abcd',
+      charge: true,
+      status: 'paid',
+      boleto_url: nil,
+      installments: 3,
+      acquirer_name: 'stone',
+      tid: '123123',
+      card_brand: 'visa'
+    })
   }
 
   let(:valid_attributes) do

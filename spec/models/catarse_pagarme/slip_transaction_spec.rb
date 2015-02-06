@@ -3,15 +3,16 @@ require 'spec_helper'
 describe CatarsePagarme::SlipTransaction do
   let(:contribution) { create(:contribution, value: 100) }
   let(:pagarme_transaction) {
-    transaction = double
-    transaction.stub(:id).and_return('abcd')
-    transaction.stub(:charge).and_return(true)
-    transaction.stub(:status).and_return('paid')
-    transaction.stub(:boleto_url).and_return('boleto url')
-    transaction.stub(:installments).and_return(1)
-    transaction.stub(:acquirer_name).and_return('pagarme')
-    transaction.stub(:tid).and_return('123123')
-    transaction
+    double({
+      id: 'abcd',
+      charge: true,
+      status: 'paid',
+      boleto_url: 'boleto url',
+      installments: 1,
+      acquirer_name: 'pagarme',
+      tid: '123123',
+      card_brand: nil
+    })
   }
   let(:valid_attributes) do
     {
