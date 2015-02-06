@@ -29,7 +29,8 @@ module CatarsePagarme
         installments: (self.transaction.installments || 1),
         installment_value: (delegator.value_for_installment(self.transaction.installments || 0) / 100.0).to_f,
         acquirer_name: self.transaction.acquirer_name,
-        acquirer_tid: self.transaction.tid
+        acquirer_tid: self.transaction.tid,
+        card_brand: self.transaction.try(:card_brand)
       }
     end
 
