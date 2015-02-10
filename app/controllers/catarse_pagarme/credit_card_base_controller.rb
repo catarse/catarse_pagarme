@@ -43,6 +43,9 @@ module CatarsePagarme
         customer: {
           email: contribution.user.email,
           name: contribution.user.name
+        },
+        metadata: {
+          key: contribution.key 
         }
       }
     end
