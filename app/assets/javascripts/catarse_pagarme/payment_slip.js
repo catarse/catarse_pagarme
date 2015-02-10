@@ -10,9 +10,19 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
   activate: function(options){
     this.$('#user_bank_account_attributes_owner_document').data('custom-validation', app.reviewForm.onUserDocumentChange);
     this.$('#user_bank_account_attributes_owner_document').on('focus', app.reviewForm.onUserDocumentFocus)
+    this.$('#user_bank_account_attributes_owner_name').data('custom-validation', this.validateName);
     this.setupForm();
     this.message = this.$('.payment-error-message');
     this.$('#user_bank_account_attributes_name').brbanks();
+  },
+
+  validateName: function(field) {
+    if(field.val().length < 5 || field.val().length > 30){
+      $(field).trigger('invalid');
+      return false;
+    }
+
+    return true;
   },
 
   onContentClick: function() {
