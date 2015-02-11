@@ -64,7 +64,7 @@
               .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col-middle
                 = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold w-hidden-medium'
                 = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source_short'), class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
-                = phone_field_tag :payment_card_source, nil, class: 'w-input text-field', required: true
+                = phone_field_tag :payment_card_source, nil, class: 'w-input text-field', required: true, autocomplete: 'off'
                 .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_source"]
                   | Veja o código de segurança do cartão abaixo da tarja magnética
               .w-col.w-col-6.w-col-small-6.w-col-tiny-6
