@@ -50,12 +50,15 @@
                 | Por favor digite o nome escrito no cartão
         .w-row
           .w-col.w-col-6.w-sub-col
-            = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
-            = phone_field_tag :payment_card_number, nil, class: 'w-input text-field', required: true
-            #payment_card_flag.fontsize-smallest.fontcolor-secondary.creditcard-brand
-              |&nbsp;
-            .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_number"]
-              | Por favor verifique o número do cartão de crédito
+            .w-col.w-col-9.w-col-small-9.w-col-tiny-9.w-sub-col-middle
+              = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
+              = phone_field_tag :payment_card_number, nil, class: 'w-input text-field', required: true
+              .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_number"]
+                | Por favor verifique o número do cartão de crédito
+            .w-col.w-col-3.w-col-small-3.w-col-tiny-3
+              = label_tag :payment_card_flag, t('projects.contributions.edit.form_labels.payment_card_flag'), class: 'fontweight-semibold field-label'
+              #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center.w-input.text-field
+                |&nbsp;
           .w-col.w-col-6
             .w-row
               .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col-middle
