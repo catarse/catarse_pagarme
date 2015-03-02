@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.4.9)
+    catarse_pagarme (2.4.10)
       pagarme (~> 1.9.8)
       rails (~> 4.0)
 
@@ -52,7 +52,7 @@ GEM
     mime-types (1.25.1)
     minitest (5.4.0)
     multi_json (1.10.1)
-    netrc (0.10.2)
+    netrc (0.10.3)
     pagarme (1.9.9)
       multi_json
       rest-client
