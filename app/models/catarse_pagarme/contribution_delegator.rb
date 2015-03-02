@@ -21,11 +21,19 @@ module CatarsePagarme
       end
     end
 
+    def update_fee
+      fill_acquirer_data
+      contribution.update_attributes({
+        payment_service_fee: get_fee,
+      })
+    end
+
     def fill_acquirer_data
       if !contribution.acquirer_name.present? || !contribution.acquirer_tid.present?
         contribution.update_attributes({
           acquirer_name: transaction.acquirer_name,
-          acquirer_tid: transaction.tid
+          acquirer_tid: transaction.tid,
+          card_brand: transaction.try(:card_brand)
         })
       end
     end

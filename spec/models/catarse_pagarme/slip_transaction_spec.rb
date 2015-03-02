@@ -74,6 +74,7 @@ describe CatarsePagarme::SlipTransaction do
         slip_transaction.should_receive(:update_user_bank_account).and_call_original
         slip_transaction.user.should_receive(:update_attributes).and_return(true)
         contribution.should_receive(:update_attributes).at_least(1).and_call_original
+        PagarMe::Transaction.should_receive(:find_by_id).with(pagarme_transaction.id).and_return(pagarme_transaction)
         CatarsePagarme::ContributionDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
 
         slip_transaction.charge!
