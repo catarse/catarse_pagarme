@@ -44,20 +44,33 @@ describe CatarsePagarme::ContributionDelegator do
       CatarsePagarme.configuration.stub(:pagarme_tax).and_return(0.0063)
       CatarsePagarme.configuration.stub(:cielo_tax).and_return(0.038)
       CatarsePagarme.configuration.stub(:stone_tax).and_return(0.0307)
+      CatarsePagarme.configuration.stub(:credit_card_cents_fee).and_return(0.39)
 
       delegator.stub(:transaction).and_return(fake_transaction)
     end
 
+    context 'when choice is nil' do
+      let(:contribution) { create(:contribution, value: 10, payment_choice: nil) }
+      subject { delegator.get_fee }
+      it { expect(subject).to eq(nil) }
+    end
+
+    context 'when choice is credit card and acquirer_name is nil' do
+      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::CREDIT_CARD, acquirer_name: nil) }
+      subject { delegator.get_fee }
+      it { expect(subject).to eq(nil) }
+    end
+
     context 'when choice is slip' do
-      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::SLIP) }
-      subject { delegator.get_fee.to_f }
+      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::SLIP, acquirer_name: nil) }
+      subject { delegator.get_fee }
       it { expect(subject).to eq(2.00) }
     end
 
     context 'when choice is credit card' do
-      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::CREDIT_CARD) }
-      subject { delegator.get_fee.to_f }
-      it { expect(subject).to eq(0.83) }
+      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::CREDIT_CARD, acquirer_name: 'stone', card_brand: 'visa', installments: 1) }
+      subject { delegator.get_fee }
+      it { expect(subject).to eq(0.76) }
     end
   end
 

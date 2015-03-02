@@ -4,9 +4,11 @@ module CatarsePagarme::FeeCalculatorConcern
   included do
 
     def get_fee
+      return nil if self.contribution.payment_choice.blank? # We always depend on the payment_choice
       if self.contribution.payment_choice == ::CatarsePagarme::PaymentType::SLIP
         CatarsePagarme.configuration.slip_tax.to_f
       else
+        return nil if self.contribution.acquirer_name.blank? # Here we depend on the acquirer name
         if self.contribution.acquirer_name == 'stone'
           self.contribution.installments > 1 ? tax_calc_for_installment(stone_tax) : tax_calc(stone_tax)
         else
