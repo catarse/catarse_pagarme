@@ -34,14 +34,15 @@ module CatarsePagarme
       }
     end
 
-    def update_fee
-      self.contribution.update_attributes({
-        payment_service_fee: delegator.get_fee(payment_method, self.transaction.acquirer_name),
-      })
-    end
-
     def delegator
       self.contribution.pagarme_delegator
+    end
+
+    private
+    def update_fee
+      self.contribution.update_attributes({
+        payment_service_fee: delegator.get_fee,
+      })
     end
   end
 end

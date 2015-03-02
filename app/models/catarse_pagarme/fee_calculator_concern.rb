@@ -3,11 +3,11 @@ module CatarsePagarme::FeeCalculatorConcern
 
   included do
 
-    def get_fee(payment_method, acquirer_name = nil)
-      if payment_method == ::CatarsePagarme::PaymentType::SLIP
+    def get_fee
+      if self.contribution.payment_choice == ::CatarsePagarme::PaymentType::SLIP
         CatarsePagarme.configuration.slip_tax.to_f
       else
-        if acquirer_name == 'stone'
+        if self.contribution.acquirer_name == 'stone'
           self.contribution.installments > 1 ? tax_calc_for_installment(stone_tax) : tax_calc(stone_tax)
         else
           if self.contribution.card_brand == 'amex'

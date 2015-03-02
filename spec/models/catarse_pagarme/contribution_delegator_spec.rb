@@ -49,12 +49,14 @@ describe CatarsePagarme::ContributionDelegator do
     end
 
     context 'when choice is slip' do
-      subject { delegator.get_fee(CatarsePagarme::PaymentType::SLIP).to_f }
+      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::SLIP) }
+      subject { delegator.get_fee.to_f }
       it { expect(subject).to eq(2.00) }
     end
 
     context 'when choice is credit card' do
-      subject { delegator.get_fee(CatarsePagarme::PaymentType::CREDIT_CARD).to_f }
+      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::CREDIT_CARD) }
+      subject { delegator.get_fee.to_f }
       it { expect(subject).to eq(0.83) }
     end
   end
