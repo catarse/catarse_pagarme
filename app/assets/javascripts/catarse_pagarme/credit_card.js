@@ -69,7 +69,6 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
       });
     } else {
       PagarMe.encryption_key = this.$('.pagarme-e-key').data('key');
-      console.log('configured key ', this.$('.pagarme-e-key').data('key'));
 
       var creditCard = new PagarMe.creditCard();
       creditCard.cardHolderName = this.$('input#payment_card_name').val();
@@ -83,8 +82,17 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
       for(var field in fieldErrors) { hasErrors = true; break; }
 
       if(hasErrors) {
-        alert("error");
-        console.log(fieldErrors);
+        var msg = [];
+        that.parent.loader.hide();
+
+        $.each(fieldErrors, function(i, value){
+          msg.push(value)
+        });
+
+        that.message.find('.message-text').html(msg.join("<br/>"));
+        that.message.slideDown('slow');
+
+        $(e.currentTarget).show();
       } else {
         creditCard.generateHash(function(cardHash) {
           that.requestPayment({
@@ -111,7 +119,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
 
         if(response.payment_status == 'failed'){
           that.message.find('.message-text').html(response.message);
-          that.message.slideDown('slow')
+          that.message.slideDown('slow');
 
           $(e.currentTarget).show();
         } else {
