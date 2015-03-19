@@ -35,54 +35,12 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
     this.$('#payment_card_source').payment('formatCardCVC');
   },
 
-  getUrl: function(){
-    var that = this;
-    var url = '';
-
-    if(that.$('input#payment_save_card').prop('checked') || that.hasSelectedSomeCard()) {
-      url = '/payment/pagarme/'+that.parent.contributionId+'/pay_with_subscription';
-    } else {
-      url = '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card';
-    }
-
-    return url;
-  },
-
-  getAjaxType: function() {
-    var type = 'POST';
-
-    if(this.hasSelectedSomeCard()) {
-      type = 'PUT'
-    }
-    return type;
-  },
-
   selectedCard: function() {
     return this.$('input:radio[data-stored][name=payment_subscription_card]:checked');
   },
 
   hasSelectedSomeCard: function() {
     return this.selectedCard().length > 0;
-  },
-
-  getPaymentData: function() {
-    var data = {};
-
-    if(this.hasSelectedSomeCard()) {
-      data = {
-        subscription_id: this.selectedCard().val(),
-        payment_card_installments: this.getInstallments() }
-    } else {
-      data = {
-        payment_card_number: this.$('input#payment_card_number').val(),
-        payment_card_name: this.$('input#payment_card_name').val(),
-        payment_card_date: this.$('input#payment_card_date').val(),
-        payment_card_source: this.$('input#payment_card_source').val(),
-        payment_card_installments: this.getInstallments()
-      }
-    }
-
-    return data;
   },
 
   getInstallments: function() {
@@ -104,10 +62,50 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
     $(e.currentTarget).hide();
     that.parent.loader.show();
 
+    if( that.hasSelectedSomeCard() ) {
+      that.requestPayment({
+        card_id: this.selectedCard().val(),
+        payment_card_installments: that.getInstallments()
+      });
+    } else {
+      PagarMe.encryption_key = this.$('.pagarme-e-key').data('key');
+      console.log('configured key ', this.$('.pagarme-e-key').data('key'));
+
+      var creditCard = new PagarMe.creditCard();
+      creditCard.cardHolderName = this.$('input#payment_card_name').val();
+      creditCard.cardExpirationMonth = $.trim(this.$('input#payment_card_date').val().split('/')[0]);
+      creditCard.cardExpirationYear = $.trim(this.$('input#payment_card_date').val().split('/')[1]);
+      creditCard.cardNumber = this.$('input#payment_card_number').val();
+      creditCard.cardCVV = this.$('input#payment_card_source').val();
+
+      var fieldErrors = creditCard.fieldErrors();
+      var hasErrors = false;
+      for(var field in fieldErrors) { hasErrors = true; break; }
+
+      if(hasErrors) {
+        alert("error");
+        console.log(fieldErrors);
+      } else {
+        creditCard.generateHash(function(cardHash) {
+          that.requestPayment({
+            card_hash: cardHash,
+            payment_card_installments: that.getInstallments(),
+            save_card: that.$('input#payment_save_card').is(':checked')
+          });
+        });
+      }
+    }
+
+    return false;
+  },
+
+  requestPayment: function(data){
+    var that = this;
+
     $.ajax({
-      type: that.getAjaxType(),
-      url: that.getUrl(),
-      data: that.getPaymentData(),
+      type: 'POST',
+      url: '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card',
+      data: data,
       success: function(response){
         that.parent.loader.hide();
 
@@ -127,6 +125,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
         }
       }
     });
+
   },
 
   onKeyupPaymentCardNumber: function(e){
