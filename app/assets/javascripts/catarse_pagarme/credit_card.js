@@ -74,16 +74,16 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
       var fieldErrors = creditCard.fieldErrors();
 
       if(_.keys(fieldErrors).length > 0) {
-        this.displayErrors(e.currentTarget, fieldErrors);
+        this.displayErrors(fieldErrors);
       } else {
-        this.generateCardHash();
+        this.generateCardHash(creditCard);
       }
     }
 
     return false;
   },
 
-  generateCardHash: function(){
+  generateCardHash: function(creditCard){
     var that = this;
     creditCard.generateHash(function(cardHash) {
       that.requestPayment({
@@ -94,7 +94,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
     });
   },
 
-  displayErrors: function($el, errors){
+  displayErrors: function(errors){
     var msg = [];
     this.parent.loader.hide();
 
@@ -102,10 +102,10 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
       msg.push(value)
     });
 
-    that.message.find('.message-text').html(msg.join("<br/>"));
-    that.message.slideDown('slow');
+    this.message.find('.message-text').html(msg.join("<br/>"));
+    this.message.slideDown('slow');
 
-    $el.show();
+    $("#credit_card_submit").show();
   },
 
   newCreditCard: function(){
@@ -132,7 +132,7 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
           that.message.find('.message-text').html(response.message);
           that.message.slideDown('slow');
 
-          $(e.currentTarget).show();
+          $("#credit_card_submit").show();
         } else {
           var thank_you = $('#project_review').data('thank-you-path');
 
