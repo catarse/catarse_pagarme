@@ -24,7 +24,7 @@ module CatarsePagarme
       credit_card.last_digits = card.last_digits
       credit_card.card_brand = card.brand
 
-      credit_card.save
+      credit_card.save!
     end
 
   end
