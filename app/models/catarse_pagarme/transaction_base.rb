@@ -1,7 +1,7 @@
 module CatarsePagarme
   class TransactionBase
     attr_accessor :attributes, :contribution,
-      :transaction, :user, :subscription
+      :transaction, :user
 
     def initialize(attributes, contribution)
       self.attributes = attributes

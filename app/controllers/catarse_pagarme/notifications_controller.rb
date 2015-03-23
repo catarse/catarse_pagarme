@@ -1,7 +1,6 @@
 module CatarsePagarme
   class NotificationsController < CatarsePagarme::ApplicationController
     skip_before_filter :authenticate_user!
-    skip_before_filter :force_http
 
     def create
       if contribution

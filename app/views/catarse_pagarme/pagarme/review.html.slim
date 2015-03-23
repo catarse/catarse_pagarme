@@ -1,6 +1,6 @@
-= javascript_include_tag 'catarse_pagarme'
-#catarse_pagarme_form
+= javascript_include_tag 'catarse_pagarme', 'https://pagar.me/assets/pagarme-v2.min.js'
 
+#catarse_pagarme_form
   .next_step_after_valid_document
     .w-row.list_payment.w-form
       .w-col.w-col-7.w-col-small-7.back-payment-moip-options-column
@@ -16,13 +16,14 @@
 
   #payment_type_credit_card_section.payment_section
     = form_tag 'javascript:void(0);', :class => 'pagarme' do
+      .pagarme-e-key data-key=CatarsePagarme.configuration.ecr_key
       div[class="my-credit-cards w-form back-payment-form-creditcard records-choice #{(current_user.credit_cards.present? ? '' : 'w-hidden')}"]
         - current_user.credit_cards.each_with_index do |credit_card, i|
-          = label_tag "payment_subscription_card_#{credit_card.subscription_id}" do
+          = label_tag "payment_subscription_card_#{credit_card.card_key}" do
             .w-row.creditcard-records
               .w-col.w-col-1
                 .w-radio.w-clearfix.back-payment-credit-card-radio-field
-                  = radio_button_tag :payment_subscription_card, credit_card.subscription_id, i == 0, {"data-stored" => true}
+                  = radio_button_tag :payment_subscription_card, credit_card.card_key, i == 0, {"data-stored" => true}
               .w-col.w-col-2
                 .fontsize-small.fontweight-semibold.text-success
                   = credit_card.card_brand.upcase

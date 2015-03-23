@@ -4,6 +4,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../dummy/config/environment", __FILE__)
 
 require 'pagarme'
+require 'open-uri'
 require 'rspec/rails'
 require 'factory_girl'
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -33,4 +34,13 @@ RSpec.configure do |config|
     PagarMe.stub(:api_key).and_return('ak_test_XLoo19QDn9kg5JFGU70x12IA4NqbAv')
     PaymentEngines.stub(:configuration).and_return({})
   end
+end
+
+def sample_card_hash
+  r = open("https://api.pagar.me/1/transactions/card_hash_key/?encryption_key=ek_test_zwAwnRvqD1c9GUERQ7oAP4FPyN9o2v").read
+  json = ActiveSupport::JSON.decode(r)
+  public_key = OpenSSL::PKey::RSA.new(json["public_key"])
+  encode_string = Base64.encode64(public_key.public_encrypt("card_number=4901720080344448&card_holder_name=Usuario de Teste&card_expiration_date=1220&card_cvv=314"))
+
+  "#{json['id']}_#{encode_string}"
 end

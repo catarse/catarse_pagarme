@@ -24,6 +24,7 @@ create an (config/initializers/pagarme.rb) and configure with:
 ```
 CatarsePagarme.configure do |config|
   config.api_key = "API_KEY"
+  config.ecr_key = "ENCRYPTION KEY"
   config.slip_tax = "Slip payment tax"
   config.credit_card_tax = "Credit card transaction tax don't need to define the 0.39"
   config.interest_rate = "Interest rate for installments"

@@ -6,8 +6,6 @@ CatarsePagarme::Engine.routes.draw do
       put :second_slip, to: 'slip#update'
       post :pay_credit_card, to: 'credit_cards#create'
       post :pay_slip, to: 'slip#create'
-      post :pay_with_subscription, to: 'subscriptions#create'
-      put :pay_with_subscription, to: 'subscriptions#update'
     end
 
     collection do

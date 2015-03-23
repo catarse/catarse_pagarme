@@ -5,7 +5,6 @@ module CatarsePagarme
 
     before_filter :authenticate_user!
     before_filter :configure_pagarme
-    skip_before_filter :force_http
     layout :false
 
     protected
