@@ -70,41 +70,52 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
     } else {
       PagarMe.encryption_key = this.$('.pagarme-e-key').data('key');
 
-      var creditCard = new PagarMe.creditCard();
-      creditCard.cardHolderName = this.$('input#payment_card_name').val();
-      creditCard.cardExpirationMonth = $.trim(this.$('input#payment_card_date').val().split('/')[0]);
-      creditCard.cardExpirationYear = $.trim(this.$('input#payment_card_date').val().split('/')[1]);
-      creditCard.cardNumber = this.$('input#payment_card_number').val();
-      creditCard.cardCVV = this.$('input#payment_card_source').val();
-
+      var creditCard = this.newCreditCard();
       var fieldErrors = creditCard.fieldErrors();
-      var hasErrors = false;
-      for(var field in fieldErrors) { hasErrors = true; break; }
 
-      if(hasErrors) {
-        var msg = [];
-        that.parent.loader.hide();
-
-        $.each(fieldErrors, function(i, value){
-          msg.push(value)
-        });
-
-        that.message.find('.message-text').html(msg.join("<br/>"));
-        that.message.slideDown('slow');
-
-        $(e.currentTarget).show();
+      if(_.keys(fieldErrors).length > 0) {
+        this.displayErrors(e.currentTarget, fieldErrors);
       } else {
-        creditCard.generateHash(function(cardHash) {
-          that.requestPayment({
-            card_hash: cardHash,
-            payment_card_installments: that.getInstallments(),
-            save_card: that.$('input#payment_save_card').is(':checked')
-          });
-        });
+        this.generateCardHash();
       }
     }
 
     return false;
+  },
+
+  generateCardHash: function(){
+    var that = this;
+    creditCard.generateHash(function(cardHash) {
+      that.requestPayment({
+        card_hash: cardHash,
+        payment_card_installments: that.getInstallments(),
+        save_card: that.$('input#payment_save_card').is(':checked')
+      });
+    });
+  },
+
+  displayErrors: function($el, errors){
+    var msg = [];
+    this.parent.loader.hide();
+
+    $.each(errors, function(i, value){
+      msg.push(value)
+    });
+
+    that.message.find('.message-text').html(msg.join("<br/>"));
+    that.message.slideDown('slow');
+
+    $el.show();
+  },
+
+  newCreditCard: function(){
+    var creditCard = new PagarMe.creditCard();
+    creditCard.cardHolderName = this.$('input#payment_card_name').val();
+    creditCard.cardExpirationMonth = $.trim(this.$('input#payment_card_date').val().split('/')[0]);
+    creditCard.cardExpirationYear = $.trim(this.$('input#payment_card_date').val().split('/')[1]);
+    creditCard.cardNumber = this.$('input#payment_card_number').val();
+    creditCard.cardCVV = this.$('input#payment_card_source').val();
+    return creditCard;
   },
 
   requestPayment: function(data){
