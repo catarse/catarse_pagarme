@@ -107,7 +107,7 @@
               = bank_form.input :account, as: :tel, wrapper_html: {class: 'w-col w-sub-col-middle w-col-4 w-col-small-8 w-col-tiny-8'}, input_html: {required: true}, validation_text: true 
               = bank_form.input :account_digit, as: :tel, wrapper_html: {class: 'w-col w-col-2 w-col-small-4 w-col-tiny-4'}, input_html: {required: true}, validation_text: true 
             .w-row
-              = bank_form.input :owner_name, as: :string, input_html: { required: true, value: bank_form.object.owner_name || current_user.full_name }, wrapper_html: {class: 'w-col w-sub-col w-col-6'}, validation_text: true 
+              = bank_form.input :owner_name, as: :string, input_html: { required: true, value: bank_form.object.owner_name || current_user.name }, wrapper_html: {class: 'w-col w-sub-col w-col-6'}, validation_text: true 
               = bank_form.input :owner_document, as: :tel, input_html: { required: true, data: { :'validate-cpf-cnpj' => true }, value: (bank_form.object.owner_document || current_user.cpf) }, wrapper_html: {class: 'w-col w-col-6'}, validation_text: true 
       .w-row
         .w-col.w-col-12
