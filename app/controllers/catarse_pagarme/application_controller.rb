@@ -40,7 +40,7 @@ module CatarsePagarme
         conditions.merge!(contribution: {user_id: current_user.id}) unless current_user.admin
       end
 
-      @contribution ||= PaymentEngines.find_payment(conditions)
+      @payment ||= PaymentEngines.find_payment(conditions)
     end
 
     def delegator
