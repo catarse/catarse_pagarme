@@ -7,10 +7,10 @@ describe CatarsePagarme::ApplicationHelper do
     CatarsePagarme.configuration.stub(:max_installments).and_return(6)
   end
 
-  let(:contribution) { create(:contribution, value: 100) }
+  let(:payment) { create(:payment, value: 100) }
 
   context "#installments_for_select" do
-    subject { installments_for_select(contribution) }
+    subject { installments_for_select(payment) }
     it { expect(subject.size).to eq(6) }
     it { expect(subject[0][0]).to eq('1x $100.00 ') }
     it { expect(subject[0][1]).to eq(1) }
