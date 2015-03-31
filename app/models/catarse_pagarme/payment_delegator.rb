@@ -27,8 +27,9 @@ module CatarsePagarme
     end
 
     def fill_acquirer_data
-      if payment.gateway_data["acquirer_name"].nil? || payment.gateway_data["acquirer_tid"].nil?
-        payment.gateway_data = payment.gateway_data.merge({
+      if payment.gateway_data.nil? || payment.gateway_data["acquirer_name"].nil? || payment.gateway_data["acquirer_tid"].nil?
+        data = payment.gateway_data || {}
+        payment.gateway_data = data.merge({
           acquirer_name: transaction.acquirer_name,
           acquirer_tid: transaction.tid,
           card_brand: transaction.try(:card_brand)
