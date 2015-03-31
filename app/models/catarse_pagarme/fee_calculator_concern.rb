@@ -4,8 +4,8 @@ module CatarsePagarme::FeeCalculatorConcern
   included do
 
     def get_fee
-      return nil if self.contribution.payment_choice.blank? # We always depend on the payment_choice
-      if self.contribution.payment_choice == ::CatarsePagarme::PaymentType::SLIP
+      return nil if self.payment.payment_method.blank? # We always depend on the payment_choice
+      if self.payment.payment_method == ::CatarsePagarme::PaymentType::SLIP
         get_slip_fee
       else
         get_card_fee
@@ -18,8 +18,8 @@ module CatarsePagarme::FeeCalculatorConcern
     end
 
     def get_card_fee
-      return nil if self.contribution.acquirer_name.blank? # Here we depend on the acquirer name
-      if self.contribution.acquirer_name == 'stone'
+      return nil if self.payment.gateway_data["acquirer_name"].blank? # Here we depend on the acquirer name
+      if self.payment.gateway_data["acquirer_name"] == 'stone'
         get_stone_fee
       else
         get_cielo_fee
@@ -27,12 +27,12 @@ module CatarsePagarme::FeeCalculatorConcern
     end
 
     def get_stone_fee
-      self.contribution.installments > 1 ? tax_calc_for_installment(stone_tax) : tax_calc(stone_tax)
+      self.payment.installments > 1 ? tax_calc_for_installment(stone_tax) : tax_calc(stone_tax)
     end
 
     def get_cielo_fee
-      return nil if self.contribution.card_brand.blank? # Here we depend on the card_brand
-      if self.contribution.card_brand == 'amex'
+      return nil if self.payment.gateway_data["card_brand"].blank? # Here we depend on the card_brand
+      if self.payment.gateway_data["card_brand"] == 'amex'
         get_cielo_fee_for_amex
       else
         get_cielo_fee_for_non_amex
@@ -40,20 +40,20 @@ module CatarsePagarme::FeeCalculatorConcern
     end
 
     def get_cielo_fee_for_amex
-      self.contribution.installments > 1 ? tax_calc_for_installment(cielo_installment_amex_tax) : tax_calc(cielo_installment_not_amex_tax)
+      self.payment.installments > 1 ? tax_calc_for_installment(cielo_installment_amex_tax) : tax_calc(cielo_installment_not_amex_tax)
     end
 
     def get_cielo_fee_for_non_amex
-      current_tax = self.contribution.card_brand == 'diners' ? installment_diners_tax : installment_not_diners_tax
-      self.contribution.installments > 1 ? tax_calc_for_installment(current_tax) : tax_calc(cielo_tax)
+      current_tax = self.payment.gateway_data["card_brand"] == 'diners' ? installment_diners_tax : installment_not_diners_tax
+      self.payment.installments > 1 ? tax_calc_for_installment(current_tax) : tax_calc(cielo_tax)
     end
 
     def tax_calc acquirer_tax
-      ((self.contribution.value * pagarme_tax) + cents_fee).round(2) + (self.contribution.value * acquirer_tax).round(2)
+      ((self.payment.value * pagarme_tax) + cents_fee).round(2) + (self.payment.value * acquirer_tax).round(2)
     end
 
     def tax_calc_for_installment acquirer_tax
-      (((self.contribution.installment_value * self.contribution.installments) * pagarme_tax) + cents_fee).round(2) + ((self.contribution.installment_value * acquirer_tax).round(2) * self.contribution.installments)
+      (((self.payment.installment_value * self.payment.installments) * pagarme_tax) + cents_fee).round(2) + ((self.payment.installment_value * acquirer_tax).round(2) * self.payment.installments)
     end
 
     def cents_fee

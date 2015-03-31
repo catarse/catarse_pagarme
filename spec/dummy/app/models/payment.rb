@@ -1,5 +1,7 @@
 class Payment < ActiveRecord::Base
+  has_many :payment_notifications
   belongs_to :contribution
+  delegate :user, :project, to: :contribution
 
   validates_presence_of :state, :key, :gateway, :payment_method, :value, :installments, :installment_value
   validate :value_should_be_equal_or_greater_than_pledge

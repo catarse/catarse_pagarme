@@ -7,7 +7,7 @@ module CatarsePagarme
       self.transaction = PagarMe::Transaction.new(self.attributes)
       self.transaction.charge
 
-      change_contribution_state
+      change_payment_state
 
       if self.transaction.status == 'refused'
         raise ::PagarMe::PagarMeError.new(I18n.t('projects.contributions.edit.transaction_error'))
