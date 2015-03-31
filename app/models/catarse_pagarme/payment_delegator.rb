@@ -11,11 +11,11 @@ module CatarsePagarme
     def change_status_by_transaction(transactin_status)
       case transactin_status
       when 'paid', 'authorized' then
-        self.payment.pay unless self.payment.confirmed?
+        self.payment.pay unless self.payment.paid?
       when 'refunded' then
         self.payment.refund unless self.payment.refunded?
       when 'refused' then
-        self.payment.refuse unless self.payment.canceled?
+        self.payment.refuse unless self.payment.refused?
       end
     end
 

@@ -1,17 +1,18 @@
 require 'spec_helper'
 
-describe CatarsePagarme::ContributionDelegator do
+describe CatarsePagarme::PaymentDelegator do
   let(:contribution) { create(:contribution, value: 10) }
-  let(:delegator) { contribution.pagarme_delegator }
+  let(:payment) { contribution.payments.first }
+  let(:delegator) { payment.pagarme_delegator }
 
-  context "instance of CatarsePagarme::ContributionDelegator" do
-    it { expect(delegator).to be_a CatarsePagarme::ContributionDelegator }
+  context "instance of CatarsePagarme::paymentDelegator" do
+    it { expect(delegator).to be_a CatarsePagarme::PaymentDelegator }
   end
 
   context "#value_for_transaction" do
     subject { delegator.value_for_transaction }
 
-    it "should convert contribution value to pagarme value format" do
+    it "should convert payment value to pagarme value format" do
       expect(subject).to eq(1000)
     end
   end
@@ -24,7 +25,7 @@ describe CatarsePagarme::ContributionDelegator do
       CatarsePagarme.configuration.stub(:interest_rate).and_return(1.8)
     end
 
-    it "should return the contribution value with installments tax" do
+    it "should return the payment value with installments tax" do
       expect(subject).to eq(1057)
     end
   end
@@ -49,26 +50,20 @@ describe CatarsePagarme::ContributionDelegator do
       delegator.stub(:transaction).and_return(fake_transaction)
     end
 
-    context 'when choice is nil' do
-      let(:contribution) { create(:contribution, value: 10, payment_choice: nil) }
-      subject { delegator.get_fee }
-      it { expect(subject).to eq(nil) }
-    end
-
     context 'when choice is credit card and acquirer_name is nil' do
-      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::CREDIT_CARD, acquirer_name: nil) }
+      let(:payment) { create(:payment, value: 10, payment_method: CatarsePagarme::PaymentType::CREDIT_CARD, gateway_data: {acquirer_name: nil}) }
       subject { delegator.get_fee }
       it { expect(subject).to eq(nil) }
     end
 
     context 'when choice is slip' do
-      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::SLIP, acquirer_name: nil) }
+      let(:payment) { create(:payment, value: 10, payment_method: CatarsePagarme::PaymentType::SLIP, gateway_data: {acquirer_name: nil}) }
       subject { delegator.get_fee }
       it { expect(subject).to eq(2.00) }
     end
 
     context 'when choice is credit card' do
-      let(:contribution) { create(:contribution, value: 10, payment_choice: CatarsePagarme::PaymentType::CREDIT_CARD, acquirer_name: 'stone', card_brand: 'visa', installments: 1) }
+      let(:payment) { create(:payment, value: 10, payment_method: CatarsePagarme::PaymentType::CREDIT_CARD, gateway_data: {acquirer_name: 'stone', card_brand: 'visa'}, installments: 1) }
       subject { delegator.get_fee }
       it { expect(subject).to eq(0.76) }
     end
@@ -88,41 +83,19 @@ describe CatarsePagarme::ContributionDelegator do
 
     %w(paid authorized).each do |status|
       context "when status is #{status}" do
-        context "and contribution is already confirmed" do
+        context "and payment is already paid" do
           before do
-            contribution.stub(:confirmed?).and_return(true)
-            contribution.should_not_receive(:confirm)
+            payment.stub(:paid?).and_return(true)
+            payment.should_not_receive(:pay)
           end
 
           it { delegator.change_status_by_transaction(status) }
         end
 
-        context "and contribution is not confirmed" do
+        context "and payment is not paid" do
           before do
-            contribution.stub(:confirmed?).and_return(false)
-            contribution.should_receive(:confirm)
-          end
-
-          it { delegator.change_status_by_transaction(status) }
-        end
-      end
-    end
-
-    %w(waiting_payment processing).each do |status|
-      context "when status is #{status}" do
-        context "and contribution is already waiting confirmation" do
-          before do
-            contribution.stub(:waiting_confirmation?).and_return(true)
-            contribution.should_not_receive(:waiting)
-          end
-
-          it { delegator.change_status_by_transaction(status) }
-        end
-
-        context "and contribution is pending" do
-          before do
-            contribution.stub(:waiting_confirmation?).and_return(false)
-            contribution.should_receive(:waiting)
+            payment.stub(:paid?).and_return(false)
+            payment.should_receive(:pay)
           end
 
           it { delegator.change_status_by_transaction(status) }
@@ -131,19 +104,19 @@ describe CatarsePagarme::ContributionDelegator do
     end
 
     context "when status is refunded" do
-      context "and contribution is already refunded" do
+      context "and payment is already refunded" do
         before do
-          contribution.stub(:refunded?).and_return(true)
-          contribution.should_not_receive(:refund)
+          payment.stub(:refunded?).and_return(true)
+          payment.should_not_receive(:refund)
         end
 
         it { delegator.change_status_by_transaction('refunded') }
       end
 
-      context "and contribution is not refunded" do
+      context "and payment is not refunded" do
         before do
-          contribution.stub(:refunded?).and_return(false)
-          contribution.should_receive(:refund)
+          payment.stub(:refunded?).and_return(false)
+          payment.should_receive(:refund)
         end
 
         it { delegator.change_status_by_transaction('refunded') }
@@ -151,19 +124,19 @@ describe CatarsePagarme::ContributionDelegator do
     end
 
     context "when status is refused" do
-      context "and contribution is already canceled" do
+      context "and payment is already canceled" do
         before do
-          contribution.stub(:canceled?).and_return(true)
-          contribution.should_not_receive(:cancel)
+          payment.stub(:refused?).and_return(true)
+          payment.should_not_receive(:refuse)
         end
 
         it { delegator.change_status_by_transaction('refused') }
       end
 
-      context "and contribution is not canceled" do
+      context "and payment is not refused" do
         before do
-          contribution.stub(:canceled?).and_return(false)
-          contribution.should_receive(:cancel)
+          payment.stub(:refused?).and_return(false)
+          payment.should_receive(:refuse)
         end
 
         it { delegator.change_status_by_transaction('refused') }

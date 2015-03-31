@@ -22,6 +22,26 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  def refunded?
+    true
+  end
+
+  def paid?
+    true
+  end
+
+  def refused?
+    true
+  end
+
+  def refuse
+  end
+
+  def pay
+  end
+
+  def refund
+  end
 
   def credits?
     self.gateway == 'Credits'
