@@ -18,7 +18,6 @@ FactoryGirl.define do
   factory :user do |f|
     f.name "Foo bar"
     f.email { generate(:email) }
-    f.bio "This is Foo bar's biography."
   end
 
   factory :credi_card do |f|
@@ -52,7 +51,7 @@ FactoryGirl.define do
     f.permalink { generate(:permalink) }
     f.association :user, factory: :user
     f.association :category, factory: :category
-    f.about "Foo bar"
+    f.about_html "Foo bar"
     f.headline "Foo bar"
     f.goal 10000
     f.online_date Time.now
