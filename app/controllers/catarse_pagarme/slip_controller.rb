@@ -2,7 +2,7 @@ module CatarsePagarme
   class SlipController < CatarsePagarme::ApplicationController
 
     def create
-      transaction = SlipTransaction.new(permitted_attributes, contribution).charge!
+      transaction = SlipTransaction.new(permitted_attributes, payment).charge!
 
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e
@@ -10,7 +10,7 @@ module CatarsePagarme
     end
 
     def update
-      transaction = SlipTransaction.new(permitted_attributes, contribution).charge!
+      transaction = SlipTransaction.new(permitted_attributes, payment).charge!
       render text: transaction.boleto_url
     end
 
@@ -25,11 +25,11 @@ module CatarsePagarme
                                             subdomain: CatarsePagarme.configuration.subdomain,
                                             protocol: CatarsePagarme.configuration.protocol),
         customer: {
-          email: contribution.user.email,
-          name: contribution.user.name
+          email: payment.user.email,
+          name: payment.user.name
         },
         metadata: {
-          key: contribution.key 
+          key: payment.key 
         }
       }.update({ user: params[:user] })
     end

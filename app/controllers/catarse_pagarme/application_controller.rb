@@ -33,18 +33,18 @@ module CatarsePagarme
       ])
     end
 
-    def contribution
+    def payment
       conditions = {id: params[:id] }
 
       unless params[:controller] == 'catarse_pagarme/notifications'
-        conditions.merge!({user_id: current_user.id}) unless current_user.admin
+        conditions.merge!(contribution: {user_id: current_user.id}) unless current_user.admin
       end
 
       @contribution ||= PaymentEngines.find_payment(conditions)
     end
 
     def delegator
-      contribution.pagarme_delegator
+      payment.pagarme_delegator
     end
   end
 end

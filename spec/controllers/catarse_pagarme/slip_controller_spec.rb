@@ -2,13 +2,14 @@ require 'spec_helper'
 
 describe CatarsePagarme::SlipController do
   before do
-    PaymentEngines.stub(:find_payment).and_return(contribution)
+    PaymentEngines.stub(:find_payment).and_return(payment)
     controller.stub(:current_user).and_return(user)
     Bank.create(name: 'foo', code: '123')
   end
 
   let(:project) { create(:project, goal: 10_000, state: 'online') }
   let(:contribution) { create(:contribution, value: 10, project: project) }
+  let(:payment) { contribution.payments.first }
   let(:credit_card) { create(:credit_card, subscription_id: '1542')}
 
   describe 'pay with slip' do
@@ -17,18 +18,18 @@ describe CatarsePagarme::SlipController do
 
       it 'should raise a error' do
         expect {
-          post :create, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme' }
+          post :create, { locale: :pt, project_id: project.id, payment_id: payment.id, use_route: 'catarse_pagarme' }
         }.to raise_error('invalid user')
       end
     end
 
     context 'with an user' do
-      let(:user) { contribution.user }
+      let(:user) { payment.user }
 
       context 'with valid bank account data' do
         before do
           post :create, {
-            locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme',
+            locale: :pt, project_id: project.id, payment_id: payment.id, use_route: 'catarse_pagarme',
             user: { bank_account_attributes: {
               bank_id: Bank.first.id, agency: '1', agency_digit: '1', account: '1', account_digit: '1', owner_name: 'foo', owner_document: '1'
             } } }
@@ -44,10 +45,10 @@ describe CatarsePagarme::SlipController do
       end
 
       context 'with invalid bank account data' do
-        let(:user) { contribution.user }
+        let(:user) { payment.user }
 
         before do
-          post :create, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme', user: { bank_account_attributes: { owner_name: '' } } }
+          post :create, { locale: :pt, project_id: project.id, payment_id: payment.id, use_route: 'catarse_pagarme', user: { bank_account_attributes: { owner_name: '' } } }
         end
 
         it 'boleto_url should be nil' do
