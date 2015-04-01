@@ -34,7 +34,7 @@ module CatarsePagarme
     end
 
     def contribution
-      PaymentEngines.find_contribution(params[:id])
+      @contribution ||= PaymentEngines.find_contribution(params[:id])
     end
 
     def payment
