@@ -29,14 +29,14 @@ module CatarsePagarme
           name: payment.user.name
         },
         metadata: {
-          key: payment.key 
+          key: payment.generate_key 
         }
       }.update({ user: params[:user] })
     end
 
     def permitted_attributes
       attrs = ActionController::Parameters.new(slip_attributes)
-      attrs.permit(:boleto_expiration_date, :payment_method, :amount, :postback_url, customer: [:name, :email],
+      attrs.permit(:boleto_expiration_date, :payment_method, :amount, :postback_url, metadata: [:key], customer: [:name, :email],
         user: [
           bank_account_attributes: [
             :bank_id, :account, :account_digit, :agency,

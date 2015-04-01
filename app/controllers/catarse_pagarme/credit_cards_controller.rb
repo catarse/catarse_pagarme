@@ -24,7 +24,7 @@ module CatarsePagarme
           name: payment.user.name
         },
         metadata: {
-          key: payment.key
+          key: payment.generate_key
         }
       }
 
