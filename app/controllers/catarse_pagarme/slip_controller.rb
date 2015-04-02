@@ -2,7 +2,7 @@ module CatarsePagarme
   class SlipController < CatarsePagarme::ApplicationController
 
     def create
-      transaction = SlipTransaction.new(permitted_attributes, contribution).charge!
+      transaction = SlipTransaction.new(permitted_attributes, payment).charge!
 
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e
@@ -10,7 +10,7 @@ module CatarsePagarme
     end
 
     def update
-      transaction = SlipTransaction.new(permitted_attributes, contribution).charge!
+      transaction = SlipTransaction.new(permitted_attributes, payment).charge!
       render text: transaction.boleto_url
     end
 
@@ -25,18 +25,18 @@ module CatarsePagarme
                                             subdomain: CatarsePagarme.configuration.subdomain,
                                             protocol: CatarsePagarme.configuration.protocol),
         customer: {
-          email: contribution.user.email,
-          name: contribution.user.name
+          email: payment.user.email,
+          name: payment.user.name
         },
         metadata: {
-          key: contribution.key 
+          key: payment.generate_key 
         }
       }.update({ user: params[:user] })
     end
 
     def permitted_attributes
       attrs = ActionController::Parameters.new(slip_attributes)
-      attrs.permit(:boleto_expiration_date, :payment_method, :amount, :postback_url, customer: [:name, :email],
+      attrs.permit(:boleto_expiration_date, :payment_method, :amount, :postback_url, metadata: [:key], customer: [:name, :email],
         user: [
           bank_account_attributes: [
             :bank_id, :account, :account_digit, :agency,

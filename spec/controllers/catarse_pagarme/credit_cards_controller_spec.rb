@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe CatarsePagarme::CreditCardsController do
   before do
-    PaymentEngines.stub(:find_payment).and_return(contribution)
     controller.stub(:current_user).and_return(user)
   end
 
   let(:project) { create(:project, goal: 10_000, state: 'online') }
   let(:contribution) { create(:contribution, value: 10, project: project) }
+  let(:payment) { contribution.payments.first }
 
   describe 'pay with credit card' do
     context  'without an user' do
@@ -15,17 +15,17 @@ describe CatarsePagarme::CreditCardsController do
 
       it 'should raise a error' do
         expect {
-          post :create, { locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme' }
+          post :create, { locale: :pt, id: contribution.id, use_route: 'catarse_pagarme' }
         }.to raise_error('invalid user')
       end
     end
 
     context 'with an user' do
-      let(:user) { contribution.user }
+      let(:user) { payment.user }
       context "with valid card data" do
         before do
           post :create, {
-            locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme',
+            locale: :pt, id: contribution.id, use_route: 'catarse_pagarme',
             card_hash: sample_card_hash }
         end
 
@@ -37,7 +37,7 @@ describe CatarsePagarme::CreditCardsController do
       context 'with invalid card data' do
         before do
           post :create, {
-            locale: :pt, project_id: project.id, contribution_id: contribution.id, use_route: 'catarse_pagarme', card_hash: "abcd" }
+            locale: :pt, id: contribution.id, use_route: 'catarse_pagarme', card_hash: "abcd" }
         end
 
         it 'payment_status should be failed' do

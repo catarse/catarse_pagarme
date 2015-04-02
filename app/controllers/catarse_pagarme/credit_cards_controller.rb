@@ -2,7 +2,7 @@ module CatarsePagarme
   class CreditCardsController < CatarsePagarme::ApplicationController
 
     def create
-      transaction = CreditCardTransaction.new(credit_card_attributes, contribution).charge!
+      transaction = CreditCardTransaction.new(credit_card_attributes, payment).charge!
 
       render json: { payment_status: transaction.status }
     rescue Exception => e
@@ -20,11 +20,11 @@ module CatarsePagarme
                                             protocol: CatarsePagarme.configuration.protocol),
         installments: get_installment,
         customer: {
-          email: contribution.user.email,
-          name: contribution.user.name
+          email: payment.user.email,
+          name: payment.user.name
         },
         metadata: {
-          key: contribution.key
+          key: payment.generate_key
         }
       }
 
@@ -42,7 +42,7 @@ module CatarsePagarme
     end
 
     def get_installment
-      if contribution.value.to_f < CatarsePagarme.configuration.minimum_value_for_installment.to_f
+      if payment.value.to_f < CatarsePagarme.configuration.minimum_value_for_installment.to_f
         1
       elsif params[:payment_card_installments].to_i > 0
         params[:payment_card_installments].to_i

@@ -18,7 +18,6 @@ FactoryGirl.define do
   factory :user do |f|
     f.name "Foo bar"
     f.email { generate(:email) }
-    f.bio "This is Foo bar's biography."
   end
 
   factory :credi_card do |f|
@@ -52,7 +51,7 @@ FactoryGirl.define do
     f.permalink { generate(:permalink) }
     f.association :user, factory: :user
     f.association :category, factory: :category
-    f.about "Foo bar"
+    f.about_html "Foo bar"
     f.headline "Foo bar"
     f.goal 10000
     f.online_date Time.now
@@ -64,11 +63,22 @@ FactoryGirl.define do
   factory :contribution do |f|
     f.association :project, factory: :project
     f.association :user, factory: :user
-    f.confirmed_at Time.now
     f.value 10.00
-    f.state 'confirmed'
-    f.credits false
-    f.payment_id '1.2.3'
+    after :create do |contribution|
+      create(:payment, paid_at: Time.now, gateway_id: '1.2.3', state: 'paid', value: contribution.value, contribution: contribution)
+    end
+  end
+
+  factory :payment do |f|
+    f.association :contribution
+    f.gateway 'pagarme'
+    f.value 10.00
+    f.state 'paid'
+    f.installment_value 10.00
+    f.payment_method "CartaoDeCredito"
+    after :build do |payment|
+      payment.gateway = 'pagarme'
+    end
   end
 end
 

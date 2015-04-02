@@ -1,8 +1,8 @@
 module CatarsePagarme
   module ApplicationHelper
 
-    def installments_for_select(contribution)
-      installments = contribution.pagarme_delegator.get_installments['installments']
+    def installments_for_select(payment)
+      installments = payment.pagarme_delegator.get_installments['installments']
 
       collection = installments.map do |installment|
         installment_number = installment[0].to_i
@@ -11,7 +11,7 @@ module CatarsePagarme
 
           optional_text = nil
           if installment_number != 1
-            optional_text = I18n.t('projects.contributions.edit.installment_with_tax')
+            optional_text = I18n.t('projects.payments.edit.installment_with_tax')
           end
 
           ["#{format_instalment_text(installment_number, amount)} #{optional_text}", installment_number]

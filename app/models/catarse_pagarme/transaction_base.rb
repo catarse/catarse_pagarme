@@ -1,18 +1,19 @@
 module CatarsePagarme
   class TransactionBase
-    attr_accessor :attributes, :contribution,
+    attr_accessor :attributes, :payment,
       :transaction, :user
 
-    def initialize(attributes, contribution)
+    def initialize(attributes, payment)
       self.attributes = attributes
-      self.contribution = contribution
-      self.user = contribution.user
+      self.payment = payment
+      self.user = payment.user
     end
 
-    def change_contribution_state
-      self.contribution.update_attributes(attributes_to_contribution)
+    def change_payment_state
+      self.payment.update_attributes(attributes_to_payment)
+      self.payment.save!
       delegator.update_fee
-      self.contribution.payment_notifications.create(extra_data: self.transaction.to_json)
+      self.payment.payment_notifications.create(contribution_id: self.payment.contribution_id, extra_data: self.transaction.to_json)
       delegator.change_status_by_transaction(self.transaction.status)
     end
 
@@ -20,19 +21,19 @@ module CatarsePagarme
       PaymentType::CREDIT_CARD
     end
 
-    def attributes_to_contribution
+    def attributes_to_payment
       {
-        payment_choice: payment_method,
-        payment_id: self.transaction.id,
-        payment_method: 'Pagarme',
-        slip_url: self.transaction.boleto_url,
+        payment_method: payment_method,
+        gateway_id: self.transaction.id,
+        gateway: 'Pagarme',
+        gateway_data: self.transaction.to_json,
         installments: (self.transaction.installments || 1),
         installment_value: (delegator.value_for_installment(self.transaction.installments || 0) / 100.0).to_f
       }
     end
 
     def delegator
-      self.contribution.pagarme_delegator
+      self.payment.pagarme_delegator
     end
 
   end

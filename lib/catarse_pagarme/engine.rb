@@ -3,7 +3,7 @@ module CatarsePagarme
     isolate_namespace CatarsePagarme
 
     config.to_prepare do
-      ::Contribution.send(:include, CatarsePagarme::ContributionConcern)
+      ::Payment.send(:include, CatarsePagarme::PaymentConcern)
     end
   end
 end

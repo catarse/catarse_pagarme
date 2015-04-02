@@ -1,6 +1,6 @@
 module CatarsePagarme
   class SlipTransaction < TransactionBase
-    def initialize(attributes, contribution)
+    def initialize(attributes, payment)
       super
       build_default_bank_account
     end
@@ -9,9 +9,10 @@ module CatarsePagarme
       update_user_bank_account
 
       self.transaction = PagarMe::Transaction.new(self.attributes)
+
       self.transaction.charge
 
-      change_contribution_state
+      change_payment_state
 
       self.transaction
     end

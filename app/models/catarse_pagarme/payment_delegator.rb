@@ -1,45 +1,45 @@
 module CatarsePagarme
-  class ContributionDelegator
-    attr_accessor :contribution, :transaction
+  class PaymentDelegator
+    attr_accessor :payment, :transaction
     include FeeCalculatorConcern
 
-    def initialize(contribution)
+    def initialize(payment)
       configure_pagarme
-      self.contribution = contribution
+      self.payment = payment
     end
 
     def change_status_by_transaction(transactin_status)
       case transactin_status
       when 'paid', 'authorized' then
-        self.contribution.confirm unless self.contribution.confirmed?
+        self.payment.pay unless self.payment.paid?
       when 'refunded' then
-        self.contribution.refund unless self.contribution.refunded?
+        self.payment.refund unless self.payment.refunded?
       when 'refused' then
-        self.contribution.cancel unless self.contribution.canceled?
-      when 'waiting_payment', 'processing' then
-        self.contribution.waiting unless self.contribution.waiting_confirmation?
+        self.payment.refuse unless self.payment.refused?
       end
     end
 
     def update_fee
       fill_acquirer_data
-      contribution.update_attributes({
-        payment_service_fee: get_fee,
+      payment.update_attributes({
+        gateway_fee: get_fee,
       })
     end
 
     def fill_acquirer_data
-      if !contribution.acquirer_name.present? || !contribution.acquirer_tid.present?
-        contribution.update_attributes({
+      if payment.gateway_data.nil? || payment.gateway_data["acquirer_name"].nil? || payment.gateway_data["acquirer_tid"].nil?
+        data = payment.gateway_data || {}
+        payment.gateway_data = data.merge({
           acquirer_name: transaction.acquirer_name,
           acquirer_tid: transaction.tid,
           card_brand: transaction.try(:card_brand)
         })
+        payment.save
       end
     end
 
     def refund
-      if contribution.is_credit_card?
+      if payment.is_credit_card?
         transaction.refund
       else
         transaction.refund(bank_account_attributes)
@@ -47,7 +47,7 @@ module CatarsePagarme
     end
 
     def value_for_transaction
-      (self.contribution.value * 100).to_i
+      (self.payment.value * 100).to_i
     end
 
     def value_with_installment_tax(installment)
@@ -65,7 +65,7 @@ module CatarsePagarme
     end
 
     def transaction
-      @transaction ||= ::PagarMe::Transaction.find_by_id(self.contribution.payment_id)
+      @transaction ||= ::PagarMe::Transaction.find_by_id(self.payment.gateway_id)
     end
 
     def get_installment(installment_number)
@@ -86,7 +86,7 @@ module CatarsePagarme
     protected
 
     def bank_account_attributes
-      bank = contribution.user.bank_account
+      bank = payment.user.bank_account
 
       {
         bank_account: {
