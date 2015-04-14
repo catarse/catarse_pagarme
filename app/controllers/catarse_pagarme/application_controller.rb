@@ -5,6 +5,7 @@ module CatarsePagarme
 
     before_filter :authenticate_user!
     before_filter :configure_pagarme
+    helper_method :payment
     layout :false
 
     protected
