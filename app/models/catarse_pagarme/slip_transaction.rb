@@ -24,7 +24,9 @@ module CatarsePagarme
     protected
 
     def update_user_bank_account
-      self.user.update_attributes(self.attributes.delete(:user))
+      if self.attributes.include?(:user)
+        self.user.update_attributes(self.attributes.delete(:user))
+      end
 
       if self.user.errors.present?
         raise ::PagarMe::PagarMeError.new(self.user.errors.full_messages.to_sentence)

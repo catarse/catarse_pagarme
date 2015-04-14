@@ -7,9 +7,13 @@ class Payment < ActiveRecord::Base
   validate :value_should_be_equal_or_greater_than_pledge
 
   before_validation do
-    self.key ||= SecureRandom.uuid
+    generate_key
     self.value ||= self.contribution.try(:value)
     self.state = 'pending' # mock initial state for here we do not include the stat machine
+  end
+
+  def generate_key
+    self.key ||= SecureRandom.uuid
   end
 
   def value_should_be_equal_or_greater_than_pledge

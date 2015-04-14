@@ -11,7 +11,21 @@ describe CatarsePagarme::SlipController do
   let(:payment) { contribution.payments.first }
   let(:credit_card) { create(:credit_card, subscription_id: '1542')}
 
-  describe 'pay with slip' do
+  describe 'PATCH update' do
+    let(:user) { payment.user }
+
+    before do
+      patch :update, locale: :pt, id: contribution.id, use_route: 'catarse_pagarme'
+    end
+
+    context 'with valid bank account data' do
+      it 'boleto_url should be filled' do
+        expect(response.body).to be_present
+      end
+    end
+  end
+
+  describe 'POST create' do
     context  'without an user' do
       let(:user) { nil }
 

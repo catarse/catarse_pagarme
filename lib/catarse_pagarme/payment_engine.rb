@@ -24,8 +24,9 @@ module CatarsePagarme
       true
     end
 
-    def second_slip_path(contribution)
-      url_helpers.second_slip_pagarme_path(contribution)
+    def second_slip_path(payment)
+      # The second slip generates a new payment base on the contribution ID
+      url_helpers.second_slip_pagarme_path(id: payment.contribution.id)
     end
 
     protected
