@@ -66,6 +66,11 @@ module CatarsePagarme
 
     def transaction
       @transaction ||= ::PagarMe::Transaction.find_by_id(self.payment.gateway_id)
+      if @transaction.kind_of?(Array) 
+        @transaction.last
+      else
+        @transaction
+      end
     end
 
     def get_installment(installment_number)
