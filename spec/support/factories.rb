@@ -74,7 +74,7 @@ FactoryGirl.define do
     f.gateway 'pagarme'
     f.value 10.00
     f.state 'paid'
-    f.installment_value 10.00
+    f.installment_value nil
     f.payment_method "CartaoDeCredito"
     after :build do |payment|
       payment.gateway = 'pagarme'
