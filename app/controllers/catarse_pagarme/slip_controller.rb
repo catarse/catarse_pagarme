@@ -28,9 +28,7 @@ module CatarsePagarme
           email: payment.user.email,
           name: payment.user.name
         },
-        metadata: {
-          key: payment.generate_key 
-        }
+        metadata: metadata_attributes
       }.update({ user: params[:user] })
     end
 

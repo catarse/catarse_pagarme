@@ -23,9 +23,7 @@ module CatarsePagarme
           email: payment.user.email,
           name: payment.user.name
         },
-        metadata: {
-          key: payment.generate_key
-        }
+        metadata: metadata_attributes
       }
 
       if params[:card_hash].present?

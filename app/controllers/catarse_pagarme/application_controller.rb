@@ -9,6 +9,13 @@ module CatarsePagarme
     layout :false
 
     protected
+    def metadata_attributes
+      {
+        key: payment.generate_key,
+        project_id: payment.contribution.project_id
+      }
+    end
+
     def configure_pagarme
       PagarMe.api_key = CatarsePagarme.configuration.api_key
     end
