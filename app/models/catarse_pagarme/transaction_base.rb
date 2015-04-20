@@ -10,8 +10,8 @@ module CatarsePagarme
     end
 
     def change_payment_state
-      self.payment.save!
       self.payment.update_attributes(attributes_to_payment)
+      self.payment.save!
       delegator.update_fee
       self.payment.payment_notifications.create(contribution_id: self.payment.contribution_id, extra_data: self.transaction.to_json)
       delegator.change_status_by_transaction(self.transaction.status)
@@ -27,9 +27,21 @@ module CatarsePagarme
         gateway_id: self.transaction.id,
         gateway: 'Pagarme',
         gateway_data: self.transaction.to_json,
-        installments: (self.transaction.installments || 1),
+        installments: default_installments,
         installment_value: (delegator.value_for_installment(self.transaction.installments || 0) / 100.0).to_f
       }
+    end
+
+    def default_installments
+      (self.transaction.installments || 1)
+    end
+
+    def default_installment_value
+      if default_installments == 1
+        self.payment.value
+      else
+        (delegator.value_for_installment(self.transaction.installments || 0) / 100.0).to_f
+      end
     end
 
     def delegator
