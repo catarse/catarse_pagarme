@@ -54,7 +54,6 @@ describe CatarsePagarme::SlipTransaction do
   before do
     PagarMe::Transaction.stub(:new).and_return(pagarme_transaction)
     pagarme_transaction.stub(:to_json).and_return(pagarme_transaction_attributes.to_json)
-    CatarsePagarme::PaymentDelegator.any_instance.stub(:change_status_by_transaction).and_return(true)
   end
 
   context "#user" do
