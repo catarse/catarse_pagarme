@@ -54,7 +54,7 @@ describe CatarsePagarme::CreditCardTransaction do
       end
 
       it "should update payment payment_service_fee" do
-        expect(payment.gateway_fee.to_f).to eq(4.08)
+        expect(payment.gateway_fee).to eq(payment.pagarme_delegator.get_fee)
       end
 
       it "should update payment payment_method" do

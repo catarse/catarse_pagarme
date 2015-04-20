@@ -4,12 +4,23 @@ describe CatarsePagarme::PaymentDelegator do
   let(:contribution) { create(:contribution, value: 10) }
   let(:payment) { contribution.payments.first }
   let(:delegator) { payment.pagarme_delegator }
+  let(:fake_transaction) { double("fake transaction", card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
 
-  context "instance of CatarsePagarme::paymentDelegator" do
+  before do
+    CatarsePagarme.configuration.stub(:slip_tax).and_return(2.00)
+    CatarsePagarme.configuration.stub(:credit_card_tax).and_return(0.01)
+    CatarsePagarme.configuration.stub(:pagarme_tax).and_return(0.0063)
+    CatarsePagarme.configuration.stub(:cielo_tax).and_return(0.038)
+    CatarsePagarme.configuration.stub(:stone_tax).and_return(0.0307)
+    CatarsePagarme.configuration.stub(:credit_card_cents_fee).and_return(0.39)
+    delegator.stub(:transaction).and_return(fake_transaction)
+  end
+
+  describe "instance of CatarsePagarme::paymentDelegator" do
     it { expect(delegator).to be_a CatarsePagarme::PaymentDelegator }
   end
 
-  context "#value_for_transaction" do
+  describe "#value_for_transaction" do
     subject { delegator.value_for_transaction }
 
     it "should convert payment value to pagarme value format" do
@@ -17,7 +28,7 @@ describe CatarsePagarme::PaymentDelegator do
     end
   end
 
-  context "#value_with_installment_tax" do
+  describe "#value_with_installment_tax" do
     let(:installment) { 5 }
     subject { delegator.value_with_installment_tax(installment)}
 
@@ -30,26 +41,7 @@ describe CatarsePagarme::PaymentDelegator do
     end
   end
 
-  context "#get_fee" do
-    let(:fake_transaction) {
-      t = double
-      t.stub(:card_brand).and_return('visa')
-      t.stub(:acquirer_name).and_return('stone')
-      t.stub(:acquirer_tid).and_return('404040404')
-      t
-    }
-
-    before do
-      CatarsePagarme.configuration.stub(:slip_tax).and_return(2.00)
-      CatarsePagarme.configuration.stub(:credit_card_tax).and_return(0.01)
-      CatarsePagarme.configuration.stub(:pagarme_tax).and_return(0.0063)
-      CatarsePagarme.configuration.stub(:cielo_tax).and_return(0.038)
-      CatarsePagarme.configuration.stub(:stone_tax).and_return(0.0307)
-      CatarsePagarme.configuration.stub(:credit_card_cents_fee).and_return(0.39)
-
-      delegator.stub(:transaction).and_return(fake_transaction)
-    end
-
+  describe "#get_fee" do
     context 'when choice is credit card and acquirer_name is nil' do
       let(:payment) { create(:payment, value: 10, payment_method: CatarsePagarme::PaymentType::CREDIT_CARD, gateway_data: {acquirer_name: nil}) }
       subject { delegator.get_fee }
@@ -69,7 +61,7 @@ describe CatarsePagarme::PaymentDelegator do
     end
   end
 
-  context "#get_installments" do
+  describe "#get_installments" do
     before do
       delegator.stub(:value_for_transaction).and_return(10000)
     end
@@ -79,7 +71,36 @@ describe CatarsePagarme::PaymentDelegator do
     it { expect(subject['installments']['2']['installment_amount']).to eq(5000) }
   end
 
-  context "#change_status_by_transaction" do
+  describe "#fill_acquirer_data" do
+    let(:payment) { create(:payment, gateway_data: nil) }
+
+    before do
+      delegator.fill_acquirer_data
+    end
+
+    it "should fill data about credit card acquirer" do
+      expect(payment.gateway_data['acquirer_name']).to eq fake_transaction.acquirer_name
+      expect(payment.gateway_data['acquirer_tid']).to eq fake_transaction.tid
+      expect(payment.gateway_data['card_brand']).to eq fake_transaction.card_brand
+    end
+  end
+
+  describe "#update_transaction" do
+    before do
+      expect(delegator).to receive(:fill_acquirer_data).and_call_original
+      delegator.update_transaction
+    end
+
+    it "should update installment value" do
+      expect(payment.installment_value).to eq (delegator.value_for_installment / 100.0).to_f
+    end
+
+    it "should update fee" do
+      expect(payment.gateway_fee).to eq delegator.get_fee
+    end
+  end
+
+  describe "#change_status_by_transaction" do
 
     %w(paid authorized).each do |status|
       context "when status is #{status}" do
