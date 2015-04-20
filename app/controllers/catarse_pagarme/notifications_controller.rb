@@ -12,7 +12,7 @@ module CatarsePagarme
             payment.try(:invalid_refund)
           else
             delegator.change_status_by_transaction(params[:current_status])
-            delegator.update_fee
+            delegator.update_transaction
           end
 
           return render nothing: true, status: 200

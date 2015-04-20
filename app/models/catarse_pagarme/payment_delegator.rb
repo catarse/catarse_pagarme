@@ -19,11 +19,11 @@ module CatarsePagarme
       end
     end
 
-    def update_fee
+    def update_transaction
       fill_acquirer_data
-      payment.update_attributes({
-        gateway_fee: get_fee,
-      })
+      payment.installment_value = (value_for_installment / 100.0).to_f
+      payment.gateway_fee = get_fee
+      payment.save!
     end
 
     def fill_acquirer_data
@@ -60,7 +60,7 @@ module CatarsePagarme
       end
     end
 
-    def value_for_installment(installment)
+    def value_for_installment(installment = transaction.installments || 0)
       get_installment(installment).try(:[], "installment_amount")
     end
 
