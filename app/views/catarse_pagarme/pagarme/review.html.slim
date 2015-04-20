@@ -50,32 +50,31 @@
               .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_name"]
                 | Por favor digite o nome escrito no cartão
         .w-row
-          .w-col.w-col-6.w-sub-col
-            .w-col.w-col-9.w-col-small-9.w-col-tiny-9.w-sub-col-middle
-              = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
-              = phone_field_tag :payment_card_number, nil, class: 'w-input text-field', required: true
-              .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_number"]
-                | Por favor verifique o número do cartão de crédito
-            .w-col.w-col-3.w-col-small-3.w-col-tiny-3
-              = label_tag :payment_card_flag, t('projects.contributions.edit.form_labels.payment_card_flag'), class: 'fontweight-semibold field-label'
-              #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center.w-input.text-field
-                |&nbsp;
-          .w-col.w-col-6
-            .w-row
-              .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col-middle
-                = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold w-hidden-medium'
-                = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source_short'), class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
-                = phone_field_tag :payment_card_source, nil, class: 'w-input text-field', required: true, autocomplete: 'off'
-                .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_source"]
-                  | Veja o código de segurança do cartão abaixo da tarja magnética
-              .w-col.w-col-6.w-col-small-6.w-col-tiny-6
-                = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date'), class: 'field-label fontweight-semibold'
-                = phone_field_tag :payment_card_date, nil, class: 'w-input text-field', required: true
-                .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_date"]
-                  | Qual a data de expiração no cartão?
+          
+          .w-col.w-col-9.w-col-small-9.w-col-tiny-9
+            = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
+            = phone_field_tag :payment_card_number, nil, class: 'w-input text-field', required: true
+            .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_number"]
+              | Por favor verifique o número do cartão de crédito
+          .w-col.w-col-3.w-col-small-3.w-col-tiny-3
+            = label_tag :payment_card_flag, t('projects.contributions.edit.form_labels.payment_card_flag'), class: 'fontweight-semibold field-label'
+            #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center.w-input.text-field
+              |&nbsp;
+        .w-row
+          .w-col.w-col-6.w-col-small-6.w-col-tiny-6
+            = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold w-hidden-medium'
+            = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source_short'), class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
+            = phone_field_tag :payment_card_source, nil, class: 'w-input text-field', required: true, autocomplete: 'off'
+            .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_source"]
+              | Veja o código de segurança do cartão abaixo da tarja magnética
+          .w-col.w-col-6.w-col-small-6.w-col-tiny-6
+            = label_tag :payment_card_date, t('projects.contributions.edit.form_labels.payment_card_date'), class: 'field-label fontweight-semibold'
+            = phone_field_tag :payment_card_date, nil, class: 'w-input text-field', required: true
+            .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_date"]
+              | Qual a data de expiração no cartão?
         - if @contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
           .w-row
-            .w-col.w-col-6.w-sub-col
+            .w-col.w-col-6
               = label_tag :payment_card_installments, t('projects.contributions.edit.form_labels.payment_card_installments'), class: 'field-label fontweight-semibold'
               = select_tag :payment_card_installments, options_for_select(installments_for_select(payment)), class: 'w-select text-field'
         .w-checkbox.w-clearfix
