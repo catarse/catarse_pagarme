@@ -21,13 +21,13 @@
         - current_user.credit_cards.each_with_index do |credit_card, i|
           = label_tag "payment_subscription_card_#{credit_card.card_key}" do
             .w-row.creditcard-records
-              .w-col.w-col-1
+              .w-col.w-col-1.w-sub-col
                 .w-radio.w-clearfix.back-payment-credit-card-radio-field
                   = radio_button_tag :payment_subscription_card, credit_card.card_key, i == 0, {"data-stored" => true}
-              .w-col.w-col-2
+              .w-col.w-col-2.w-sub-col
                 .fontsize-small.fontweight-semibold.text-success
                   = credit_card.card_brand.upcase
-              .w-col.w-col-5
+              .w-col.w-col-5.w-sub-col
                 .fontsize-small.fontweight-semibold.u-marginbottom-20
                   = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
               .w-col.w-col-4
@@ -35,7 +35,7 @@
                   = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field text-field-creditcard'
         = label_tag :payment_subscription_card_0 do
           .w-row.creditcard-records
-            .w-col.w-col-1
+            .w-col.w-col-1.w-sub-col
               .w-radio.w-clearfix.back-payment-credit-card-radio-field
                 = radio_button_tag :payment_subscription_card, 0
             .w-col.w-col-11
@@ -51,7 +51,7 @@
                 | Por favor digite o nome escrito no cartão
         .w-row
           
-          .w-col.w-col-9.w-col-small-9.w-col-tiny-9
+          .w-col.w-col-9.w-col-small-9.w-col-tiny-9.w-sub-col
             = label_tag :payment_card_number, t('projects.contributions.edit.form_labels.payment_card_number'), class: 'fontweight-semibold field-label'
             = phone_field_tag :payment_card_number, nil, class: 'w-input text-field', required: true
             .fontsize-smaller.text-error.u-marginbottom-20.fa.fa-exclamation-triangle.w-hidden[data-error-for="payment_card_number"]
@@ -61,7 +61,7 @@
             #payment_card_flag.fontsize-smallest.fontcolor-secondary.u-text-center.w-input.text-field
               |&nbsp;
         .w-row
-          .w-col.w-col-6.w-col-small-6.w-col-tiny-6
+          .w-col.w-col-6.w-col-small-6.w-col-tiny-6.w-sub-col
             = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source'), class: 'field-label fontweight-semibold w-hidden-medium'
             = label_tag :payment_card_source, t('projects.contributions.edit.form_labels.payment_card_source_short'), class: 'field-label fontweight-semibold w-hidden-main w-hidden-small w-hidden-tiny'
             = phone_field_tag :payment_card_source, nil, class: 'w-input text-field', required: true, autocomplete: 'off'
@@ -76,7 +76,7 @@
           .w-row
             .w-col.w-col-6
               = label_tag :payment_card_installments, t('projects.contributions.edit.form_labels.payment_card_installments'), class: 'field-label fontweight-semibold'
-              = select_tag :payment_card_installments, options_for_select(installments_for_select(@contribution)), class: 'w-select text-field'
+              = select_tag :payment_card_installments, options_for_select(['10 x R$ 10,00']), class: 'w-select text-field'
         .w-checkbox.w-clearfix
           = check_box_tag :payment_save_card, 1, false, class: 'w-checkbox-input'
           = label_tag :payment_save_card, t('projects.contributions.edit.payment_save_card'), class: 'w-form-label'
