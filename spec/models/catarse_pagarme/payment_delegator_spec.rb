@@ -104,9 +104,33 @@ describe CatarsePagarme::PaymentDelegator do
 
     %w(paid authorized).each do |status|
       context "when status is #{status}" do
+        context "when payment is refunded" do
+          before do
+            payment.stub(:paid?).and_return(false)
+            payment.stub(:refunded?).and_return(true)
+            payment.stub(:pending_refund?).and_return(false)
+            payment.should_receive(:invalid_refund)
+          end
+
+          it { delegator.change_status_by_transaction(status) }
+        end
+
+        context "when payment is pending_refund" do
+          before do
+            payment.stub(:paid?).and_return(false)
+            payment.stub(:refunded?).and_return(false)
+            payment.stub(:pending_refund?).and_return(true)
+            payment.should_receive(:invalid_refund)
+          end
+
+          it { delegator.change_status_by_transaction(status) }
+        end
+
         context "and payment is already paid" do
           before do
             payment.stub(:paid?).and_return(true)
+            payment.stub(:refunded?).and_return(false)
+            payment.stub(:pending_refund?).and_return(false)
             payment.should_not_receive(:pay)
           end
 
@@ -116,6 +140,8 @@ describe CatarsePagarme::PaymentDelegator do
         context "and payment is not paid" do
           before do
             payment.stub(:paid?).and_return(false)
+            payment.stub(:refunded?).and_return(false)
+            payment.stub(:pending_refund?).and_return(false)
             payment.should_receive(:pay)
           end
 

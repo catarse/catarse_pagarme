@@ -28,6 +28,10 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  def invalid_refund
+    true
+  end
+
   def refunded?
     true
   end
