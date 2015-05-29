@@ -1,3 +1,5 @@
+require 'weekdays'
+
 module CatarsePagarme
   class SlipController < CatarsePagarme::ApplicationController
 
@@ -17,9 +19,10 @@ module CatarsePagarme
     protected
 
     def slip_attributes
+      expiration_date = (CatarsePagarme.configuration.slip_week_day_interval || 2).weekdays_from_now
       {
         payment_method: 'boleto',
-        boleto_expiration_date: 2.days.from_now,
+        boleto_expiration_date: expiration_date,
         amount: delegator.value_for_transaction,
         postback_url: ipn_pagarme_index_url(host: CatarsePagarme.configuration.host,
                                             subdomain: CatarsePagarme.configuration.subdomain,
