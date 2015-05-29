@@ -3,7 +3,7 @@ module CatarsePagarme
     attr_accessor :api_key, :slip_tax, :credit_card_tax, :interest_rate, :host, :subdomain, :protocol,
       :max_installments, :minimum_value_for_installment, :credit_card_cents_fee, :pagarme_tax, :stone_tax,
       :cielo_tax, :cielo_installment_diners_tax, :cielo_installment_not_diners_tax,
-      :cielo_installment_amex_tax, :cielo_installment_not_amex_tax, :ecr_key
+      :cielo_installment_amex_tax, :cielo_installment_not_amex_tax, :ecr_key, :slip_week_day_interval
 
     def initialize
       self.api_key = ''
@@ -24,6 +24,7 @@ module CatarsePagarme
       self.cielo_installment_not_diners_tax = 0.0455
       self.cielo_installment_amex_tax = 0.058
       self.cielo_installment_not_amex_tax = 0.048
+      self.slip_week_day_interval = 2
     end
   end
 end
