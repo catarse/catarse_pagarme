@@ -64,6 +64,9 @@ FactoryGirl.define do
     f.association :project, factory: :project
     f.association :user, factory: :user
     f.value 10.00
+    f.payer_name 'Foo Bar'
+    f.payer_email 'foo@bar.com'
+    f.anonymous false
     after :create do |contribution|
       create(:payment, paid_at: Time.now, gateway_id: '1.2.3', state: 'paid', value: contribution.value, contribution: contribution)
     end
