@@ -78,8 +78,8 @@ module CatarsePagarme
     end
 
     def get_installment(installment_number)
-      installment = get_installments['installments'].select do |installment|
-        !installment[installment_number.to_s].nil?
+      installment = get_installments['installments'].select do |_installment|
+        !_installment[installment_number.to_s].nil?
       end
 
       installment[installment_number.to_s]
