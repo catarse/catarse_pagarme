@@ -100,6 +100,24 @@ describe CatarsePagarme::PaymentDelegator do
     end
   end
 
+  describe "#transfer_funds" do
+    let(:admin_user) { create(:user, admin: true) }
+    before do
+      create(:bank_account, user: payment.user)
+      allow(payment.user).to receive(:admin?).and_return(true)
+    end
+
+    it do
+      transfer = delegator.transfer_funds(admin_user)
+
+      expect(payment.payment_transfers.count).to eq(1)
+      expect(transfer.payment).to eq(payment)
+      expect(transfer.user).to eq(admin_user)
+      expect(transfer.transfer_id).to eq(transfer.transfer_data["id"])
+    end
+  end
+
+
   describe "#change_status_by_transaction" do
 
     %w(paid authorized).each do |status|

@@ -33,17 +33,17 @@ FactoryGirl.define do
 
   factory :bank do |f|
     f.name { generate(:uid) }
-    f.code { generate(:uid) }
+    f.code '237'
   end
 
   factory :bank_account do |f|
     f.association :bank
-    f.account '1234'
-    f.account_digit '1'
-    f.agency '1'
+    f.account '25334'
+    f.account_digit '2'
+    f.agency '1432'
     f.agency_digit '2'
-    f.owner_name 'fooo'
-    f.owner_document '9889'
+    f.owner_name 'Lorem amenori'
+    f.owner_document '11111111111'
   end
 
   factory :project do |f|
