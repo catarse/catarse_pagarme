@@ -70,7 +70,7 @@ module CatarsePagarme
 
     def transaction
       @transaction ||= ::PagarMe::Transaction.find_by_id(self.payment.gateway_id)
-      if @transaction.kind_of?(Array) 
+      if @transaction.kind_of?(Array)
         @transaction.last
       else
         @transaction
@@ -78,8 +78,8 @@ module CatarsePagarme
     end
 
     def get_installment(installment_number)
-      installment = get_installments['installments'].select do |installment|
-        !installment[installment_number.to_s].nil?
+      installment = get_installments['installments'].select do |_installment|
+        !_installment[installment_number.to_s].nil?
       end
 
       installment[installment_number.to_s]
@@ -89,6 +89,29 @@ module CatarsePagarme
       @installments ||= PagarMe::Transaction.calculate_installments({
         amount: self.value_for_transaction,
         interest_rate: CatarsePagarme.configuration.interest_rate
+      })
+    end
+
+    # Transfer payment amount to payer bank account via transfers API
+    # Params:
+    # +authorized_by+:: +User+ object that authorize this transfer
+    def transfer_funds(authorized_by)
+      raise 'must be admin to perform this action' unless authorized_by.try(:admin?)
+
+      bank_account = PagarMe::BankAccount.new(bank_account_attributes.delete(:bank_account))
+      bank_account.create
+      raise "unable to create an bank account" unless bank_account.id.present?
+
+      transfer = PagarMe::Transfer.new({
+        bank_account_id: bank_account.id,
+        amount: value_for_transaction
+      })
+      transfer.create
+
+      payment.payment_transfers.create!({
+        user: authorized_by,
+        transfer_id: transfer.id,
+        transfer_data: transfer.to_json
       })
     end
 

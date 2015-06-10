@@ -1,5 +1,6 @@
 class Payment < ActiveRecord::Base
   has_many :payment_notifications
+  has_many :payment_transfers
   belongs_to :contribution
   delegate :user, :project, to: :contribution
 

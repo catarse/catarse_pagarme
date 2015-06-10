@@ -33,17 +33,17 @@ FactoryGirl.define do
 
   factory :bank do |f|
     f.name { generate(:uid) }
-    f.code { generate(:uid) }
+    f.code '237'
   end
 
   factory :bank_account do |f|
     f.association :bank
-    f.account '1234'
-    f.account_digit '1'
-    f.agency '1'
+    f.account '25334'
+    f.account_digit '2'
+    f.agency '1432'
     f.agency_digit '2'
-    f.owner_name 'fooo'
-    f.owner_document '9889'
+    f.owner_name 'Lorem amenori'
+    f.owner_document '11111111111'
   end
 
   factory :project do |f|
@@ -64,6 +64,9 @@ FactoryGirl.define do
     f.association :project, factory: :project
     f.association :user, factory: :user
     f.value 10.00
+    f.payer_name 'Foo Bar'
+    f.payer_email 'foo@bar.com'
+    f.anonymous false
     after :create do |contribution|
       create(:payment, paid_at: Time.now, gateway_id: '1.2.3', state: 'paid', value: contribution.value, contribution: contribution)
     end
