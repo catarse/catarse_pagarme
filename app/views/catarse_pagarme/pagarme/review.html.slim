@@ -24,10 +24,10 @@
               .w-col.w-col-1.w-sub-col
                 .w-radio.w-clearfix.back-payment-credit-card-radio-field
                   = radio_button_tag :payment_subscription_card, credit_card.card_key, i == 0, {"data-stored" => true}
-              .w-col.w-col-2.w-sub-col
+              .w-col.w-col-2.w-sub-col.w-sub-col-middle
                 .fontsize-small.fontweight-semibold.text-success
                   = credit_card.card_brand.upcase
-              .w-col.w-col-5.w-sub-col
+              .w-col.w-col-5.w-sub-col.w-sub-col-middle
                 .fontsize-small.fontweight-semibold.u-marginbottom-20
                   = "XXXX.XXXX.XXXX.#{credit_card.last_digits}"
               .w-col.w-col-4
