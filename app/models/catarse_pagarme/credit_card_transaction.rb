@@ -5,6 +5,10 @@ module CatarsePagarme
       save_card = self.attributes.delete(:save_card)
 
       self.transaction = PagarMe::Transaction.new(self.attributes)
+
+      payment.update_attributes(gateway: 'Pagarme', payment_method: 'CartaoDeCredito')
+      payment.save
+
       self.transaction.charge
 
       change_payment_state

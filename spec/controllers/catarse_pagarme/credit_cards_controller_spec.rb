@@ -44,6 +44,19 @@ describe CatarsePagarme::CreditCardsController do
           expect(ActiveSupport::JSON.decode(response.body)['payment_status']).to eq('failed')
         end
       end
+
+      context "when charges fails" do
+        before do
+          allow_any_instance_of(PagarMe::Transaction).to receive(:charge).and_raise("boom")
+          post :create, {
+            locale: :pt, id: contribution.id, use_route: 'catarse_pagarme',
+            card_hash: sample_card_hash }
+        end
+
+        it "should have created a payment" do
+          expect(contribution.payments.size).to eq(2)
+        end
+      end
     end
   end
 end
