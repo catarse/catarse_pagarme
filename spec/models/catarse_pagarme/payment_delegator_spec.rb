@@ -102,7 +102,15 @@ describe CatarsePagarme::PaymentDelegator do
 
   describe "#transfer_funds" do
     let(:admin_user) { create(:user, admin: true) }
+    let(:transfer_mock) {
+      t = mock()
+      allow(t).to receive(:create).and_return(true)
+      allow(t).to receive(:id).and_return("123")
+      allow(t).to receive(:to_json).and_return({id: '123'}.to_json)
+      t
+    }
     before do
+      allow(PagarMe::Transfer).to receive(:new).and_return(transfer_mock)
       create(:bank_account, user: payment.user)
       allow(payment.user).to receive(:admin?).and_return(true)
     end
@@ -127,7 +135,6 @@ describe CatarsePagarme::PaymentDelegator do
             payment.stub(:paid?).and_return(false)
             payment.stub(:refunded?).and_return(true)
             payment.stub(:pending_refund?).and_return(false)
-            payment.should_receive(:invalid_refund)
           end
 
           it { delegator.change_status_by_transaction(status) }
@@ -138,7 +145,6 @@ describe CatarsePagarme::PaymentDelegator do
             payment.stub(:paid?).and_return(false)
             payment.stub(:refunded?).and_return(false)
             payment.stub(:pending_refund?).and_return(true)
-            payment.should_receive(:invalid_refund)
           end
 
           it { delegator.change_status_by_transaction(status) }

@@ -11,11 +11,9 @@ module CatarsePagarme
     def change_status_by_transaction(transactin_status)
       case transactin_status
       when 'paid', 'authorized' then
-        if payment.refunded? || payment.pending_refund?
-          payment.invalid_refund
-        elsif !self.payment.paid?
-          self.payment.pay
-        end
+        self.payment.pay unless self.payment.paid?
+      when 'pending_refund' then
+        self.payment.request_refund unless self.payment.pending_refund?
       when 'refunded' then
         self.payment.refund unless self.payment.refunded?
       when 'refused' then
