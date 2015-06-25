@@ -18,15 +18,6 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
     this.$('#user_bank_account_attributes_name').brbanks();
   },
 
-  validateName: function(field) {
-    if(field.val().length < 5 || field.val().length > 30){
-      $(field).trigger('invalid');
-      return false;
-    }
-
-    return true;
-  },
-
   onContentClick: function() {
     var thank_you = $('#project_review').data('thank-you-path');
 
@@ -51,21 +42,7 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
     this.$('#payment-slip-instructions').slideUp('slow');
     that.parent.loader.show();
 
-    var bankAccountAttributes = {
-      user: {
-        bank_account_attributes: {
-          bank_id: that.$('select#user_bank_account_attributes_bank_id').val(),
-          agency: that.$('input#user_bank_account_attributes_agency').val(),
-          agency_digit: that.$('input#user_bank_account_attributes_agency_digit').val(),
-          account: that.$('input#user_bank_account_attributes_account').val(),
-          account_digit: that.$('input#user_bank_account_attributes_account_digit').val(),
-          owner_name: that.$('input#user_bank_account_attributes_owner_name').val(),
-          owner_document: that.$('input#user_bank_account_attributes_owner_document').val()
-        }
-      }
-    };
-
-    $.post('/payment/pagarme/'+that.parent.contributionId+'/pay_slip.json', bankAccountAttributes, null, 'json').success(function(response){
+    $.post('/payment/pagarme/'+that.parent.contributionId+'/pay_slip.json',null, 'json').success(function(response){
       parent.loader.hide();
       if(response.payment_status == 'failed'){
         that.message.find('.message-text').html(response.message);

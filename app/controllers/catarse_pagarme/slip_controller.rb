@@ -32,7 +32,7 @@ module CatarsePagarme
           name: payment.user.name
         },
         metadata: metadata_attributes
-      }.update({ user: params[:user] })
+      }
     end
 
     def permitted_attributes
