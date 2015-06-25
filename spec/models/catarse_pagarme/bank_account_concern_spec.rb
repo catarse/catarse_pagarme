@@ -8,7 +8,7 @@ describe FakeBankAccount do
   let(:bank) { create(:bank) }
 
   let(:valid_attr) do
-    vb = build(:bank_account, bank: bank)
+    vb = build(:bank_account, bank: bank, owner_name: 'fo')
     vb.attributes
   end
 

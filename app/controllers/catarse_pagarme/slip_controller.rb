@@ -37,13 +37,7 @@ module CatarsePagarme
 
     def permitted_attributes
       attrs = ActionController::Parameters.new(slip_attributes)
-      attrs.permit(:boleto_expiration_date, :payment_method, :amount, :postback_url, metadata: [:key], customer: [:name, :email],
-        user: [
-          bank_account_attributes: [
-            :bank_id, :account, :account_digit, :agency,
-            :agency_digit, :owner_name, :owner_document
-          ]
-        ])
+      attrs.permit(:boleto_expiration_date, :payment_method, :amount, :postback_url, metadata: [:key], customer: [:name, :email])
     end
 
   end
