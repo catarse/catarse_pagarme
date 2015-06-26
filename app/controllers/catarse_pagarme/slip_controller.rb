@@ -4,7 +4,7 @@ module CatarsePagarme
   class SlipController < CatarsePagarme::ApplicationController
 
     def create
-      transaction = SlipTransaction.new(permitted_attributes, payment).charge!
+      transaction = SlipTransaction.new(slip_attributes, payment).charge!
 
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e
@@ -12,7 +12,7 @@ module CatarsePagarme
     end
 
     def update
-      transaction = SlipTransaction.new(permitted_attributes, payment).charge!
+      transaction = SlipTransaction.new(slip_attributes, payment).charge!
       render text: transaction.boleto_url
     end
 
@@ -32,19 +32,7 @@ module CatarsePagarme
           name: payment.user.name
         },
         metadata: metadata_attributes
-      }.update({ user: params[:user] })
+      }
     end
-
-    def permitted_attributes
-      attrs = ActionController::Parameters.new(slip_attributes)
-      attrs.permit(:boleto_expiration_date, :payment_method, :amount, :postback_url, metadata: [:key], customer: [:name, :email],
-        user: [
-          bank_account_attributes: [
-            :bank_id, :account, :account_digit, :agency,
-            :agency_digit, :owner_name, :owner_document
-          ]
-        ])
-    end
-
   end
 end

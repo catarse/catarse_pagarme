@@ -25,12 +25,6 @@ describe CatarsePagarme::SlipTransaction do
         payment_method: 'boleto',
         amount: payment.pagarme_delegator.value_for_transaction,
         postback_url: 'http://test.foo'
-      }, user: {
-        bank_account_attributes: {
-          bank_id: 1, agency: '1', agency_digit: '1',
-          account: '1', account_digit: '1', owner_name: 'foo',
-          owner_document: 'bar'
-        }
       }
     }
   end
@@ -39,12 +33,8 @@ describe CatarsePagarme::SlipTransaction do
     {
       slip_payment: {
         payment_method: 'boleto',
-        amount: payment.pagarme_delegator.value_for_transaction,
+        amount: nil,
         postback_url: 'http://test.foo'
-      }, user: {
-        bank_account_attributes: {
-          owner_name: ''
-        }
       }
     }
   end
@@ -76,8 +66,6 @@ describe CatarsePagarme::SlipTransaction do
 
     context "with valid attributes" do
       before do
-        slip_transaction.should_receive(:update_user_bank_account).and_call_original
-        slip_transaction.user.should_receive(:update_attributes).and_return(true)
         payment.should_receive(:update_attributes).at_least(1).and_call_original
         PagarMe::Transaction.should_receive(:find_by_id).with(pagarme_transaction.id).and_return(pagarme_transaction)
         CatarsePagarme::PaymentDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
