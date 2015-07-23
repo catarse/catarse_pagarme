@@ -12,7 +12,7 @@ module CatarsePagarme
     def metadata_attributes
       {
         key: payment.generate_key,
-        project_id: payment.contribution.project_id
+        contribution_id: payment.contribution.id
       }
     end
 
