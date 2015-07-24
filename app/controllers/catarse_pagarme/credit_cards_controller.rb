@@ -5,7 +5,7 @@ module CatarsePagarme
       transaction = CreditCardTransaction.new(credit_card_attributes, payment).charge!
 
       render json: { payment_status: transaction.status }
-    rescue Exception => e
+    rescue PagarMe::PagarMeError => e
       render json: { payment_status: 'failed', message: e.message }
     end
 

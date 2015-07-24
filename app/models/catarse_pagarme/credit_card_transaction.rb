@@ -7,8 +7,10 @@ module CatarsePagarme
       self.transaction = PagarMe::Transaction.new(self.attributes)
 
       payment.update_attributes({
-        gateway: 'Pagarme', payment_method: payment_method})
-      payment.save
+        gateway: 'Pagarme', 
+        payment_method: payment_method
+      })
+      payment.save!
 
       self.transaction.charge
 

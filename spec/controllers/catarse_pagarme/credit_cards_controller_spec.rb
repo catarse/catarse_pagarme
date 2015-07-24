@@ -47,7 +47,7 @@ describe CatarsePagarme::CreditCardsController do
 
       context "when charges fails" do
         before do
-          allow_any_instance_of(PagarMe::Transaction).to receive(:charge).and_raise("boom")
+          allow_any_instance_of(PagarMe::Transaction).to receive(:charge).and_raise(PagarMe::PagarMeError)
           post :create, {
             locale: :pt, id: contribution.id, use_route: 'catarse_pagarme',
             card_hash: sample_card_hash }
