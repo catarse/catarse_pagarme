@@ -13,7 +13,12 @@ module CatarsePagarme
 
     def update
       transaction = SlipTransaction.new(slip_attributes, payment).charge!
-      render text: transaction.boleto_url
+      respond_to do |format|
+        format.html { redirect_to transaction.boleto_url }
+        format.json do
+          { boleto_url: transaction.boleto_url }
+        end
+      end
     end
 
     protected
