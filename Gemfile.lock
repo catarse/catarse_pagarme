@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.7.2)
+    catarse_pagarme (2.7.3)
       pagarme (= 1.10.0)
       rails (~> 4.0)
       weekdays (>= 1.0.2)
