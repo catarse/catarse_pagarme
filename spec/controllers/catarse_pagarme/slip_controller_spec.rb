@@ -11,13 +11,13 @@ describe CatarsePagarme::SlipController do
   let(:payment) { contribution.payments.first }
   let(:credit_card) { create(:credit_card, subscription_id: '1542')}
 
-  describe 'PATCH update' do
+  describe 'GET update' do
     context  'without an user' do
       let(:user) { nil }
 
       it 'should raise a error' do
         expect {
-          patch :update, locale: :pt, id: contribution.id, use_route: 'catarse_pagarme'
+          get :update, locale: :pt, id: contribution.id, use_route: 'catarse_pagarme'
         }.to raise_error('invalid user')
       end
     end
@@ -26,7 +26,7 @@ describe CatarsePagarme::SlipController do
       let(:user) { payment.user }
 
       before do
-        patch :update, locale: :pt, id: contribution.id, use_route: 'catarse_pagarme'
+        get :update, locale: :pt, id: contribution.id, use_route: 'catarse_pagarme'
       end
 
       it 'boleto_url should be filled' do
