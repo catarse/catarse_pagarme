@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.7.3)
+    catarse_pagarme (2.7.4)
       pagarme (= 1.10.0)
       rails (~> 4.0)
       weekdays (>= 1.0.2)
@@ -57,7 +57,7 @@ GEM
     method_source (0.8.2)
     mime-types (1.25.1)
     minitest (5.4.0)
-    multi_json (1.11.1)
+    multi_json (1.11.2)
     netrc (0.10.3)
     pagarme (1.10.0)
       multi_json
@@ -131,3 +131,6 @@ DEPENDENCIES
   pg
   pry
   rspec-rails (~> 2.14.0)
+
+BUNDLED WITH
+   1.10.3
