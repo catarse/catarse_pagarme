@@ -131,6 +131,3 @@ DEPENDENCIES
   pg
   pry
   rspec-rails (~> 2.14.0)
-
-BUNDLED WITH
-   1.10.3

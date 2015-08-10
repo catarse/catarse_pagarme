@@ -56,6 +56,10 @@ describe CatarsePagarme::CreditCardsController do
         it "should have created a payment" do
           expect(contribution.payments.size).to eq(2)
         end
+
+        it "should update the payment key on the local database" do
+          expect(contribution.payments.last.key).to_not be_nil
+        end
       end
     end
   end
