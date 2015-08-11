@@ -7,6 +7,7 @@ require 'pagarme'
 require 'open-uri'
 require 'rspec/rails'
 require 'factory_girl'
+require 'sidekiq/testing'
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[ File.expand_path("../support/**/*.rb", __FILE__)].each {|f| require f}
@@ -33,6 +34,8 @@ RSpec.configure do |config|
   config.before(:each) do
     PagarMe.stub(:api_key).and_return('ak_test_XLoo19QDn9kg5JFGU70x12IA4NqbAv')
     PaymentEngines.stub(:configuration).and_return({})
+    Sidekiq::Testing.inline!
+    CatarsePagarme::VerifyPagarmeWorker.stub(:perform_in).and_return(true)
   end
 end
 

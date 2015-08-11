@@ -1,7 +1,8 @@
-require 'pagarme'
+require "pagarme"
 require "catarse_pagarme/engine"
 require "catarse_pagarme/configuration"
 require "catarse_pagarme/payment_engine"
+require "sidekiq"
 
 
 module CatarsePagarme
