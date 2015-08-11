@@ -3,7 +3,6 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
 
   events: {
     'click input#build_boleto' : 'onBuildBoletoClick',
-    'click .link_content a' : 'onContentClick',
     'blur input' : 'checkInput'
   },
 
@@ -16,16 +15,6 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
     this.setupForm();
     this.message = this.$('.payment-error-message');
     this.$('#user_bank_account_attributes_name').brbanks();
-  },
-
-  onContentClick: function() {
-    var thank_you = $('#project_review').data('thank-you-path');
-
-    if(thank_you){
-      location.href = thank_you;
-    } else {
-      location.href = '/';
-    }
   },
 
   onBuildBoletoClick: function(e){
@@ -50,11 +39,13 @@ App.views.Pagarme.addChild('PaymentSlip', _.extend({
 
         $(e.currentTarget).show();
       } else if(response.boleto_url) {
-        var link = $('<a class="alt-link" target="__blank">Clique aqui para ver o boleto e completar o pagamento.</a>')
-        link.attr('href', response.boleto_url);
-        that.$('.link_content').empty().html(link);
-        that.$('> div:not(.after-success)').hide();
-        that.$('#payment-slip-link').slideDown('slow');
+        var thank_you = $('#project_review').data('thank-you-path');
+
+        if(thank_you){
+          location.href = thank_you;
+        } else {
+          location.href = '/';
+        }
       }
     });
   }
