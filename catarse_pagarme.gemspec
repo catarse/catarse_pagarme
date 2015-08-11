@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 4.0"
   s.add_dependency "pagarme", "1.10.0"
   s.add_dependency "weekdays", ">= 1.0.2"
+  s.add_dependency "sidekiq"
 
   s.add_development_dependency "rspec-rails", "~> 2.14.0"
   s.add_development_dependency "factory_girl_rails"
