@@ -19,7 +19,7 @@ module CatarsePagarme::FeeCalculatorConcern
 
     def get_card_fee
       return nil if self.payment.gateway_data["acquirer_name"].blank? # Here we depend on the acquirer name
-      if self.payment.gateway_data["acquirer_name"] == 'stone'
+      if %w(stone pagarme).include? self.payment.gateway_data["acquirer_name"]
         get_stone_fee
       else
         get_cielo_fee
