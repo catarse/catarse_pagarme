@@ -106,7 +106,9 @@
             .fontsize-small.u-marginbottom-40= t('projects.contributions.edit.slip_message')
 
             .w-row
-              .w-col.w-col-8.w-col-offset-2
+              .w-col.w-col-2
+              .w-col.w-col-8
                 #card-loading.loader.u-text-center.w-col.w-col-12.u-marginbottom-30 = image_tag "catarse_bootstrap/loader.gif"
                 = submit_tag t('projects.contributions.review.form.labels.build_boleto'), :class => 'btn btn-large u-marginbottom-20', :id => "build_boleto"
                 = render partial: 'terms'
+              .w-col.w-col-2
