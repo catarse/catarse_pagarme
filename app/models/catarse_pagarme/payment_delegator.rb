@@ -69,12 +69,15 @@ module CatarsePagarme
     end
 
     def transaction
-      @transaction ||= ::PagarMe::Transaction.find_by_id(self.payment.gateway_id)
-      if @transaction.kind_of?(Array)
-        @transaction.last
-      else
-        @transaction
-      end
+      gateway_id = self.payment.gateway_id
+      raise "no gateway_id present" unless gateway_id.present?
+
+      @transaction ||= ::PagarMe::Transaction.find_by_id(gateway_id)
+      _transaction = @transaction.kind_of?(Array) ? @transaction.last : @transaction
+
+      raise "transaction gateway not match" unless _transaction.id == gateway_id
+
+      _transaction
     end
 
     def get_installment(installment_number)

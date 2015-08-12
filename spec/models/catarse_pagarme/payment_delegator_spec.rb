@@ -4,7 +4,7 @@ describe CatarsePagarme::PaymentDelegator do
   let(:contribution) { create(:contribution, value: 10) }
   let(:payment) { contribution.payments.first }
   let(:delegator) { payment.pagarme_delegator }
-  let(:fake_transaction) { double("fake transaction", card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
+  let(:fake_transaction) { double("fake transaction", id: payment.gateway_id, card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
 
   before do
     CatarsePagarme.configuration.stub(:slip_tax).and_return(2.00)
@@ -97,6 +97,43 @@ describe CatarsePagarme::PaymentDelegator do
 
     it "should update fee" do
       expect(payment.gateway_fee).to eq delegator.get_fee
+    end
+  end
+
+  describe "#transaction" do
+    before do
+      delegator.unstub(:transaction)#.and_return(fake_transaction)
+      allow(PagarMe::Transaction).to receive(:find_by_id).and_return(fake_transaction)
+    end
+
+    context "when payment.gateway id is null" do
+      before do
+        allow(payment).to receive(:gateway_id).and_return(nil)
+      end
+
+      it "expect to raises an error" do
+        expect {
+          delegator.transaction
+        }.to raise_error("no gateway_id present")
+      end
+    end
+
+    context "when transaction.id dont match with gateway_id" do
+      before do
+        allow(fake_transaction).to receive(:id).and_return("123")
+      end
+
+      it "expect to raises an error" do
+        expect {
+          delegator.transaction
+        }.to raise_error("transaction gateway not match")
+      end
+    end
+
+    context "when have correct transaction" do
+      it "should return the transaction object" do
+        expect(delegator.transaction).to eq(fake_transaction)
+      end
     end
   end
 

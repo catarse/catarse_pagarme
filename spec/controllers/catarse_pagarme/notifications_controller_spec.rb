@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CatarsePagarme::NotificationsController do
-  let(:fake_transaction) { double("fake transaction", card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
+  let(:fake_transaction) { double("fake transaction", id: payment.gateway_id, card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
 
   before do
     PagarMe.stub(:validate_fingerprint).and_return(true)
@@ -10,8 +10,8 @@ describe CatarsePagarme::NotificationsController do
 
   let(:project) { create(:project, goal: 10_000, state: 'online') }
   let(:contribution) { create(:contribution, value: 10, project: project) }
-  let(:payment) { 
-    p = contribution.payments.first 
+  let(:payment) {
+    p = contribution.payments.first
     p.update_attributes gateway_id: 'abcd'
     p
   }
