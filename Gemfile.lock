@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.7.8)
+    catarse_pagarme (2.7.9)
       pagarme (= 1.10.0)
       rails (~> 4.0)
       sidekiq
@@ -147,6 +147,3 @@ DEPENDENCIES
   pg
   pry
   rspec-rails (~> 2.14.0)
-
-BUNDLED WITH
-   1.10.3
