@@ -126,7 +126,7 @@ describe CatarsePagarme::PaymentDelegator do
       it "expect to raises an error" do
         expect {
           delegator.transaction
-        }.to raise_error("transaction gateway not match")
+        }.to raise_error("transaction gateway not match 123 != 1.2.3")
       end
     end
 

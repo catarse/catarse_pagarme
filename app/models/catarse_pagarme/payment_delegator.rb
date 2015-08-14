@@ -75,7 +75,7 @@ module CatarsePagarme
       @transaction ||= ::PagarMe::Transaction.find_by_id(gateway_id)
       _transaction = @transaction.kind_of?(Array) ? @transaction.last : @transaction
 
-      raise "transaction gateway not match" unless _transaction.id == gateway_id
+      raise "transaction gateway not match #{_transaction.id} != #{gateway_id}" unless _transaction.id.to_s == gateway_id.to_s
 
       _transaction
     end
