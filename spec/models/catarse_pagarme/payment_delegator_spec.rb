@@ -111,10 +111,8 @@ describe CatarsePagarme::PaymentDelegator do
         allow(payment).to receive(:gateway_id).and_return(nil)
       end
 
-      it "expect to raises an error" do
-        expect {
-          delegator.transaction
-        }.to raise_error("no gateway_id present")
+      it "should be nil" do
+        expect(delegator.transaction).to eq(nil)
       end
     end
 

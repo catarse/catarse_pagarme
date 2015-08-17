@@ -70,7 +70,7 @@ module CatarsePagarme
 
     def transaction
       gateway_id = self.payment.gateway_id
-      raise "no gateway_id present" unless gateway_id.present?
+      return nil unless gateway_id.present?
 
       @transaction ||= ::PagarMe::Transaction.find_by_id(gateway_id)
       _transaction = @transaction.kind_of?(Array) ? @transaction.last : @transaction
