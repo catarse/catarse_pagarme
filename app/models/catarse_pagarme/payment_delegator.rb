@@ -18,7 +18,7 @@ module CatarsePagarme
         self.payment.refund unless self.payment.refunded?
       when 'refused' then
         self.payment.refuse unless self.payment.refused?
-      when 'chargeback' then
+      when 'chargedback' then
         self.payment.chargeback unless self.payment.chargeback?
       end
     end
