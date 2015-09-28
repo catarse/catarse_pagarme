@@ -1,5 +1,6 @@
 module CatarsePagarme
   class CreditCardsController < CatarsePagarme::ApplicationController
+    MAX_SOFT_DESCRIPTOR_LENGTH = 13
 
     def create
       transaction = CreditCardTransaction.new(credit_card_attributes, payment).charge!
@@ -15,9 +16,12 @@ module CatarsePagarme
       hash = {
         payment_method: 'credit_card',
         amount: delegator.value_with_installment_tax(get_installment),
-        postback_url: ipn_pagarme_index_url(host: CatarsePagarme.configuration.host,
-                                            subdomain: CatarsePagarme.configuration.subdomain,
-                                            protocol: CatarsePagarme.configuration.protocol),
+        postback_url: ipn_pagarme_index_url(
+          host: CatarsePagarme.configuration.host,
+          subdomain: CatarsePagarme.configuration.subdomain,
+          protocol: CatarsePagarme.configuration.protocol
+        ),
+        soft_descriptor: payment.project.name[0, MAX_SOFT_DESCRIPTOR_LENGTH],
         installments: get_installment,
         customer: {
           email: payment.user.email,

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CatarsePagarme::NotificationsController do
+describe CatarsePagarme::NotificationsController, type: :controller do
   let(:fake_transaction) { double("fake transaction", id: payment.gateway_id, card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
 
   before do

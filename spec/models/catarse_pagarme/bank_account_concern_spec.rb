@@ -30,16 +30,16 @@ describe FakeBankAccount do
       let(:local_bank_account) { BankAccount.new(valid_attr) }
 
       it "local_bank_account should be valid" do
-        expect(local_bank_account.valid?).to be_true
+        expect(local_bank_account.valid?).to be_truthy
       end
 
       it "bank_account_on_pagarme should be not valid with these attrs" do
-        expect(bank_account_on_pagarme.valid?).to be_false
+        expect(bank_account_on_pagarme.valid?).to be_falsy
       end
 
       it "bank_account_on_pagarme should be valid with another attrs" do
         subject { FakeBankAccount.new(valid_attr_on_pagarme).valid? }
-        expect(subject).to be_true
+        expect(subject).to be_truthy
       end
     end
   end

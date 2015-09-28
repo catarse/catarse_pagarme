@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CatarsePagarme::CreditCardsController do
+describe CatarsePagarme::CreditCardsController, type: :controller do
   before do
     controller.stub(:current_user).and_return(user)
   end
@@ -24,9 +24,14 @@ describe CatarsePagarme::CreditCardsController do
       let(:user) { payment.user }
       context "with valid card data" do
         before do
+          allow(CatarsePagarme::CreditCardTransaction).to receive(:new).and_call_original
           post :create, {
             locale: :pt, id: contribution.id, use_route: 'catarse_pagarme',
             card_hash: sample_card_hash }
+        end
+
+        it 'should receive soft descriptor with project name' do
+          expect(CatarsePagarme::CreditCardTransaction).to have_received(:new).with(hash_including(soft_descriptor: payment.project.name), anything)
         end
 
         it 'and payment_status is not failed' do
