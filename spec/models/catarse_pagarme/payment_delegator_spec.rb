@@ -4,16 +4,21 @@ describe CatarsePagarme::PaymentDelegator do
   let(:contribution) { create(:contribution, value: 10) }
   let(:payment) { contribution.payments.first }
   let(:delegator) { payment.pagarme_delegator }
+  let(:interest_rate) { 0 }
   let(:fake_transaction) { double("fake transaction", id: payment.gateway_id, card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
 
   before do
-    CatarsePagarme.configuration.stub(:slip_tax).and_return(2.00)
-    CatarsePagarme.configuration.stub(:credit_card_tax).and_return(0.01)
-    CatarsePagarme.configuration.stub(:pagarme_tax).and_return(0.0063)
-    CatarsePagarme.configuration.stub(:cielo_tax).and_return(0.038)
-    CatarsePagarme.configuration.stub(:stone_tax).and_return(0.0307)
-    CatarsePagarme.configuration.stub(:credit_card_cents_fee).and_return(0.39)
-    delegator.stub(:transaction).and_return(fake_transaction)
+    CatarsePagarme.configuration = double('fake config', {
+      slip_tax: 2.00,
+      credit_card_tax: 0.01,
+      pagarme_tax: 0.0063,
+      cielo_tax: 0.038,
+      stone_tax: 0.0307,
+      credit_card_cents_fee: 0.39,
+      api_key: '',
+      interest_rate: interest_rate
+    })
+    allow(delegator).to receive(:transaction).and_return(fake_transaction)
   end
 
   describe "instance of CatarsePagarme::paymentDelegator" do
@@ -30,11 +35,9 @@ describe CatarsePagarme::PaymentDelegator do
 
   describe "#value_with_installment_tax" do
     let(:installment) { 5 }
-    subject { delegator.value_with_installment_tax(installment)}
+    let(:interest_rate) { 1.8 }
 
-    before do
-      CatarsePagarme.configuration.stub(:interest_rate).and_return(1.8)
-    end
+    subject { delegator.value_with_installment_tax(installment)}
 
     it "should return the payment value with installments tax" do
       expect(subject).to eq(1057)
@@ -63,7 +66,7 @@ describe CatarsePagarme::PaymentDelegator do
 
   describe "#get_installments" do
     before do
-      delegator.stub(:value_for_transaction).and_return(10000)
+      allow(delegator).to receive(:value_for_transaction).and_return(10000)
     end
     subject { delegator.get_installments }
 
@@ -137,13 +140,7 @@ describe CatarsePagarme::PaymentDelegator do
 
   describe "#transfer_funds" do
     let(:admin_user) { create(:user, admin: true) }
-    let(:transfer_mock) {
-      t = mock()
-      allow(t).to receive(:create).and_return(true)
-      allow(t).to receive(:id).and_return("123")
-      allow(t).to receive(:to_json).and_return({id: '123'}.to_json)
-      t
-    }
+    let(:transfer_mock) { double(create: true, id: "123", to_json: {id: '123'}.to_json) }
     before do
       allow(PagarMe::Transfer).to receive(:new).and_return(transfer_mock)
       create(:bank_account, user: payment.user)
@@ -190,7 +187,7 @@ describe CatarsePagarme::PaymentDelegator do
             payment.stub(:paid?).and_return(true)
             payment.stub(:refunded?).and_return(false)
             payment.stub(:pending_refund?).and_return(false)
-            payment.should_not_receive(:pay)
+            expect(payment).to_not receive(:pay)
           end
 
           it { delegator.change_status_by_transaction(status) }
@@ -201,7 +198,7 @@ describe CatarsePagarme::PaymentDelegator do
             payment.stub(:paid?).and_return(false)
             payment.stub(:refunded?).and_return(false)
             payment.stub(:pending_refund?).and_return(false)
-            payment.should_receive(:pay)
+            expect(payment).to receive(:pay)
           end
 
           it { delegator.change_status_by_transaction(status) }
@@ -213,7 +210,7 @@ describe CatarsePagarme::PaymentDelegator do
       context "and payment is already refunded" do
         before do
           payment.stub(:refunded?).and_return(true)
-          payment.should_not_receive(:refund)
+          expect(payment).to_not receive(:refund)
         end
 
         it { delegator.change_status_by_transaction('refunded') }
@@ -222,7 +219,7 @@ describe CatarsePagarme::PaymentDelegator do
       context "and payment is not refunded" do
         before do
           payment.stub(:refunded?).and_return(false)
-          payment.should_receive(:refund)
+          expect(payment).to receive(:refund)
         end
 
         it { delegator.change_status_by_transaction('refunded') }
@@ -233,7 +230,7 @@ describe CatarsePagarme::PaymentDelegator do
       context "and payment is already canceled" do
         before do
           payment.stub(:refused?).and_return(true)
-          payment.should_not_receive(:refuse)
+          expect(payment).to_not receive(:refuse)
         end
 
         it { delegator.change_status_by_transaction('refused') }
@@ -242,7 +239,7 @@ describe CatarsePagarme::PaymentDelegator do
       context "and payment is not refused" do
         before do
           payment.stub(:refused?).and_return(false)
-          payment.should_receive(:refuse)
+          expect(payment).to receive(:refuse)
         end
 
         it { delegator.change_status_by_transaction('refused') }

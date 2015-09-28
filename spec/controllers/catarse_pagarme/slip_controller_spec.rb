@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CatarsePagarme::SlipController do
+describe CatarsePagarme::SlipController, type: :controller do
   before do
     controller.stub(:current_user).and_return(user)
     Bank.create(name: 'foo', code: '123')

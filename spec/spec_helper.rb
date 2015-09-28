@@ -32,10 +32,10 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    PagarMe.stub(:api_key).and_return('ak_test_XLoo19QDn9kg5JFGU70x12IA4NqbAv')
-    PaymentEngines.stub(:configuration).and_return({})
+    allow(PagarMe).to receive(:api_key).and_return('ak_test_XLoo19QDn9kg5JFGU70x12IA4NqbAv')
+    allow(PaymentEngines).to receive(:configuration).and_return({})
     Sidekiq::Testing.inline!
-    CatarsePagarme::VerifyPagarmeWorker.stub(:perform_in).and_return(true)
+    allow(CatarsePagarme::VerifyPagarmeWorker).to receive(:perform_in).and_return(true)
   end
 end
 
