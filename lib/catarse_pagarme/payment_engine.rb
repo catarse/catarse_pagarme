@@ -20,6 +20,10 @@ module CatarsePagarme
       contribution.pagarme_delegator.refund
     end
 
+    def transfer contribution
+      contribution.pagarme_delegator.transfer_funds
+    end
+
     def can_generate_second_slip?
       true
     end
@@ -36,3 +40,4 @@ module CatarsePagarme
     end
   end
 end
+

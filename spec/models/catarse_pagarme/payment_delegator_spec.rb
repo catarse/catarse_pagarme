@@ -139,20 +139,18 @@ describe CatarsePagarme::PaymentDelegator do
   end
 
   describe "#transfer_funds" do
-    let(:admin_user) { create(:user, admin: true) }
     let(:transfer_mock) { double(create: true, id: "123", to_json: {id: '123'}.to_json) }
     before do
       allow(PagarMe::Transfer).to receive(:new).and_return(transfer_mock)
       create(:bank_account, user: payment.user)
-      allow(payment.user).to receive(:admin?).and_return(true)
     end
 
     it do
-      transfer = delegator.transfer_funds(admin_user)
+      transfer = delegator.transfer_funds
 
       expect(payment.payment_transfers.count).to eq(1)
       expect(transfer.payment).to eq(payment)
-      expect(transfer.user).to eq(admin_user)
+      expect(transfer.user).to eq(payment.user)
       expect(transfer.transfer_id).to eq(transfer.transfer_data["id"])
     end
   end

@@ -96,10 +96,8 @@ module CatarsePagarme
     end
 
     # Transfer payment amount to payer bank account via transfers API
-    # Params:
-    # +authorized_by+:: +User+ object that authorize this transfer
-    def transfer_funds(authorized_by)
-      raise 'must be admin to perform this action' unless authorized_by.try(:admin?)
+    def transfer_funds
+      raise "payment must be paid" if !payment.paid?
 
       bank_account = PagarMe::BankAccount.new(bank_account_attributes.delete(:bank_account))
       bank_account.create
@@ -112,10 +110,12 @@ module CatarsePagarme
       transfer.create
 
       payment.payment_transfers.create!({
-        user: authorized_by,
+        user: payment.user,
         transfer_id: transfer.id,
         transfer_data: transfer.to_json
       })
+      #avoid sending notification
+      payment.update_attributes(state: 'pending_refund')
     end
 
     protected
