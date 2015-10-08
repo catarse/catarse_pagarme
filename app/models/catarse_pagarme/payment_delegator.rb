@@ -108,6 +108,7 @@ module CatarsePagarme
         amount: value_for_transaction
       })
       transfer.create
+      raise "unable to create a transfer" unless transfer.id.present?
 
       payment.payment_transfers.create!({
         user: payment.user,
