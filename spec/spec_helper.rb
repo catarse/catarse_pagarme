@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 
 require File.expand_path("../dummy/config/environment", __FILE__)
 
+require 'database_cleaner'
 require 'pagarme'
 require 'open-uri'
 require 'rspec/rails'
@@ -14,7 +15,7 @@ Dir[ File.expand_path("../support/**/*.rb", __FILE__)].each {|f| require f}
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
-  config.use_transactional_examples = true
+  config.use_transactional_examples = false
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
@@ -31,11 +32,47 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  config.before(:suite) do
+    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.strategy = :transaction
+
+    con = ActiveRecord::Base.connection
+    con.execute %{
+    INSERT INTO public.project_states (state, state_order) VALUES
+    ('deleted', 'archived'),
+    ('rejected', 'created'),
+    ('draft', 'created'),
+    ('in_analysis', 'created'),
+    ('approved', 'publishable'),
+    ('online', 'published'),
+    ('waiting_funds', 'published'),
+    ('failed', 'finished'),
+    ('successful', 'finished');
+
+    INSERT INTO public.flexible_project_states (state, state_order) VALUES
+    ('deleted', 'archived'),
+    ('rejected', 'created'),
+    ('draft', 'created'),
+    ('in_analysis', 'created'),
+    ('approved', 'publishable'),
+    ('online', 'published'),
+    ('waiting_funds', 'published'),
+    ('failed', 'finished'),
+    ('successful', 'finished');
+    }
+  end
+
   config.before(:each) do
+    DatabaseCleaner.start
+    ActionMailer::Base.deliveries.clear
     allow(PagarMe).to receive(:api_key).and_return('ak_test_XLoo19QDn9kg5JFGU70x12IA4NqbAv')
     allow(PaymentEngines).to receive(:configuration).and_return({})
     Sidekiq::Testing.inline!
     allow(CatarsePagarme::VerifyPagarmeWorker).to receive(:perform_in).and_return(true)
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
   end
 end
 
