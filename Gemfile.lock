@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.7.14)
+    catarse_pagarme (2.7.15)
       pagarme (= 1.10.0)
       rails (~> 4.0)
       sidekiq

@@ -108,15 +108,15 @@ module CatarsePagarme
         amount: value_for_transaction
       })
       transfer.create
+      raise "unable to create a transfer" unless transfer.id.present?
 
-      payment_transfer = payment.payment_transfers.create!({
+      #avoid sending notification
+      payment.update_attributes(state: 'pending_refund')
+      payment.payment_transfers.create!({
         user: payment.user,
         transfer_id: transfer.id,
         transfer_data: transfer.to_json
       })
-      #avoid sending notification
-      payment.update_attributes(state: 'pending_refund')
-      payment_transfer
     end
 
     protected
