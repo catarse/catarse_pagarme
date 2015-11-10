@@ -109,13 +109,14 @@ module CatarsePagarme
       })
       transfer.create
 
-      payment.payment_transfers.create!({
+      payment_transfer = payment.payment_transfers.create!({
         user: payment.user,
         transfer_id: transfer.id,
         transfer_data: transfer.to_json
       })
       #avoid sending notification
       payment.update_attributes(state: 'pending_refund')
+      payment_transfer
     end
 
     protected
