@@ -8,16 +8,17 @@ describe CatarsePagarme::PaymentDelegator do
   let(:fake_transaction) { double("fake transaction", id: payment.gateway_id, card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
 
   before do
-    CatarsePagarme.configuration = double('fake config', {
+    allow(CatarsePagarme).to receive(:configuration).and_return(double('fake config', {
       slip_tax: 2.00,
       credit_card_tax: 0.01,
       pagarme_tax: 0.0063,
       cielo_tax: 0.038,
       stone_tax: 0.0307,
+      stone_installment_tax: 0.0307,
       credit_card_cents_fee: 0.39,
       api_key: '',
       interest_rate: interest_rate
-    })
+    }))
     allow(delegator).to receive(:transaction).and_return(fake_transaction)
   end
 
