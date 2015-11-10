@@ -41,7 +41,7 @@ describe CatarsePagarme::PaymentDelegator do
     subject { delegator.value_with_installment_tax(installment)}
 
     it "should return the payment value with installments tax" do
-      expect(subject).to eq(1057)
+      expect(subject).to eq(1090)
     end
   end
 

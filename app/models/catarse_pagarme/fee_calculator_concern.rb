@@ -27,7 +27,7 @@ module CatarsePagarme::FeeCalculatorConcern
     end
 
     def get_stone_fee
-      self.payment.installments > 1 ? tax_calc_for_installment(stone_tax) : tax_calc(stone_tax)
+      self.payment.installments > 1 ? tax_calc_for_installment(stone_installment_tax) : tax_calc(stone_tax)
     end
 
     def get_cielo_fee
@@ -70,6 +70,10 @@ module CatarsePagarme::FeeCalculatorConcern
 
     def stone_tax
       CatarsePagarme.configuration.stone_tax.to_f
+    end
+
+    def stone_installment_tax
+      CatarsePagarme.configuration.stone_installment_tax.to_f
     end
 
     def installment_diners_tax
