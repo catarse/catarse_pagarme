@@ -57,6 +57,7 @@ FactoryGirl.define do
     f.online_date Time.now
     f.online_days 5
     f.video_url 'http://vimeo.com/17298435'
+    f.video_thumbnail 'http://vimeo.com/17298435'
     f.state 'online'
   end
 
