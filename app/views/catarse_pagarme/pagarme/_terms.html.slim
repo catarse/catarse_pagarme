@@ -1,6 +1,10 @@
+- project = @contribution.project
 .fontsize-smallest.u-text-center.u-marginbottom-30
   | Ao apoiar, você concorda com os 
   = link_to 'Termos de Uso', main_app.terms_of_use_path, class: 'alt-link'
+  |,&nbsp;
+  - if project.mode == 'flex'
+    = link_to 'Regras do catarse flex', 'http://suporte.catarse.me/hc/pt-br/articles/206574833-Regras-para-a-fase-de-testes-do-Catarse-Flex', target: '__blank', class: 'alt-link'
   |  e   
   = link_to 'Política de Privacidade', main_app.privacy_policy_path, class: 'alt-link'
 
