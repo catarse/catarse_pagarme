@@ -13,6 +13,10 @@ class Payment < ActiveRecord::Base
     self.state = 'pending' # mock initial state for here we do not include the stat machine
   end
 
+  def slip_expiration_date
+    2.weekdays_from_now
+  end
+
   def generate_key
     self.key ||= SecureRandom.uuid
   end
