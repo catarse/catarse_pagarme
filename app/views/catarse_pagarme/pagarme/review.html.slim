@@ -101,8 +101,7 @@
       .w-row
         .w-col.w-col-12
           .u-margintop-30.u-marginbottom-60.u-radius.card-big.card
-            - expiration_date = (CatarsePagarme.configuration.slip_week_day_interval || 2).weekdays_from_now
-            .fontsize-small.u-marginbottom-20= t('projects.contributions.edit.slip_expiration', date: l(expiration_date.to_date))
+            .fontsize-small.u-marginbottom-20= t('projects.contributions.edit.slip_expiration', date: l(payment.slip_expiration_date.to_date))
             .fontsize-small.u-marginbottom-40= t('projects.contributions.edit.slip_message')
 
             .w-row
