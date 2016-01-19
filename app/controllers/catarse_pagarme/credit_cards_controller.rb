@@ -21,7 +21,7 @@ module CatarsePagarme
           subdomain: CatarsePagarme.configuration.subdomain,
           protocol: CatarsePagarme.configuration.protocol
         ),
-        soft_descriptor: payment.project.permalink[0, MAX_SOFT_DESCRIPTOR_LENGTH],
+        soft_descriptor: payment.project.permalink.gsub(/[\W\_]/, ' ')[0, MAX_SOFT_DESCRIPTOR_LENGTH],
         installments: get_installment,
         customer: {
           email: payment.user.email,

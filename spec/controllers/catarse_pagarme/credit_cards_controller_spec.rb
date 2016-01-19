@@ -31,7 +31,7 @@ describe CatarsePagarme::CreditCardsController, type: :controller do
         end
 
         it 'should receive soft descriptor with project name' do
-          expect(CatarsePagarme::CreditCardTransaction).to have_received(:new).with(hash_including(soft_descriptor: payment.project.permalink), anything)
+          expect(CatarsePagarme::CreditCardTransaction).to have_received(:new).with(hash_including(soft_descriptor: payment.project.permalink.gsub(/[\W\_]/,' ')), anything)
         end
 
         it 'and payment_status is not failed' do
