@@ -8,8 +8,8 @@ module CatarsePagarme
       self.payment = payment
     end
 
-    def change_status_by_transaction(transactin_status)
-      case transactin_status
+    def change_status_by_transaction(transaction_status)
+      case transaction_status
       when 'paid', 'authorized' then
         self.payment.pay unless self.payment.paid?
       when 'pending_refund' then
