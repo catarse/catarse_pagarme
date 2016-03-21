@@ -22,7 +22,7 @@ module CatarsePagarme
       raise "unable to create a transfer" unless transfer.id.present?
 
       balance_transfer.update_attribute(:transfer_id, transfer.id)
-      balance_transfer.transition_to(:processing, transfer_data: transfer.to_json)
+      balance_transfer.transition_to(:processing, transfer_data: transfer.to_hash)
     end
 
     def bank_account_attributes
