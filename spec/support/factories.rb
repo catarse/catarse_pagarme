@@ -3,6 +3,10 @@ FactoryGirl.define do
     "Foo bar #{n}"
   end
 
+  sequence :serial do |n|
+    n
+  end
+
   sequence :email do |n|
     "person#{n}@example.com"
   end
@@ -33,7 +37,7 @@ FactoryGirl.define do
 
   factory :bank do |f|
     f.name { generate(:uid) }
-    f.code '237'
+    f.code { generate(:serial) }
   end
 
   factory :bank_account do |f|
@@ -47,23 +51,99 @@ FactoryGirl.define do
   end
 
   factory :project do |f|
+    #after(:create) do |project|
+    #  create(:reward, project: project)
+    #  if project.state == 'change_to_online_after_create'
+    #    project.update_attributes(state: 'online')
+    #  end
+    #end
     f.name "Foo bar"
     f.permalink { generate(:permalink) }
-    f.association :user, factory: :user
-    f.association :category, factory: :category
+    f.association :user
+    f.association :category
+    f.association :city
     f.about_html "Foo bar"
     f.headline "Foo bar"
     f.goal 10000
-    f.online_date Time.now
     f.online_days 5
+    f.more_links 'Ipsum dolor'
+    f.first_contributions 'Foo bar'
     f.video_url 'http://vimeo.com/17298435'
-    f.video_thumbnail 'http://vimeo.com/17298435'
     f.state 'online'
+    f.budget '1000'
+    f.uploaded_image File.open("#{Rails.root}/spec/support/testimg.png")
+    after :create do |project| 
+      unless project.project_transitions.where(to_state: project.state).present?
+        FactoryGirl.create(:project_transition, to_state: project.state, project: project)
+      end
+
+      # should set expires_at when create a project in these states
+      if %w(online waiting_funds failed successful).include?(project.state) && project.online_days.present? && project.online_at.present?
+        project.expires_at = (project.online_at + project.online_days.days).end_of_day
+        project.save
+      end
+    end
+    after :build do |project|
+      project.account = build(:project_account, project: nil)
+      project.rewards.build(deliver_at: Time.now, minimum_value: 10, description: 'test')
+    end
+  end
+
+  factory :flexible_project do |f|
+    f.association :project
+    f.state 'draft'
+
+    after :create do |flex_project| 
+      FactoryGirl.create(:flexible_project_transition, {
+        to_state: flex_project.state,
+        flexible_project: flex_project
+      })
+    end
+  end
+
+  factory :flexible_project_transition do |f|
+    f.association :flexible_project
+    f.most_recent true
+    f.to_state 'online'
+    f.sort_key { generate(:serial) }
+  end
+
+  factory :project_transition do |f|
+    f.association :project
+    f.most_recent true
+    f.to_state 'online'
+    f.sort_key { generate(:serial) }
+  end
+
+  factory :project_account do |f|
+    f.association :project
+    f.association :bank
+    f.email "foo@bar.com"
+    f.address_zip_code "foo"
+    f.address_neighbourhood "foo"
+    f.address_state "foo"
+    f.address_city "foo"
+    f.address_number "foo"
+    f.address_street "foo"
+    f.phone_number "1234"
+    f.agency "fooo"
+    f.agency_digit "foo"
+    f.owner_document "foo"
+    f.owner_name "foo"
+    f.account "1"
+    f.account_digit "1000"
+    f.account_type "foo"
   end
 
   factory :contribution do |f|
     f.association :project, factory: :project
     f.association :user, factory: :user
+    f.address_phone_number '(33) 3333-3333'
+    f.address_neighbourhood 'lorem'
+    f.address_number 'lnumber'
+    f.address_street 'lstreet lorem'
+    f.address_zip_code '33600-000'
+    f.payer_document '872.123.775-11'
     f.value 10.00
     f.payer_name 'Foo Bar'
     f.payer_email 'foo@bar.com'
@@ -83,6 +163,16 @@ FactoryGirl.define do
     after :build do |payment|
       payment.gateway = 'pagarme'
     end
+  end
+
+  factory :state do
+    name { generate(:name) }
+    acronym { generate(:name) }
+  end
+
+  factory :city do |f|
+    f.association :state
+    f.name "foo"
   end
 end
 

@@ -4,6 +4,7 @@ describe CatarsePagarme::NotificationsController, type: :controller do
   let(:fake_transaction) { double("fake transaction", id: payment.gateway_id, card_brand: 'visa', acquirer_name: 'stone', tid: '404040404', installments: 2) }
 
   before do
+    @routes = CatarsePagarme::Engine.routes
     PagarMe.stub(:validate_fingerprint).and_return(true)
     PagarMe::Transaction.stub(:find_by_id).and_return(fake_transaction)
   end
@@ -21,7 +22,7 @@ describe CatarsePagarme::NotificationsController, type: :controller do
     context "with invalid payment" do
       before do
         PaymentEngines.stub(:find_payment).and_return(nil)
-        post :create, { locale: :pt, id: 'abcdfg', use_route: 'catarse_pagarme' }
+        post :create, { locale: :pt, id: 'abcdfg'}
       end
 
       it "should not found the payment" do
@@ -32,7 +33,7 @@ describe CatarsePagarme::NotificationsController, type: :controller do
     context "with valid payment" do
       before do
         PaymentEngines.stub(:find_payment).and_return(payment)
-        post :create, { locale: :pt, id: 'abcd', use_route: 'catarse_pagarme' }
+        post :create, { locale: :pt, id: 'abcd'}
       end
 
       it "should save an extra_data into payment_notifications" do
