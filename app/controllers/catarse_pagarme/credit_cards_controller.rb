@@ -13,9 +13,6 @@ module CatarsePagarme
     protected
 
     def credit_card_attributes
-      contribution = payment.contribution
-      phone_matches = contribution.address_phone_number.gsub(/[\s,-]/, '').match(/\((.*)\)(\d+)/)
-
       hash = {
         payment_method: 'credit_card',
         amount: delegator.value_with_installment_tax(get_installment),
@@ -29,17 +26,17 @@ module CatarsePagarme
         customer: {
           email: contribution.payer_email,
           name: contribution.payer_name,
-          document_number: contribution.payer_document.gsub(/[-.\/_\s]/,''),
+          document_number: document_number,
           address: {
             street: contribution.address_street,
             neighborhood: contribution.address_neighbourhood,
-            zipcode: contribution.address_zip_code.gsub(/[-.]/, ''),
+            zipcode: zip_code,
             street_number: contribution.address_number,
             complementary: contribution.address_complement
           },
           phone: {
-            ddd: phone_matches[1],
-            number: phone_matches[2]
+            ddd: phone_matches.try(:[], 1),
+            number: phone_matches.try(:[], 2)
           }
         },
         metadata: metadata_attributes
@@ -51,11 +48,25 @@ module CatarsePagarme
         hash[:card_id] = params[:card_id]
       end
 
-      if params[:save_card] === "true"
-        hash[:save_card] = true
-      end
+      hash[:save_card] = (params[:save_card] === "true")
 
       hash
+    end
+
+    def document_number
+      (international? || contribution.payer_document.present?) ? '00000000000' : contribution.payer_document.gsub(/[-.\/_\s]/,'')
+    end
+
+    def phone_matches
+      international? ? ['00', '000000000'] : contribution.address_phone_number.gsub(/[\s,-]/, '').match(/\((.*)\)(\d+)/)
+    end
+
+    def zip_code
+      international? ? '00000000' : contribution.address_zip_code.gsub(/[-.]/, '')
+    end
+
+    def international?
+      contribution.international?
     end
 
     def get_installment
