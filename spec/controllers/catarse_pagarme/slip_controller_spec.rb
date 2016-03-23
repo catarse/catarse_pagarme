@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe CatarsePagarme::SlipController, type: :controller do
   before do
+    @routes = CatarsePagarme::Engine.routes
     controller.stub(:current_user).and_return(user)
     Bank.create(name: 'foo', code: '123')
   end
@@ -17,7 +18,7 @@ describe CatarsePagarme::SlipController, type: :controller do
 
       it 'should raise a error' do
         expect {
-          get :update, locale: :pt, id: contribution.id, use_route: 'catarse_pagarme'
+          get :update, locale: :pt, id: contribution.id
         }.to raise_error('invalid user')
       end
     end
@@ -26,7 +27,7 @@ describe CatarsePagarme::SlipController, type: :controller do
       let(:user) { payment.user }
 
       before do
-        get :update, locale: :pt, id: contribution.id, use_route: 'catarse_pagarme'
+        get :update, locale: :pt, id: contribution.id
       end
 
       it 'boleto_url should be filled' do
@@ -41,7 +42,7 @@ describe CatarsePagarme::SlipController, type: :controller do
 
       it 'should raise a error' do
         expect {
-          post :create, { locale: :pt, id: contribution.id, use_route: 'catarse_pagarme' }
+          post :create, { locale: :pt, id: contribution.id }
         }.to raise_error('invalid user')
       end
     end
@@ -51,7 +52,7 @@ describe CatarsePagarme::SlipController, type: :controller do
 
       before do
         post :create, {
-          locale: :pt, id: contribution.id, use_route: 'catarse_pagarme',
+          locale: :pt, id: contribution.id,
           user: { bank_account_attributes: {
             bank_id: Bank.first.id, agency: '1', agency_digit: '1', account: '1', account_digit: '1', owner_name: 'foo', owner_document: '1'
           } } }

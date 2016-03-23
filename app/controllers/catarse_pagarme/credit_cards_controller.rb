@@ -24,8 +24,20 @@ module CatarsePagarme
         soft_descriptor: payment.project.permalink.gsub(/[\W\_]/, ' ')[0, MAX_SOFT_DESCRIPTOR_LENGTH],
         installments: get_installment,
         customer: {
-          email: payment.user.email,
-          name: payment.user.name
+          email: contribution.payer_email,
+          name: contribution.payer_name,
+          document_number: document_number,
+          address: {
+            street: contribution.address_street,
+            neighborhood: contribution.address_neighbourhood,
+            zipcode: zip_code,
+            street_number: contribution.address_number,
+            complementary: contribution.address_complement
+          },
+          phone: {
+            ddd: phone_matches.try(:[], 1),
+            number: phone_matches.try(:[], 2)
+          }
         },
         metadata: metadata_attributes
       }
@@ -36,11 +48,25 @@ module CatarsePagarme
         hash[:card_id] = params[:card_id]
       end
 
-      if params[:save_card] === "true"
-        hash[:save_card] = true
-      end
+      hash[:save_card] = (params[:save_card] == 'true')
 
       hash
+    end
+
+    def document_number
+      (international? || contribution.payer_document.present?) ? '00000000000' : contribution.payer_document.gsub(/[-.\/_\s]/,'')
+    end
+
+    def phone_matches
+      international? ? ['33', '33335555'] : contribution.address_phone_number.gsub(/[\s,-]/, '').match(/\((.*)\)(\d+)/)
+    end
+
+    def zip_code
+      international? ? '00000000' : contribution.address_zip_code.gsub(/[-.]/, '')
+    end
+
+    def international?
+      contribution.international?
     end
 
     def get_installment
