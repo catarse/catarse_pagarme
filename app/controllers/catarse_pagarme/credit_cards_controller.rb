@@ -48,7 +48,7 @@ module CatarsePagarme
         hash[:card_id] = params[:card_id]
       end
 
-      hash[:save_card] = (params[:save_card] === "true")
+      hash[:save_card] = (params[:save_card] == 'true')
 
       hash
     end
@@ -58,7 +58,7 @@ module CatarsePagarme
     end
 
     def phone_matches
-      international? ? ['00', '000000000'] : contribution.address_phone_number.gsub(/[\s,-]/, '').match(/\((.*)\)(\d+)/)
+      international? ? ['33', '33335555'] : contribution.address_phone_number.gsub(/[\s,-]/, '').match(/\((.*)\)(\d+)/)
     end
 
     def zip_code
