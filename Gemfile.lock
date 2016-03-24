@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.8.6)
+    catarse_pagarme (2.8.7)
       pagarme (= 1.10.0)
       rails (~> 4.0)
       sidekiq
@@ -52,7 +52,7 @@ GEM
     connection_pool (2.2.0)
     database_cleaner (1.5.0)
     diff-lcs (1.2.5)
-    domain_name (0.5.25)
+    domain_name (0.5.20160310)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     factory_girl (4.5.0)
@@ -154,7 +154,7 @@ GEM
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.1)
+    unf_ext (0.0.7.2)
     weekdays (1.0.2)
 
 PLATFORMS
