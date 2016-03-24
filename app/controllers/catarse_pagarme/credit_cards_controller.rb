@@ -58,7 +58,7 @@ module CatarsePagarme
     end
 
     def phone_matches
-      international? ? ['33', '33335555'] : contribution.address_phone_number.gsub(/[\s,-]/, '').match(/\((.*)\)(\d+)/)
+      international? ? ['', '33', '33335555'] : contribution.address_phone_number.gsub(/[\s,-]/, '').match(/\((.*)\)(\d+)/)
     end
 
     def zip_code
