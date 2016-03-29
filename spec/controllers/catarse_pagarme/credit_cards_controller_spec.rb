@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe CatarsePagarme::CreditCardsController, type: :controller do
   before do
+    @routes = CatarsePagarme::Engine.routes
     controller.stub(:current_user).and_return(user)
   end
 
@@ -15,7 +16,7 @@ describe CatarsePagarme::CreditCardsController, type: :controller do
 
       it 'should raise a error' do
         expect {
-          post :create, { locale: :pt, id: contribution.id, use_route: 'catarse_pagarme' }
+          post :create, { locale: :pt, id: contribution.id }
         }.to raise_error('invalid user')
       end
     end
@@ -26,7 +27,7 @@ describe CatarsePagarme::CreditCardsController, type: :controller do
         before do
           allow(CatarsePagarme::CreditCardTransaction).to receive(:new).and_call_original
           post :create, {
-            locale: :pt, id: contribution.id, use_route: 'catarse_pagarme',
+            locale: :pt, id: contribution.id,
             card_hash: sample_card_hash }
         end
 
@@ -42,7 +43,7 @@ describe CatarsePagarme::CreditCardsController, type: :controller do
       context 'with invalid card data' do
         before do
           post :create, {
-            locale: :pt, id: contribution.id, use_route: 'catarse_pagarme', card_hash: "abcd" }
+            locale: :pt, id: contribution.id, card_hash: "abcd" }
         end
 
         it 'payment_status should be failed' do
@@ -54,7 +55,7 @@ describe CatarsePagarme::CreditCardsController, type: :controller do
         before do
           allow_any_instance_of(PagarMe::Transaction).to receive(:charge).and_raise(PagarMe::PagarMeError)
           post :create, {
-            locale: :pt, id: contribution.id, use_route: 'catarse_pagarme',
+            locale: :pt, id: contribution.id,
             card_hash: sample_card_hash }
         end
 
