@@ -54,7 +54,7 @@ module CatarsePagarme
     end
 
     def document_number
-      (international? || contribution.payer_document.present?) ? '00000000000' : contribution.payer_document.gsub(/[-.\/_\s]/,'')
+      international? ? '00000000000' : contribution.payer_document.gsub(/[-.\/_\s]/,'')
     end
 
     def phone_matches
