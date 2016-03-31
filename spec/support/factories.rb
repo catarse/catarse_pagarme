@@ -40,6 +40,19 @@ FactoryGirl.define do
     f.code { generate(:serial) }
   end
 
+  factory :balance_transfer do |f| 
+    f.association :user
+    f.association :project
+    f.amount 100
+  end
+
+  factory :balance_transaction do |f| 
+    f.association :user
+    f.association :project
+    f.amount 100
+    f.event_name 'foo'
+  end
+
   factory :bank_account do |f|
     f.association :bank
     f.account '25334'
@@ -85,7 +98,7 @@ FactoryGirl.define do
     end
     after :build do |project|
       project.account = build(:project_account, project: nil)
-      project.rewards.build(deliver_at: Time.now, minimum_value: 10, description: 'test')
+      project.rewards.build(deliver_at: 1.year.from_now, minimum_value: 10, description: 'test')
     end
   end
 
@@ -118,6 +131,12 @@ FactoryGirl.define do
   factory :project_account do |f|
     f.association :project
     f.association :bank
+    f.account '25334'
+    f.account_digit '2'
+    f.agency '1432'
+    f.agency_digit '2'
+    f.owner_name 'Lorem amenori'
+    f.owner_document '11111111111'
     f.email "foo@bar.com"
     f.address_zip_code "foo"
     f.address_neighbourhood "foo"
@@ -126,12 +145,6 @@ FactoryGirl.define do
     f.address_number "foo"
     f.address_street "foo"
     f.phone_number "1234"
-    f.agency "fooo"
-    f.agency_digit "foo"
-    f.owner_document "foo"
-    f.owner_name "foo"
-    f.account "1"
-    f.account_digit "1000"
     f.account_type "foo"
   end
 
