@@ -168,13 +168,13 @@ FactoryGirl.define do
 
   factory :payment do |f|
     f.association :contribution
-    f.gateway 'pagarme'
+    f.gateway 'Pagarme'
     f.value 10.00
     f.state 'paid'
     f.installment_value nil
     f.payment_method "CartaoDeCredito"
     after :build do |payment|
-      payment.gateway = 'pagarme'
+      payment.gateway = 'Pagarme'
     end
   end
 
