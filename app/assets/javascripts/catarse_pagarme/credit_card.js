@@ -118,38 +118,64 @@ App.views.Pagarme.addChild('PaymentCard', _.extend({
     return creditCard;
   },
 
-  requestPayment: function(data){
-    var that = this;
-
-    $.ajax({
-      type: 'POST',
-      url: '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card',
-      data: data,
-      success: function(response){
-        that.parent.loader.hide();
-
-        if(response.payment_status == 'failed'){
-          that.message.find('.message-text').html(response.message);
-          that.message.slideDown('slow');
-
-          $("#credit_card_submit").show();
-        } else {
-          var thank_you = $('#project_review').data('thank-you-path');
-
-          if(thank_you){
-            location.href = thank_you;
-          } else {
-            location.href = '/';
-          }
-        }
-      }
+  reUpdateContributionData: function(callback) {
+    var contribution_data = {
+        anonymous: $('#review_form #contribution_anonymous').is(':checked'),
+        country_id: $('#review_form #contribution_country_id').val(),
+        payer_name: $('#review_form #contribution_payer_name').val(),
+        payer_email: $('#review_form #contribution_payer_email').val(),
+        payer_document: $('#review_form #contribution_payer_document').val(),
+        address_street: $('#review_form #contribution_address_street').val(),
+        address_number: $('#review_form #contribution_address_number').val(),
+        address_complement: $('#review_form #contribution_address_complement').val(),
+        address_neighbourhood: $('#review_form #contribution_address_neighbourhood').val(),
+        address_zip_code: $('#review_form #contribution_address_zip_code').val(),
+        address_city: $('#review_form #contribution_address_city').val(),
+        address_state: $('#review_form #contribution_address_state').val(),
+        address_phone_number: $('#review_form #contribution_address_phone_number').val()
+    };
+    $.post($('#review_form').data('update-info-path'), {
+        _method: 'put',
+        contribution: contribution_data
+    }).always(function(data) {
+        callback();
     });
+  },
 
+  requestPayment: function(data){
+      var that = this,
+          doCreditCardAjax = function() {
+              $.ajax({
+                  type: 'POST',
+                  url: '/payment/pagarme/'+that.parent.contributionId+'/pay_credit_card',
+                  data: data,
+                  success: function(response){
+                      that.parent.loader.hide();
+
+                      if(response.payment_status == 'failed'){
+                          that.message.find('.message-text').html(response.message);
+                          that.message.slideDown('slow');
+
+                          $("#credit_card_submit").show();
+                      } else {
+                          var thank_you = $('#project_review').data('thank-you-path');
+
+                          if(thank_you){
+                              location.href = thank_you;
+                          } else {
+                              location.href = '/';
+                          }
+                      }
+                  }
+              });
+          };
+
+      this.reUpdateContributionData(doCreditCardAjax);
   },
 
   onKeyupPaymentCardNumber: function(e){
     var number = $(e.currentTarget).val();
-    this.$('#payment_card_flag').html(this.getCardFlag(number))
+    this.$('#payment_card_flag').html(this.getCardFlag(number));
   },
 
   getCardFlag: function(number) {
