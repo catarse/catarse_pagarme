@@ -10,7 +10,7 @@ class Payment < ActiveRecord::Base
   before_validation do
     generate_key
     self.value ||= self.contribution.try(:value)
-    self.state = 'pending' # mock initial state for here we do not include the stat machine
+    self.state ||= 'pending' # mock initial state for here we do not include the stat machine
   end
 
   def slip_expiration_date
