@@ -143,7 +143,7 @@ describe CatarsePagarme::PaymentDelegator do
     let(:transfer_mock) { double(create: true, id: "123", to_json: {id: '123'}.to_json) }
     before do
       allow(PagarMe::Transfer).to receive(:new).and_return(transfer_mock)
-      create(:bank_account, user: payment.user)
+      create(:bank_account, user: payment.user, bank: create(:bank, code: '237'))
     end
 
     it do

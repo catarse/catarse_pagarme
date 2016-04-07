@@ -12,9 +12,9 @@ module CatarsePagarme
       })
       payment.save!
 
-      VerifyPagarmeWorker.perform_in(5.minutes, payment.key)
-
       self.transaction.charge
+
+      VerifyPagarmeWorker.perform_in(5.minutes, payment.key)
 
       change_payment_state
 

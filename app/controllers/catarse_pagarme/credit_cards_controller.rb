@@ -7,6 +7,8 @@ module CatarsePagarme
 
       render json: { payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e
+      payment.destroy if payment.persisted? && !payment.gateway_id.present?
+
       render json: { payment_status: 'failed', message: e.message }
     end
 
