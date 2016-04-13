@@ -31,7 +31,7 @@ module CatarsePagarme
     end
 
     def fill_acquirer_data
-      data = payment.gateway_data || {}
+      data = transaction.try(:to_hash) || payment.gateway_data || {}
       payment.gateway_data = data.merge({
         acquirer_name: transaction.acquirer_name,
         acquirer_tid: transaction.tid,
