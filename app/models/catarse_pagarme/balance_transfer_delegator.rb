@@ -38,7 +38,7 @@ module CatarsePagarme
           agencia_dv: account.agency_digit,
           conta: account.account,
           conta_dv: account.account_digit,
-          legal_name: account.owner_name,
+          legal_name: account.owner_name[0..29],
           document_number: account.owner_document
         }
       }
