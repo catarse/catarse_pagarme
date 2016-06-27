@@ -19,11 +19,14 @@ module CatarsePagarme::FeeCalculatorConcern
 
     def get_card_fee
       return nil if self.payment.gateway_data["acquirer_name"].blank? # Here we depend on the acquirer name
-      if %w(stone pagarme).include? self.payment.gateway_data["acquirer_name"]
+      fee = if %w(stone pagarme).include? self.payment.gateway_data["acquirer_name"]
         get_stone_fee
       else
         get_cielo_fee
       end
+
+      international = self.payment.contribution.try(:international?)
+      fee + (international ? 0 : antifraud_tax)
     end
 
     def get_stone_fee
@@ -54,6 +57,10 @@ module CatarsePagarme::FeeCalculatorConcern
 
     def tax_calc_for_installment acquirer_tax
       (((self.payment.installment_value * self.payment.installments) * pagarme_tax) + cents_fee).round(2) + ((self.payment.installment_value * acquirer_tax).round(2) * self.payment.installments)
+    end
+
+    def antifraud_tax
+      CatarsePagarme.configuration.antifraud_tax.to_f
     end
 
     def cents_fee

@@ -14,6 +14,7 @@ describe CatarsePagarme::PaymentDelegator do
       pagarme_tax: 0.0063,
       cielo_tax: 0.038,
       stone_tax: 0.0307,
+      antifraud_tax: 0.39,
       stone_installment_tax: 0.0307,
       credit_card_cents_fee: 0.39,
       api_key: '',
@@ -58,10 +59,22 @@ describe CatarsePagarme::PaymentDelegator do
       it { expect(subject).to eq(2.00) }
     end
 
-    context 'when choice is credit card' do
+    context 'when choice is international credit card' do
       let(:payment) { create(:payment, value: 10, payment_method: CatarsePagarme::PaymentType::CREDIT_CARD, gateway_data: {acquirer_name: 'stone', card_brand: 'visa'}, installments: 1) }
+      before do
+        allow(payment.contribution).to receive(:international?).and_return(true)
+      end
       subject { delegator.get_fee }
       it { expect(subject).to eq(0.76) }
+    end
+
+    context 'when choice is national credit card' do
+      let(:payment) { create(:payment, value: 10, payment_method: CatarsePagarme::PaymentType::CREDIT_CARD, gateway_data: {acquirer_name: 'stone', card_brand: 'visa'}, installments: 1) }
+      before do
+        allow(payment.contribution).to receive(:international?).and_return(false)
+      end
+      subject { delegator.get_fee }
+      it { expect(subject).to eq(1.15) }
     end
   end
 
