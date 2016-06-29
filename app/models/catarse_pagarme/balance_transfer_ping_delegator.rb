@@ -22,9 +22,9 @@ module CatarsePagarme
         transfer.create
         raise "unable to create a transfer ping" unless transfer.id.present?
 
-        balance_transfer_ping.update_attribute(:transfer_id, transfer.id)
-        balance_transfer_ping.update_attribute(:metadata, transfer.to_hash)
-        balance_transfer_ping.update_attribute(:state, 'processing')
+        balance_transfer_ping.update_attributes(transfer_id: transfer.id,
+          metadata: transfer.to_hash,
+          state: 'processing')
         balance_transfer_ping
       end
     end
