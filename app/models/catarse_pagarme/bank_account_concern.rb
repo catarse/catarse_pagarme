@@ -28,15 +28,16 @@ module CatarsePagarme::BankAccountConcern
     end
 
     def attributes_parsed_to_pagarme
-      {
+      pagarme_params = {
         bank_code: self.bank.try(:code),
         agencia: self.agency,
-        agencia_dv: self.agency_digit,
         conta: self.account,
         conta_dv: self.account_digit,
         legal_name: self.owner_name,
         document_number: self.owner_document
       }
+      pagarme_params[:agencia_dv] = self.agency_digit unless self.agency_digit.blank?
+      pagarme_params
     end
 
     def attributes_parsed_from_pagarme
