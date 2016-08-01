@@ -122,7 +122,7 @@ module CatarsePagarme
     def bank_account_attributes
       bank = payment.user.bank_account
 
-      {
+      bank_account_attrs = {
         bank_account: {
           bank_code: (bank.bank_code || bank.name),
           agencia: bank.agency,
@@ -133,6 +133,9 @@ module CatarsePagarme
           document_number: bank.owner_document
         }
       }
+
+      bank_account_attrs[:bank_account].delete(:agencia_dv) if bank.agency_digit.blank?
+      return bank_account_attrs
     end
 
     def configure_pagarme

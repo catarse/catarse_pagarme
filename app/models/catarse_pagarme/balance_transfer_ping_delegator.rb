@@ -32,7 +32,7 @@ module CatarsePagarme
     def bank_account_attributes
       account = balance_transfer_ping.balance_transfer.project.account
 
-      {
+      bank_account_attrs = {
         bank_account: {
           bank_code: (account.bank.code || account.bank.name),
           agencia: account.agency,
@@ -43,6 +43,9 @@ module CatarsePagarme
           document_number: account.owner_document
         }
       }
+
+      bank_account_attrs[:bank_account].delete(:agencia_dv) if account.agency_digit.blank?
+      return bank_account_attrs
     end
 
     def configure_pagarme
