@@ -18,7 +18,8 @@ Gem::Specification.new do |s|
   s.test_files = s.files.grep(%r{^(test|spec|features)/})
 
   s.add_dependency "rails", "~> 4.0"
-  s.add_dependency "pagarme", "1.10.0"
+  s.add_dependency "pagarme", "2.1.3"
+  #s.add_dependency "pagarme", "1.10.0"
   s.add_dependency "weekdays", ">= 1.0.2"
   s.add_dependency "sidekiq"
 
