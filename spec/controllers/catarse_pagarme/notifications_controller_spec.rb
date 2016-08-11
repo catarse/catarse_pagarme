@@ -5,7 +5,7 @@ describe CatarsePagarme::NotificationsController, type: :controller do
 
   before do
     @routes = CatarsePagarme::Engine.routes
-    PagarMe.stub(:validate_fingerprint).and_return(true)
+    PagarMe::PostBack.stub(:validate_request_signature?).and_return(true)
     PagarMe::Transaction.stub(:find_by_id).and_return(fake_transaction)
   end
 
