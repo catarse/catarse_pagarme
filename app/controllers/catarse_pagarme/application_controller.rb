@@ -12,7 +12,13 @@ module CatarsePagarme
     def metadata_attributes
       {
         key: payment.generate_key,
-        contribution_id: payment.contribution.id
+        contribution_id: payment.contribution.id,
+        project_name: payment.project.name,
+        permalink: payment.project.permalink,
+        project_online: payment.project.online_at,
+        project_expires: payment.project.expires_at,
+        user_total_contributions: payment.user.contributions.was_confirmed.count,
+        user_id: payment.user.id
       }
     end
 
