@@ -21,6 +21,10 @@ module CatarsePagarme
       end
     end
 
+    def slip_data
+      render json: {slip_expiration_date: payment.slip_expiration_date.to_date}
+    end
+
     protected
 
     def slip_attributes
