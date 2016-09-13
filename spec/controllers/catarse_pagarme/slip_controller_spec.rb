@@ -13,6 +13,16 @@ describe CatarsePagarme::SlipController, type: :controller do
   let(:credit_card) { create(:credit_card, subscription_id: '1542')}
 
   describe 'GET update' do
+    context 'with diff user' do
+      let(:user) { create(:user) }
+
+      it 'should raise a error' do
+        expect {
+          get :update, locale: :pt, id: contribution.id
+        }.to raise_error('invalid user')
+      end
+    end
+
     context  'without an user' do
       let(:user) { nil }
 
@@ -37,6 +47,16 @@ describe CatarsePagarme::SlipController, type: :controller do
   end
 
   describe 'POST create' do
+    context 'with diff user' do
+      let(:user) { create(:user) }
+
+      it 'should raise a error' do
+        expect {
+          post :create, { locale: :pt, id: contribution.id }
+        }.to raise_error('invalid user')
+      end
+    end
+
     context  'without an user' do
       let(:user) { nil }
 

@@ -30,6 +30,10 @@ module CatarsePagarme
       unless defined?(current_user) && current_user
         raise Exception.new('invalid user')
       end
+
+      if current_user != contribution.user
+        raise Exception.new('invalid user') unless current_user.admin?
+      end
     end
 
     def permited_attrs(attributes)

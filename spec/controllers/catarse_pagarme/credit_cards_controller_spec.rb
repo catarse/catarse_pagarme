@@ -16,6 +16,16 @@ describe CatarsePagarme::CreditCardsController, type: :controller do
   end
 
   describe 'pay with credit card' do
+    context  'with diff user' do
+      let(:user) { create(:user) }
+
+      it 'should raise a error' do
+        expect {
+          post :create, { locale: :pt, id: contribution.id }
+        }.to raise_error('invalid user')
+      end
+    end
+
     context  'without an user' do
       let(:user) { nil }
 
