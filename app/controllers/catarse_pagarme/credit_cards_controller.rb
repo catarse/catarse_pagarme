@@ -16,9 +16,6 @@ module CatarsePagarme
       render json: installments_for_json.to_json
     end
 
-    def get_saved_cards
-      render json: current_user.credit_cards.to_json
-    end
     protected
 
     def credit_card_attributes
@@ -101,7 +98,7 @@ module CatarsePagarme
           end
         end
       else 
-        collection = {amount: payment.value, number: 1}
+        collection = [{amount: payment.value, number: 1}]
       end
       collection.compact
     end
