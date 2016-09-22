@@ -12,6 +12,14 @@ module CatarsePagarme
       render json: { payment_status: 'failed', message: e.message }
     end
 
+    def get_installment_json
+      render json: installments_for_json.to_json
+    end
+
+    def get_encryption_key_json
+      render json: { key: CatarsePagarme.configuration.ecr_key }
+    end
+
     protected
 
     def credit_card_attributes
@@ -79,6 +87,24 @@ module CatarsePagarme
       else
         1
       end
+    end
+
+    def installments_for_json
+      if contribution.value.to_f >= CatarsePagarme.configuration.minimum_value_for_installment.to_f
+        project = payment.project
+        installments = payment.pagarme_delegator.get_installments['installments']
+        collection = installments.map do |installment|
+          installment_number = installment[0].to_i
+          if installment_number <= (project.try(:total_installments) || CatarsePagarme.configuration.max_installments.to_i)
+            amount = installment[1]['installment_amount'] / 100.0
+
+            {amount: amount, number: installment_number}
+          end
+        end
+      else
+        collection = [{amount: payment.value, number: 1}]
+      end
+      collection.compact
     end
 
   end
