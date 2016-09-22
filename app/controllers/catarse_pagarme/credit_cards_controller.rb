@@ -16,6 +16,10 @@ module CatarsePagarme
       render json: installments_for_json.to_json
     end
 
+    def get_encryption_key_json
+      render json: { key: CatarsePagarme.configuration.ecr_key }
+    end
+
     protected
 
     def credit_card_attributes
@@ -97,7 +101,7 @@ module CatarsePagarme
             {amount: amount, number: installment_number}
           end
         end
-      else 
+      else
         collection = [{amount: payment.value, number: 1}]
       end
       collection.compact
