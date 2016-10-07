@@ -39,7 +39,7 @@ module CatarsePagarme
           document_number: document_number,
           address: {
             street: contribution.address_street,
-            neighborhood: contribution.address_neighbourhood,
+            neighborhood: neighborhood,
             zipcode: zip_code,
             street_number: contribution.address_number,
             complementary: contribution.address_complement
@@ -73,6 +73,10 @@ module CatarsePagarme
 
     def zip_code
       international? ? '00000000' : contribution.address_zip_code.gsub(/[-.]/, '')
+    end
+
+    def neighborhood
+      international? ? 'international' : contribution.address_neighbourhood
     end
 
     def international?
