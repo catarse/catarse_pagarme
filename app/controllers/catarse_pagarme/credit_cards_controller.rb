@@ -42,7 +42,10 @@ module CatarsePagarme
             neighborhood: neighborhood,
             zipcode: zip_code,
             street_number: contribution.address_number,
-            complementary: contribution.address_complement
+            complementary: contribution.address_complement,
+            city: contribution.address_city,
+            state: contribution.address_state,
+            country: contribution.country.try(:name)
           },
           phone: {
             ddd: phone_matches.try(:[], 1),
