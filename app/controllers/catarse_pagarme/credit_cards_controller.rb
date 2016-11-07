@@ -41,7 +41,7 @@ module CatarsePagarme
             street: contribution.address_street,
             neighborhood: neighborhood,
             zipcode: zip_code,
-            street_number: contribution.address_number,
+            street_number: address_number,
             complementary: contribution.address_complement,
             city: contribution.address_city,
             state: contribution.address_state,
@@ -64,6 +64,10 @@ module CatarsePagarme
       hash[:save_card] = (params[:save_card] == 'true')
 
       hash
+    end
+
+    def address_number
+      international? ? 100 : contribution.address_number
     end
 
     def document_number
