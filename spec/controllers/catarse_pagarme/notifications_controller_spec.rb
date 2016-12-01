@@ -5,8 +5,8 @@ describe CatarsePagarme::NotificationsController, type: :controller do
 
   before do
     @routes = CatarsePagarme::Engine.routes
-    PagarMe::PostBack.stub(:validate_request_signature?).and_return(true)
-    PagarMe::Transaction.stub(:find_by_id).and_return(fake_transaction)
+    allow(PagarMe::Postback).to receive(:validate_request_signature?).and_return(true)
+    allow(PagarMe::Transaction).to receive(:find_by_id).and_return(fake_transaction)
   end
 
   let(:project) { create(:project, goal: 10_000, state: 'online') }
@@ -21,18 +21,19 @@ describe CatarsePagarme::NotificationsController, type: :controller do
   describe 'CREATE' do
     context "with invalid payment" do
       before do
-        PaymentEngines.stub(:find_payment).and_return(nil)
+        allow(PaymentEngines).to receive(:find_payment).and_return(nil)
         post :create, { locale: :pt, id: 'abcdfg'}
       end
 
       it "should not found the payment" do
-        expect(response.code.to_i).to eq(404)
+        expect(response.code.to_i).to eq(400)
       end
     end
 
     context "with valid payment" do
       before do
-        PaymentEngines.stub(:find_payment).and_return(payment)
+        allow(PaymentEngines).to receive(:find_payment).and_return(payment)
+        allow_any_instance_of(CatarsePagarme::NotificationsController).to receive(:valid_postback?).and_return(true)
         post :create, { locale: :pt, id: 'abcd'}
       end
 
