@@ -1,3 +1,4 @@
+# coding: utf-8
 module CatarsePagarme
   class CreditCardsController < CatarsePagarme::ApplicationController
     MAX_SOFT_DESCRIPTOR_LENGTH = 13
@@ -52,7 +53,8 @@ module CatarsePagarme
             number: phone_matches.try(:[], 2)
           }
         },
-        metadata: metadata_attributes
+        metadata: metadata_attributes,
+        antifraud_metadata: af_metadata
       }
 
       if params[:card_hash].present?
@@ -116,6 +118,57 @@ module CatarsePagarme
         collection = [{amount: payment.value, number: 1}]
       end
       collection.compact
+    end
+
+    def af_metadata
+      {
+        session_id: contribution.id,
+        ip: contribution.user.current_sign_in_ip,
+        platform: "web",
+        register: {
+          id: contribution.user.id,
+          email: contribution.user.email,
+          registered_at: contribution.user.created_at,
+          login_source: "registered"
+        },
+        billing: {
+          customer: {
+            name: contribution.payer_name,
+            document_number: contribution.payer_document.try(:gsub, /[-.\/_\s]/, ''),
+            born_at: "",
+            gender: ""
+          },
+          address: {
+            country: contribution.country.try(:name),
+            state: contribution.address_state,
+            city: contribution.address_city,
+            zipcode: contribution.address_zip_code,
+            neighborhood: contribution.address_neighbourhood,
+            street: contribution.address_street,
+            street_number: contribution.address_number,
+            complementary: contribution.address_complement,
+            latitude: '',
+            longitude: ''
+          },
+          card_holder_name: "",
+          phone_numbers: [
+            {
+              ddi: "",
+              ddd: phone_matches.try(:[], 1),
+              number: phone_matches.try(:[], 2)
+            }
+          ]
+        },
+        contribution: [
+          {
+            contribution_id: contribution.id,
+            project_name: payment.project.name,
+            project_online: payment.project.online_at,
+            project_expires: payment.project.expires_at,
+            user_total_contributions: payment.user.contributions.was_confirmed.count,
+          }
+        ]
+      }
     end
 
   end
