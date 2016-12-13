@@ -122,11 +122,11 @@ module CatarsePagarme
 
     def af_metadata
       {
-        session_id: contribution.id,
+        session_id: contribution.id.to_s,
         ip: contribution.user.current_sign_in_ip,
         platform: "web",
         register: {
-          id: contribution.user.id,
+          id: contribution.user.id.to_s,
           email: contribution.user.email,
           registered_at: contribution.user.created_at,
           login_source: "registered"
@@ -142,7 +142,7 @@ module CatarsePagarme
             country: contribution.country.try(:name),
             state: contribution.address_state,
             city: contribution.address_city,
-            zipcode: contribution.address_zip_code,
+            zipcode: contribution.address_zip_code.try(:gsub, /[-.\/_\s]/, ''),
             neighborhood: contribution.address_neighbourhood,
             street: contribution.address_street,
             street_number: contribution.address_number,
@@ -161,7 +161,7 @@ module CatarsePagarme
         },
         contribution: [
           {
-            contribution_id: contribution.id,
+            contribution_id: contribution.id.to_s,
             project_name: payment.project.name,
             project_online: payment.project.online_at,
             project_expires: payment.project.expires_at,
