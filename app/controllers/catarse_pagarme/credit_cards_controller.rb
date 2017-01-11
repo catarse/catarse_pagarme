@@ -146,7 +146,7 @@ module CatarsePagarme
         ip: user.current_sign_in_ip,
         platform: "web",
         register: {
-          id: user_id.to_s,
+          id: contribution.user_id.to_s,
           email: user.email,
           registered_at: user.created_at.to_s,
           login_source: "registered",
