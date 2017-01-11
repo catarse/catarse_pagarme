@@ -21,6 +21,7 @@ FactoryGirl.define do
 
   factory :user do |f|
     f.name "Foo bar"
+    f.cpf "111.111.111-11"
     f.email { generate(:email) }
   end
 
