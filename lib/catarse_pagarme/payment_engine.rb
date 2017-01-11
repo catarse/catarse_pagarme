@@ -5,7 +5,6 @@ module CatarsePagarme
     end
 
     def review_path contribution
-      url_helpers.review_pagarme_path(contribution)
     end
 
     def locale
