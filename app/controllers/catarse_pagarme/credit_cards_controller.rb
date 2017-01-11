@@ -35,8 +35,8 @@ module CatarsePagarme
         soft_descriptor: payment.project.permalink.gsub(/[\W\_]/, ' ')[0, MAX_SOFT_DESCRIPTOR_LENGTH],
         installments: get_installment,
         customer: {
-          email: contribution.payer_email,
-          name: contribution.payer_name,
+          email: contribution.user.email,
+          name: contribution.user.name,
           document_number: document_number,
           address: {
             street: contribution.address_street,
@@ -73,7 +73,7 @@ module CatarsePagarme
     end
 
     def document_number
-      international? ? '00000000000' : contribution.payer_document.gsub(/[-.\/_\s]/,'')
+      international? ? '00000000000' : contribution.user.cpf.gsub(/[-.\/_\s]/,'')
     end
 
     def phone_matches
@@ -120,55 +120,135 @@ module CatarsePagarme
       collection.compact
     end
 
+    def address_hash
+      {
+        country: contribution.country.try(:name),
+        state: contribution.address_state,
+        city: contribution.address_city,
+        zipcode: contribution.address_zip_code.try(:gsub, /[-.\/_\s]/, ''),
+        neighborhood: contribution.address_neighbourhood,
+        street: contribution.address_street,
+        street_number: contribution.address_number,
+        complementary: contribution.address_complement,
+        latitude: '',
+        longitude: ''
+      }
+    end
+
     def af_metadata
+      return {} unless CatarsePagarme.configuration.use_simility
+      project = contribution.project
+      project_account = project.account
+      user = contribution.user
+
       {
         session_id: contribution.id.to_s,
-        ip: contribution.user.current_sign_in_ip,
+        ip: user.current_sign_in_ip,
         platform: "web",
         register: {
-          id: contribution.user.id.to_s,
-          email: contribution.user.email,
-          registered_at: contribution.user.created_at,
-          login_source: "registered"
+          id: user_id.to_s,
+          email: user.email,
+          registered_at: user.created_at.to_s,
+          login_source: "registered",
+          company_group: "",
+          classification_code: ""
         },
         billing: {
           customer: {
-            name: contribution.payer_name,
-            document_number: contribution.payer_document.try(:gsub, /[-.\/_\s]/, ''),
+            name: "",
+            document_number: contribution.card_owner_document.try(:gsub, /[-.\/_\s]/, ''),
             born_at: "",
             gender: ""
           },
-          address: {
-            country: contribution.country.try(:name),
-            state: contribution.address_state,
-            city: contribution.address_city,
-            zipcode: contribution.address_zip_code.try(:gsub, /[-.\/_\s]/, ''),
-            neighborhood: contribution.address_neighbourhood,
-            street: contribution.address_street,
-            street_number: contribution.address_number,
-            complementary: contribution.address_complement,
-            latitude: '',
-            longitude: ''
-          },
-          card_holder_name: "",
-          phone_numbers: [
-            {
-              ddi: "",
-              ddd: phone_matches.try(:[], 1),
-              number: phone_matches.try(:[], 2)
-            }
-          ]
+          address: address_hash,
+          phone_numbers: [{
+                            ddi: "",
+                            ddd: phone_matches.try(:[], 1),
+                            number: phone_matches.try(:[], 2)
+                          }]
         },
-        contribution: [
-          {
-            contribution_id: contribution.id.to_s,
-            project_name: payment.project.name,
-            project_online: payment.project.online_at,
-            project_expires: payment.project.expires_at,
-            user_total_contributions: payment.user.contributions.was_confirmed.count,
-          }
-        ]
+        buyer: {
+          name: user.name,
+          document_number: user.cpf.try(:gsub, /[-.\/_\s]/, ''),
+          born_at: "",
+          gender: ""
+        },
+        address: address_hash,
+        phone_numbers: [{
+                          ddi: "",
+                          ddd: phone_matches.try(:[], 1),
+                          number: phone_matches.try(:[], 2)
+                        }],
+        shipping: {
+          customer: {
+            name: contribution.user.name,
+            document_number: contribution.user.cpf.try(:gsub, /[-.\/_\s]/, ''),
+            born_at: "",
+            gender: ""
+          },
+          address: address_hash,
+          phone_numbers: [{
+                            ddi: "00",
+                            ddd: phone_matches.try(:[], 1),
+                            number: phone_matches.try(:[], 2)
+                          }],
+          shipping_method: "",
+          fee: 0,
+          favorite: false
+        },
+        shopping_cart: [{
+                          name: "#{contribution.value.to_s} - #{contribution.project.name}",
+                          type: "contribution",
+                          quantity: "1",
+                          unit_price: (contribution.value * 100).to_i.to_s,
+                          totalAdditions: 0,
+                          totalDiscounts: 0,
+                          event_id: contribution.project_id.to_s,
+                          ticket_type_id: "0",
+                          ticket_owner_name: user.name,
+                          ticket_owner_document_number: user.cpf.try(:gsub, /[-.\/_\s]/, '')
+                        }],
+        discounts: [{
+                      type: "other",
+                      code: "",
+                      amount: 0
+                    }],
+        other_fees: [{
+                       type: "",
+                       amount: 0
+                     }],
+        events: [{
+                   id: contribution.project_id.to_s,
+                   name: contribution.project.name,
+                   type: contribution.project.mode == 'flex' ? 'flex' : 'full',
+                   date: contribution.project.expires_at.to_s,
+                   venue_name: project_account.try(:owner_name),
+                   address: {
+                     country: "Brasil",
+                     state: project_account.address_state,
+                     city: project_account.address_city,
+                     zipcode: project_account.address_zip_code,
+                     neighborhood: project_account.address_neighbourhood,
+                     street: project_account.address_street,
+                     street_number: project_account.address_number,
+                     complementary: project_account.address_complement,
+                     latitude: 0.0,
+                     longitude: 0.0
+                   },
+                   ticket_types: [{
+                                    id: contribution.id,
+                                    name: "",
+                                    type: "",
+                                    batch: "",
+                                    price: (contribution.value * 100).to_i.to_s,
+                                    available_number: 0,
+                                    total_number: 0,
+                                    identity_verified: "",
+                                    assigned_seats:  ""
+                                  }]
+                 }]
       }
+
     end
 
   end
