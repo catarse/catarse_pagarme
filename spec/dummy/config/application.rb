@@ -4,9 +4,17 @@ require 'rails/all'
 
 Bundler.require(*Rails.groups)
 require "catarse_pagarme"
+require "sentry-raven"
 
 module Dummy
   class Application < Rails::Application
+    config.to_prepare do
+      Raven.configure do |config|
+        config.dsn =  ''
+        config.environments = ['staging', 'production']
+      end
+    end
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
