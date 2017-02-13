@@ -9,6 +9,20 @@ module CatarsePagarme
     layout :false
 
     protected
+    def raven_capture exception
+      ::Raven.user_context(
+        {
+          contribution_id: payment.contribution_id,
+          user_id: contribution.user_id,
+          payment_key: payment.key,
+          project_id: contribution.project_id,
+          payment_method: payment.payment_method
+        }
+      )
+      ::Raven.capture_exception(exception)
+      ::Raven.user_context({})
+    end
+
     def metadata_attributes
       {
         key: payment.generate_key,

@@ -8,6 +8,7 @@ module CatarsePagarme
 
       render json: { boleto_url: transaction.boleto_url, payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e
+      raven_capture(e)
       render json: { boleto_url: nil, payment_status: 'failed', message: e.message }
     end
 
@@ -30,7 +31,7 @@ module CatarsePagarme
     def slip_attributes
       {
         payment_method: 'boleto',
-        boleto_expiration_date: payment.slip_expiration_date,
+        boleto_expiration_date: payment.slip_expiration_date.to_date,
         amount: delegator.value_for_transaction,
         postback_url: ipn_pagarme_index_url(host: CatarsePagarme.configuration.host,
                                             subdomain: CatarsePagarme.configuration.subdomain,

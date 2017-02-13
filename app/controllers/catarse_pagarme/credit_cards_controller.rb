@@ -8,6 +8,10 @@ module CatarsePagarme
 
       render json: { payment_status: transaction.status }
     rescue PagarMe::PagarMeError => e
+      # should ignore refused payments
+      if payment.state != 'refused'
+        raven_capture(e)
+      end
       payment.destroy if payment.persisted? && !payment.gateway_id.present?
 
       render json: { payment_status: 'failed', message: e.message }
