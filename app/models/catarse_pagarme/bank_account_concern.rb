@@ -49,7 +49,7 @@ module CatarsePagarme::BankAccountConcern
         conta: :account,
         conta_dv: :account_digit,
         legal_name: :owner_name,
-        document_number: :owner_document
+        document_number: :owner_document,
         type: :account_type
       }
     end
