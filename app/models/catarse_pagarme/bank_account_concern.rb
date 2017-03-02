@@ -33,8 +33,9 @@ module CatarsePagarme::BankAccountConcern
         agencia: self.agency,
         conta: self.account,
         conta_dv: self.account_digit,
-        legal_name: self.owner_name,
-        document_number: self.owner_document
+        legal_name: self.user.name,
+        document_number: self.user.cpf,
+        type: self.account_type
       }
       pagarme_params[:agencia_dv] = self.agency_digit unless self.agency_digit.blank?
       pagarme_params
@@ -49,6 +50,7 @@ module CatarsePagarme::BankAccountConcern
         conta_dv: :account_digit,
         legal_name: :owner_name,
         document_number: :owner_document
+        type: :account_type
       }
     end
 
