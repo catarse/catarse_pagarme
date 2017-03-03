@@ -142,7 +142,6 @@ module CatarsePagarme
     def af_metadata
       return {} unless CatarsePagarme.configuration.use_simility
       project = contribution.project
-      project_account = project.account
       user = contribution.user
 
       {
@@ -235,16 +234,16 @@ module CatarsePagarme
             name: contribution.project.name,
             type: contribution.project.mode == 'flex' ? 'flex' : 'full',
             date: contribution.project.expires_at.to_s,
-            venue_name: project_account.try(:owner_name),
+            venue_name: project.user.name,
             address: {
               country: "Brasil",
-              state: project_account.address_state,
-              city: project_account.address_city,
-              zipcode: project_account.address_zip_code,
-              neighborhood: project_account.address_neighbourhood,
-              street: project_account.address_street,
-              street_number: project_account.address_number,
-              complementary: project_account.address_complement,
+              state: project.user.address_state,
+              city: project.user.address_city,
+              zipcode: project.user.address_zip_code,
+              neighborhood: project.user.address_neighbourhood,
+              street: project.user.address_street,
+              street_number: project.user.address_number,
+              complementary: project.user.address_complement,
               latitude: 0.0,
               longitude: 0.0
             },
