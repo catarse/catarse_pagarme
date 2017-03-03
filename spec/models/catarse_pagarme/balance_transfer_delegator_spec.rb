@@ -3,6 +3,8 @@ require 'spec_helper'
 describe CatarsePagarme::BalanceTransferDelegator do
   let(:project) { create(:project, state: 'successful') }
   let(:project_acc) { create(:project_account, project: project) }
+  let(:bank) { create(:bank) }
+  let!(:bank_account) { create(:bank_account, user: project.user)}
   let(:balance_transfer) { create(:balance_transfer, amount: 10, user: project.user, project: project)}
   let(:delegator) { balance_transfer.pagarme_delegator }
 

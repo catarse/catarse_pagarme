@@ -21,6 +21,7 @@ FactoryGirl.define do
 
   factory :user do |f|
     f.name "Foo bar"
+    f.public_name "Foo bar"
     f.cpf "111.111.111-11"
     f.email { generate(:email) }
   end
@@ -62,6 +63,7 @@ FactoryGirl.define do
     f.agency_digit '2'
     f.owner_name 'Lorem amenori'
     f.owner_document '11111111111'
+    f.account_type 'conta_corrente'
   end
 
   factory :project do |f|

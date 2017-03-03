@@ -5,10 +5,11 @@ class FakeBankAccount < BankAccount
 end
 
 describe FakeBankAccount do
+  let(:user) { create(:user) }
   let(:bank) { create(:bank) }
 
   let(:valid_attr) do
-    vb = build(:bank_account, bank: bank, owner_name: 'fo')
+    vb = build(:bank_account, bank: bank, owner_name: 'fo', user: user)
     vb.attributes
   end
 

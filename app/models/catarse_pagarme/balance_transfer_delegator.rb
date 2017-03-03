@@ -29,7 +29,8 @@ module CatarsePagarme
     end
 
     def bank_account_attributes
-      account = balance_transfer.project.account
+      user = balance_transfer.user
+      account = user.bank_account
 
       bank_account_attrs = {
         bank_account: {
@@ -38,8 +39,9 @@ module CatarsePagarme
           agencia_dv: account.agency_digit,
           conta: account.account,
           conta_dv: account.account_digit,
-          legal_name: account.owner_name[0..29],
-          document_number: account.owner_document
+          legal_name: user.name[0..29],
+          document_number: user.cpf,
+          type: account.account_type
         }
       }
 

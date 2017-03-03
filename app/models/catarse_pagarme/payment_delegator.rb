@@ -120,7 +120,8 @@ module CatarsePagarme
     protected
 
     def bank_account_attributes
-      bank = payment.user.bank_account
+      user = payment.user
+      bank = user.bank_account
 
       bank_account_attrs = {
         bank_account: {
@@ -129,8 +130,9 @@ module CatarsePagarme
           agencia_dv: bank.agency_digit,
           conta: bank.account,
           conta_dv: bank.account_digit,
-          legal_name: bank.owner_name,
-          document_number: bank.owner_document
+          legal_name: user.name[0..29],
+          document_number: user.cpf,
+          type: bank.account_type
         }
       }
 
