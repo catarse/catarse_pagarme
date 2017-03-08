@@ -33,7 +33,7 @@ module CatarsePagarme::BankAccountConcern
         agencia: self.agency,
         conta: self.account,
         conta_dv: self.account_digit,
-        legal_name: self.user.name,
+        legal_name: self.user.name[0..29],
         document_number: self.user.cpf,
         type: self.account_type
       }
