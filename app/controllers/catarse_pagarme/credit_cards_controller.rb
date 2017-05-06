@@ -28,6 +28,7 @@ module CatarsePagarme
     protected
 
     def credit_card_attributes
+      contribution.reload
       hash = {
         payment_method: 'credit_card',
         amount: delegator.value_with_installment_tax(get_installment),
