@@ -7,7 +7,7 @@ module CatarsePagarme
       transaction = CreditCardTransaction.new(credit_card_attributes, payment).charge!
 
       render json: { payment_status: transaction.status }
-    rescue PagarMe::PagarMeError => e
+    rescue PagarMe::PagarMeError, PagarMe::ValidationError => e
       # should ignore refused payments
       if payment.state != 'refused'
         raven_capture(e)
