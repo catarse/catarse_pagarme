@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.10.8)
+    catarse_pagarme (2.10.9)
       pagarme (= 2.1.4)
       rails (~> 4.0)
       sentry-raven
@@ -53,7 +53,7 @@ GEM
     connection_pool (2.2.1)
     database_cleaner (1.5.0)
     diff-lcs (1.2.5)
-    domain_name (0.5.20170223)
+    domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     factory_girl (4.5.0)
@@ -165,7 +165,7 @@ GEM
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.2)
+    unf_ext (0.0.7.4)
     weekdays (1.0.2)
 
 PLATFORMS
