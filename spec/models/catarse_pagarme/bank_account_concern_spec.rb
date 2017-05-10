@@ -35,7 +35,7 @@ describe FakeBankAccount do
       end
 
       it "bank_account_on_pagarme should be not valid with these attrs" do
-        expect(bank_account_on_pagarme.valid?).to be_falsy
+        expect(bank_account_on_pagarme.valid?).to be_falsey
       end
 
       it "bank_account_on_pagarme should be valid with another attrs" do

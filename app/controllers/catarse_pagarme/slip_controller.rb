@@ -13,6 +13,7 @@ module CatarsePagarme
     end
 
     def update
+      payment.generating_second_slip = true
       transaction = SlipTransaction.new(slip_attributes, payment).charge!
       respond_to do |format|
         format.html { redirect_to transaction.boleto_url }

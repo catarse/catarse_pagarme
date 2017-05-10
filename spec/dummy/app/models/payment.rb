@@ -7,6 +7,8 @@ class Payment < ActiveRecord::Base
   validates_presence_of :state, :key, :gateway, :payment_method, :value, :installments
   validate :value_should_be_equal_or_greater_than_pledge
 
+  attr_accessor :generating_second_slip
+
   before_validation do
     generate_key
     self.value ||= self.contribution.try(:value)
