@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.10.9)
+    catarse_pagarme (2.10.10)
       pagarme (= 2.1.4)
       rails (~> 4.0)
       sentry-raven
@@ -123,7 +123,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     redis (3.3.2)
-    rest-client (2.0.1)
+    rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
