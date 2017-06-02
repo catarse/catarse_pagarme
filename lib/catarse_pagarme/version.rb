@@ -1,3 +1,3 @@
 module CatarsePagarme
-  VERSION = "2.10.10"
+  VERSION = "2.10.11"
 end

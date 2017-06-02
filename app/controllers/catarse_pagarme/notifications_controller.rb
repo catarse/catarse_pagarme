@@ -20,7 +20,7 @@ module CatarsePagarme
     protected
 
     def payment
-      @payment ||=  PaymentEngines.find_payment({ gateway_id: params[:id] })
+      @payment ||=  PaymentEngines.find_payment({ gateway_id: params[:id], gateway: 'Pagarme' })
     end
 
     def valid_postback?
