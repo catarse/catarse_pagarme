@@ -25,8 +25,11 @@ module CatarsePagarme::FeeCalculatorConcern
         get_cielo_fee
       end
 
-      international = self.payment.contribution.try(:international?)
-      fee + (international ? 0 : antifraud_tax)
+      fee + payment_cost
+    end
+
+    def payment_cost
+      self.payment.gateway_data["cost"] / 100.0
     end
 
     def get_stone_fee
