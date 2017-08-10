@@ -153,7 +153,7 @@ FactoryGirl.define do
   factory :contribution do |f|
     f.association :project, factory: :project
     f.association :user, factory: :user
-    f.address_phone_number '(33) 3333-3333'
+    f.phone_number '(33) 3333-3333'
     f.address_neighbourhood 'lorem'
     f.address_number 'lnumber'
     f.address_street 'lstreet lorem'
