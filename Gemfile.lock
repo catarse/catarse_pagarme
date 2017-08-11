@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.10.12)
+    catarse_pagarme (2.10.13)
       pagarme (= 2.1.4)
       rails (~> 4.0)
       sentry-raven
@@ -71,7 +71,7 @@ GEM
     json (1.8.3)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    mail (2.6.4)
+    mail (2.6.6)
       mime-types (>= 1.16, < 4)
     method_source (0.8.2)
     mime-types (3.1)
