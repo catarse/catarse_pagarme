@@ -39,10 +39,20 @@ module CatarsePagarme
                                             protocol: CatarsePagarme.configuration.protocol),
         customer: {
           email: payment.user.email,
-          name: payment.user.name
+          name: payment.user.name,
+          document_number: document_number,
         },
         metadata: metadata_attributes
       }
     end
+
+    def document_number
+      international? ? '00000000000' : contribution.user.cpf.gsub(/[-.\/_\s]/,'')
+    end
+
+    def international?
+      contribution.international?
+    end
+
   end
 end
