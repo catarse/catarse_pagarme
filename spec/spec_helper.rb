@@ -65,7 +65,7 @@ RSpec.configure do |config|
   config.before(:each) do
     DatabaseCleaner.start
     ActionMailer::Base.deliveries.clear
-    allow(PagarMe).to receive(:api_key).and_return('ak_test_XLoo19QDn9kg5JFGU70x12IA4NqbAv')
+    allow(PagarMe).to receive(:api_key).and_return(ENV['TEST_GATEWAY_API_KEY'])
     allow(PaymentEngines).to receive(:configuration).and_return({})
     Sidekiq::Testing.inline!
     allow(CatarsePagarme::VerifyPagarmeWorker).to receive(:perform_in).and_return(true)
