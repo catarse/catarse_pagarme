@@ -113,14 +113,15 @@ module CatarsePagarme
         installments = payment.pagarme_delegator.get_installments['installments']
         collection = installments.map do |installment|
           installment_number = installment[0].to_i
+
           if installment_number <= (project.try(:total_installments) || CatarsePagarme.configuration.max_installments.to_i)
             amount = installment[1]['installment_amount'] / 100.0
 
-            {amount: amount, number: installment_number}
+            { amount: amount, number: installment_number, total_amount: installment[1]['amount'] / 100.0 }
           end
         end
       else
-        collection = [{amount: payment.value, number: 1}]
+        collection = [{ amount: payment.value, number: 1, total_amount: payment.value }]
       end
       collection.compact
     end
