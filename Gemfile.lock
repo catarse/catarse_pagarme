@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.11.0)
+    catarse_pagarme (2.12.0)
       pagarme (= 2.1.4)
       rails (~> 4.0)
       sentry-raven
@@ -61,7 +61,7 @@ GEM
     factory_girl_rails (4.9.0)
       factory_girl (~> 4.9.0)
       railties (>= 3.0.0)
-    faraday (0.15.2)
+    faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
@@ -72,7 +72,7 @@ GEM
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    mail (2.7.0)
+    mail (2.7.1)
       mini_mime (>= 0.1.1)
     method_source (0.9.0)
     mime-types (3.2.2)
@@ -123,7 +123,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (12.3.1)
-    redis (4.0.2)
+    redis (4.0.3)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -147,7 +147,7 @@ GEM
     rspec-support (3.8.0)
     sentry-raven (2.7.4)
       faraday (>= 0.7.6, < 1.0)
-    sidekiq (5.2.2)
+    sidekiq (5.2.3)
       connection_pool (~> 2.2, >= 2.2.2)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
