@@ -218,6 +218,17 @@ describe CatarsePagarme::PaymentDelegator do
       end
     end
 
+    context "when status is pending_review" do
+      before do
+        expect(payment).to receive(:notify_about_pending_review)
+        delegator.change_status_by_transaction('pending_review')
+      end
+
+      it 'should keep state in current_status' do
+        expect(payment.pending?).to eq(true)
+      end
+    end
+
     context "when status is refunded" do
       context "and payment is already refunded" do
         before do

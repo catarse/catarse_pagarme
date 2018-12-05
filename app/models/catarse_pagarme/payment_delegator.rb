@@ -10,6 +10,8 @@ module CatarsePagarme
 
     def change_status_by_transaction(transaction_status)
       case transaction_status
+      when 'pending_review' then
+        self.payment.try(:notify_about_pending_review)
       when 'paid', 'authorized' then
         self.payment.pay unless self.payment.paid?
       when 'pending_refund' then
