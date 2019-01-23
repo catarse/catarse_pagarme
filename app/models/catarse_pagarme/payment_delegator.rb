@@ -88,10 +88,23 @@ module CatarsePagarme
       installment[installment_number.to_s]
     end
 
+    def current_interest_rate
+      project.interest_rate.presence || CatarsePagarme.configuration.interest_rate
+    end
+
+    def current_free_installments
+      project.free_installments
+    end
+
+    def project
+      self.payment.try(:project)
+    end
+
     def get_installments
       @installments ||= PagarMe::Transaction.calculate_installments({
         amount: self.value_for_transaction,
-        interest_rate: CatarsePagarme.configuration.interest_rate
+        free_installments: current_free_installments,
+        interest_rate: current_interest_rate
       })
     end
 
