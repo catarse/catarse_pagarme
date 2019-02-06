@@ -117,7 +117,7 @@ module CatarsePagarme
           if installment_number <= (project.try(:total_installments) || CatarsePagarme.configuration.max_installments.to_i)
             amount = installment[1]['installment_amount'] / 100.0
 
-            { amount: amount, number: installment_number, total_amount: installment[1]['amount'] / 100.0 }
+            { amount: amount, number: installment_number, total_amount: installment[1]['amount'] / 100.0, free_installment: (project.free_installments >= installment_number.to_i) }
           end
         end
       else
