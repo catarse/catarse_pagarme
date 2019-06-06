@@ -17,7 +17,11 @@ module CatarsePagarme
 
         transfer = PagarMe::Transfer.new({
           bank_account_id: bank_account.id,
-          amount: value_for_transaction
+          amount: value_for_transaction,
+          metadata: {
+            balance_transfer_id: balance_transfer.id,
+            seed: SecureRandom.hex(4)
+          }
         })
         transfer.create
         raise "unable to create a transfer" unless transfer.id.present?
