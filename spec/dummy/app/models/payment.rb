@@ -39,6 +39,10 @@ class Payment < ActiveRecord::Base
     true
   end
 
+  def pending?
+    state == 'pending'
+  end
+
   def refunded?
     true
   end

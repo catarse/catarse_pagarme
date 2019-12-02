@@ -171,8 +171,7 @@ describe CatarsePagarme::PaymentDelegator do
 
 
   describe "#change_status_by_transaction" do
-
-    %w(paid authorized).each do |status|
+    %w(paid).each do |status|
       context "when status is #{status}" do
         context "when payment is refunded" do
           before do
@@ -219,33 +218,52 @@ describe CatarsePagarme::PaymentDelegator do
     end
 
     context "when status is pending_review" do
-      before do
+      it 'notifies pending reviews' do
         expect(payment).to receive(:notify_about_pending_review)
+
         delegator.change_status_by_transaction('pending_review')
       end
 
       it 'should keep state in current_status' do
-        expect(payment.pending?).to eq(true)
+        expect {
+          delegator.change_status_by_transaction('pending_review')
+        }.to_not change(payment, :state)
       end
     end
 
     context "when status is refunded" do
-      context "and payment is already refunded" do
-        before do
-          payment.stub(:refunded?).and_return(true)
-          expect(payment).to_not receive(:refund)
-        end
+      context 'when payment state is pending' do
+        before { payment.stub(:pending?).and_return(true) }
 
-        it { delegator.change_status_by_transaction('refunded') }
+        it 'refuses payment' do
+          expect(payment).to receive(:refuse)
+
+          delegator.change_status_by_transaction('refunded')
+        end
       end
 
-      context "and payment is not refunded" do
-        before do
-          payment.stub(:refunded?).and_return(false)
-          expect(payment).to receive(:refund)
+      context 'when payment state isn`t pending' do
+        before { payment.stub(:pending?).and_return(false) }
+
+        context 'when payment state is refunded' do
+          before { payment.stub(:refunded?).and_return(true) }
+
+          it 'doesn`t refund payment again' do
+            expect(payment).to_not receive(:refund)
+
+            delegator.change_status_by_transaction('refunded')
+          end
         end
 
-        it { delegator.change_status_by_transaction('refunded') }
+        context 'when payment state isn`t refunded' do
+          before { payment.stub(:refunded?).and_return(false) }
+
+          it 'refunds payment' do
+            expect(payment).to receive(:refund)
+
+            delegator.change_status_by_transaction('refunded')
+          end
+        end
       end
     end
 

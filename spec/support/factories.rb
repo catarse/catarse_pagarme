@@ -42,13 +42,13 @@ FactoryGirl.define do
     f.code { generate(:serial) }
   end
 
-  factory :balance_transfer do |f| 
+  factory :balance_transfer do |f|
     f.association :user
     f.association :project
     f.amount 100
   end
 
-  factory :balance_transaction do |f| 
+  factory :balance_transaction do |f|
     f.association :user
     f.association :project
     f.amount 100
@@ -87,7 +87,7 @@ FactoryGirl.define do
     f.state 'online'
     f.budget '1000'
     f.uploaded_image File.open("#{Rails.root}/spec/support/testimg.png")
-    after :create do |project| 
+    after :create do |project|
       unless project.project_transitions.where(to_state: project.state).present?
         FactoryGirl.create(:project_transition, to_state: project.state, project: project)
       end
@@ -108,7 +108,7 @@ FactoryGirl.define do
     f.association :project
     f.state 'draft'
 
-    after :create do |flex_project| 
+    after :create do |flex_project|
       FactoryGirl.create(:flexible_project_transition, {
         to_state: flex_project.state,
         flexible_project: flex_project
@@ -153,7 +153,7 @@ FactoryGirl.define do
   factory :contribution do |f|
     f.association :project, factory: :project
     f.association :user, factory: :user
-    f.phone_number '(33) 3333-3333'
+    # f.phone_number '(33) 3333-3333'
     f.address_neighbourhood 'lorem'
     f.address_number 'lnumber'
     f.address_street 'lstreet lorem'
