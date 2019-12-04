@@ -17,9 +17,10 @@ Gem::Specification.new do |s|
   s.files      = `git ls-files`.split($\)
   s.test_files = s.files.grep(%r{^(test|spec|features)/})
 
+  s.add_dependency "countries", "3.0.0"
   s.add_dependency "rails", "~> 4.0"
   s.add_dependency "pagarme", "2.1.4"
-  #s.add_dependency "pagarme", "1.10.0"
+  s.add_dependency "konduto-ruby", "2.1.0"
   s.add_dependency "weekdays", ">= 1.0.2"
   s.add_dependency "sidekiq"
   s.add_dependency "sentry-raven"

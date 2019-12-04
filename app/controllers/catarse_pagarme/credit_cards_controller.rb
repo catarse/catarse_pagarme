@@ -4,7 +4,7 @@ module CatarsePagarme
     MAX_SOFT_DESCRIPTOR_LENGTH = 13
 
     def create
-      transaction = CreditCardTransaction.new(credit_card_attributes, payment).charge!
+      transaction = CreditCardTransaction.new(credit_card_attributes, payment).process!
 
       render json: { payment_status: transaction.status }
     rescue PagarMe::PagarMeError, PagarMe::ValidationError => e
@@ -142,7 +142,6 @@ module CatarsePagarme
     end
 
     def af_metadata
-      return {} unless CatarsePagarme.configuration.use_simility
       project = contribution.project
       user = contribution.user
 
@@ -235,7 +234,7 @@ module CatarsePagarme
             id: contribution.project_id.to_s,
             name: contribution.project.name,
             type: contribution.project.mode == 'flex' ? 'flex' : 'full',
-            date: contribution.project.expires_at.to_s,
+            date: contribution.project.created_at.to_s,
             venue_name: project.user.name,
             address: {
               country: "Brasil",

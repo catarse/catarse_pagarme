@@ -8,16 +8,20 @@ module CatarsePagarme
       self.payment = payment
     end
 
-    def change_status_by_transaction(transaction_status)
+  def change_status_by_transaction(transaction_status)
       case transaction_status
       when 'pending_review' then
         self.payment.try(:notify_about_pending_review)
-      when 'paid', 'authorized' then
+      when 'paid' then
         self.payment.pay unless self.payment.paid?
       when 'pending_refund' then
         self.payment.request_refund unless self.payment.pending_refund?
       when 'refunded' then
-        self.payment.refund unless self.payment.refunded?
+        if self.payment.pending?
+          self.payment.refuse
+        else
+          self.payment.refund unless self.payment.refunded?
+        end
       when 'refused' then
         self.payment.refuse unless self.payment.refused?
       when 'chargedback' then

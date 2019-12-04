@@ -10,4 +10,8 @@ class PaymentEngines
   def self.find_payment filter
     Payment.where(filter).first
   end
+
+  def self.was_credit_card_used_before?(card_id)
+    Payment.where(state: 'paid').where("gateway_data -> 'card' ->> 'id' = ?", card_id).exists?
+  end
 end
