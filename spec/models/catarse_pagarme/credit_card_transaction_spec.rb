@@ -97,7 +97,13 @@ describe CatarsePagarme::CreditCardTransaction do
 
   describe '#authorize!' do
     let(:attributes) do
-      { amount: 10, card_hash: 'capgojepaogejpeoajgpeaoj124pih3p4h32p', postback_url: 'https://example.com/postback' }
+      {
+        amount: 10,
+        card_hash: 'capgojepaogejpeoajgpeaoj124pih3p4h32p',
+        postback_url: 'https://example.com/postback',
+        installments: 2,
+        soft_descriptor: 'Catarse Test'
+      }
     end
 
     let(:transaction) do
@@ -106,8 +112,10 @@ describe CatarsePagarme::CreditCardTransaction do
         card_hash: attributes[:card_hash],
         capture: false,
         async: false,
-        postback_url: attributes[:postback_url]
-      )
+        postback_url: attributes[:postback_url],
+        installments: 2,
+        soft_descriptor: 'Catarse Test'
+    )
     end
 
     before do
@@ -122,7 +130,9 @@ describe CatarsePagarme::CreditCardTransaction do
         card_hash: attributes[:card_hash],
         capture: false,
         async: false,
-        postback_url: attributes[:postback_url]
+        postback_url: attributes[:postback_url],
+        installments: attributes[:installments],
+        soft_descriptor: attributes[:soft_descriptor]
       }
 
       allow(PagarMe::Transaction).to receive(:new).with(transaction_attributes).and_return(transaction)
@@ -130,6 +140,16 @@ describe CatarsePagarme::CreditCardTransaction do
       card_transaction.authorize!
 
       expect(card_transaction.transaction).to eq transaction
+    end
+
+    context 'when a saved credit card is used' do
+      let(:attributes) { { card_id: 'card_eaoj124pih3p4h32p' } }
+
+      it 'uses card id instead card hash' do
+        card_transaction.attributes = attributes
+
+        expect(card_transaction.send(:credit_card_identifier)).to eq(card_id: 'card_eaoj124pih3p4h32p')
+      end
     end
 
     it 'updates payment gateway and payment_method' do

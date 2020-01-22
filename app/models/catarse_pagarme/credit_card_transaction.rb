@@ -25,11 +25,14 @@ module CatarsePagarme
       save_card = self.attributes.delete(:save_card)
 
       self.transaction = PagarMe::Transaction.new(
-        amount: self.attributes[:amount],
-        card_hash: self.attributes[:card_hash],
-        capture: false,
-        async: false,
-        postback_url: self.attributes[:postback_url]
+        {
+          amount: self.attributes[:amount],
+          capture: false,
+          async: false,
+          postback_url: self.attributes[:postback_url],
+          installments: self.attributes[:installments],
+          soft_descriptor: self.attributes[:soft_descriptor]
+        }.merge(credit_card_identifier)
       )
 
       unless payment.update_attributes(gateway: 'Pagarme', payment_method: payment_method)
@@ -63,6 +66,14 @@ module CatarsePagarme
 
     def antifraud_wrapper
       @antifraud_wrapper ||= AntifraudOrderWrapper.new(self.attributes, self.transaction)
+    end
+
+    def credit_card_identifier
+      if self.attributes[:card_hash].present?
+        { card_hash: self.attributes[:card_hash] }
+      else
+        { card_id: self.attributes[:card_id] }
+      end
     end
 
     def save_user_credit_card

@@ -78,7 +78,9 @@ module CatarsePagarme
     end
 
     def document_number
-      international? ? '00000000000' : contribution.user.cpf.gsub(/[-.\/_\s]/,'')
+      contribution.card_owner_document.try(:gsub, /[-.\/_\s]/, '') ||
+        contribution.user.cpf.gsub(/[-.\/_\s]/,'') ||
+        '00000000000'
     end
 
     def phone_matches
