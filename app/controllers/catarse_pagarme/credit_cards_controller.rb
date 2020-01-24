@@ -78,9 +78,11 @@ module CatarsePagarme
     end
 
     def document_number
-      contribution.card_owner_document.try(:gsub, /[-.\/_\s]/, '') ||
-        contribution.user.cpf.gsub(/[-.\/_\s]/,'') ||
-        '00000000000'
+      card_owner_document = contribution.card_owner_document.try(:gsub, /[-.\/_\s]/, '')
+      user_document = contribution.user.cpf.try(:gsub, /[-.\/_\s]/, '')
+      fallback_document = '00000000000'
+
+      card_owner_document || user_document || fallback_document
     end
 
     def phone_matches
