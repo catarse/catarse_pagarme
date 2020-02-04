@@ -93,7 +93,7 @@ module CatarsePagarme
     def billing_address_attributes
       billing_data = self.attributes.dig(:antifraud_metadata, :billing)
       {
-        name: self.attributes.dig(:customer, :name),
+        name: self.transaction.card.holder_name,
         address1: billing_data.dig(:address, :street),
         city: billing_data.dig(:address, :city),
         state: billing_data.dig(:address, :state),

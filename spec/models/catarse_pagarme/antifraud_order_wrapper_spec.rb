@@ -250,7 +250,7 @@ describe CatarsePagarme::AntifraudOrderWrapper do
       }
     end
 
-    let(:transaction) { double(card: double(country: 'BRAZIL')) }
+    let(:transaction) { double(card: double(country: 'BRAZIL', holder_name: 'holder name')) }
 
     before do
       subject.attributes = attributes
@@ -260,7 +260,7 @@ describe CatarsePagarme::AntifraudOrderWrapper do
     it 'builds customer attributes' do
       billing_address_attributes = subject.__send__(:billing_address_attributes)
 
-      expect(billing_address_attributes[:name]).to eq 'John Appleseed'
+      expect(billing_address_attributes[:name]).to eq 'holder name'
       expect(billing_address_attributes[:address1]).to eq 'R. A'
       expect(billing_address_attributes[:city]).to eq 'New City'
       expect(billing_address_attributes[:state]).to eq 'NC'
