@@ -72,7 +72,8 @@ module CatarsePagarme
     def customer_attributes
       customer = self.attributes.dig(:customer)
       {
-        id: customer[:document_number],
+        id: customer[:id].to_s,
+        tax_id: customer[:document_number],
         name: customer[:name],
         email: customer[:email],
         phone1: customer[:phone].to_h.values.join,
