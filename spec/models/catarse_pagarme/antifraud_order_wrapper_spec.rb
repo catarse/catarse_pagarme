@@ -151,6 +151,7 @@ describe CatarsePagarme::AntifraudOrderWrapper do
     let(:attributes) do
       {
         customer: {
+          id: 123,
           document_number: '1234',
           name: 'John Appleseed',
           email: 'john@example.com',
@@ -169,7 +170,8 @@ describe CatarsePagarme::AntifraudOrderWrapper do
     it 'builds customer attributes' do
       customer_attributes = subject.__send__(:customer_attributes)
 
-      expect(customer_attributes[:id]).to eq '1234'
+      expect(customer_attributes[:id]).to eq '123'
+      expect(customer_attributes[:tax_id]).to eq '1234'
       expect(customer_attributes[:name]).to eq 'John Appleseed'
       expect(customer_attributes[:email]).to eq 'john@example.com'
       expect(customer_attributes[:phone1]).to eq '858585858585'

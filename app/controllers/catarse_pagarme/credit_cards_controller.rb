@@ -40,6 +40,7 @@ module CatarsePagarme
         soft_descriptor: payment.project.permalink.gsub(/[\W\_]/, ' ')[0, MAX_SOFT_DESCRIPTOR_LENGTH],
         installments: get_installment,
         customer: {
+          id: contribution.user.id,
           email: contribution.user.email,
           name: contribution.user.name,
           document_number: document_number,
