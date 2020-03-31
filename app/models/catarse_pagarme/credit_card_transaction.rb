@@ -52,7 +52,7 @@ module CatarsePagarme
     end
 
     def was_credit_card_used_before?
-      PaymentEngines.was_credit_card_used_before?(self.transaction.card.id)
+      PaymentEngines.was_credit_card_used_before?(self.transaction.card.id, self.attributes.dig(:customer, :id))
     end
 
     def process_antifraud
