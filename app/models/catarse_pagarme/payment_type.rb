@@ -1,6 +1,6 @@
 module CatarsePagarme
   class PaymentType
-    SLIP = 'boleto'
-    CREDIT_CARD = 'credit_card'
+    SLIP = 'BoletoBancario'
+    CREDIT_CARD = 'CartaoDeCredito'
   end
 end
