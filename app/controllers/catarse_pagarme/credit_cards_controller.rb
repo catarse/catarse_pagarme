@@ -15,6 +15,8 @@ module CatarsePagarme
       payment.destroy if payment.persisted? && !payment.gateway_id.present?
 
       render json: { payment_status: 'failed', message: e.message }
+    rescue => e
+      raven_capture(e)
     end
 
     def get_installment_json
