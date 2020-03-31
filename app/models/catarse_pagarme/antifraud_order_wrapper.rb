@@ -142,7 +142,7 @@ module CatarsePagarme
 
     def card_country_code
       country = ::ISO3166::Country.find_country_by_name(self.transaction.card.country)
-      country.present? ? { country: country.try(:alpha2) } || {}
+      country.present? ? { country: country.try(:alpha2) } : {}
     end
   end
 end
