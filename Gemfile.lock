@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.14.3)
+    catarse_pagarme (2.14.4)
       countries (= 3.0.0)
       konduto-ruby (= 2.1.0)
       pagarme (= 2.1.4)
@@ -67,7 +67,7 @@ GEM
     factory_girl_rails (4.9.0)
       factory_girl (~> 4.9.0)
       railties (>= 3.0.0)
-    faraday (0.17.3)
+    faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -155,11 +155,11 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
-    sentry-raven (2.13.0)
-      faraday (>= 0.7.6, < 1.0)
-    sidekiq (5.2.7)
+    sentry-raven (3.0.0)
+      faraday (>= 1.0)
+    sidekiq (5.2.8)
       connection_pool (~> 2.2, >= 2.2.2)
-      rack (>= 1.5.0)
+      rack (< 2.1.0)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
     sixarm_ruby_unaccent (1.2.0)
@@ -176,7 +176,7 @@ GEM
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.6)
+    unf_ext (0.0.7.7)
     unicode_utils (1.4.0)
     weekdays (1.0.2)
 
