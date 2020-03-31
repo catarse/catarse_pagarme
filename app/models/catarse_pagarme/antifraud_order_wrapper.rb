@@ -99,8 +99,7 @@ module CatarsePagarme
         city: billing_data.dig(:address, :city),
         state: billing_data.dig(:address, :state),
         zip: billing_data.dig(:address, :zipcode),
-        country: card_country_code
-      }
+      }.merge(card_country_code)
     end
 
     def shipping_address_attributes
@@ -143,7 +142,7 @@ module CatarsePagarme
 
     def card_country_code
       country = ::ISO3166::Country.find_country_by_name(self.transaction.card.country)
-      country.alpha2
+      country.present? { country: country.try(:alpha2) } || {}
     end
   end
 end
