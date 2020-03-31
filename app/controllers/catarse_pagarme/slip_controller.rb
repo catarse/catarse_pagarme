@@ -40,7 +40,11 @@ module CatarsePagarme
         customer: {
           email: payment.user.email,
           name: payment.user.name,
-          document_number: document_number,
+          type: payment.user.account_type == 'pf' ? 'individual' : 'corporation'
+          documents: [{
+            type:  payment.user.account_type == 'pf' ? 'cpf' : 'cnpj',
+            number: document_number
+          }],
         },
         metadata: metadata_attributes
       }
@@ -53,6 +57,5 @@ module CatarsePagarme
     def international?
       contribution.international?
     end
-
   end
 end
