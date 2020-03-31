@@ -40,7 +40,7 @@ module CatarsePagarme
         customer: {
           email: payment.user.email,
           name: payment.user.name,
-          type: payment.user.account_type == 'pf' ? 'individual' : 'corporation'
+          type: payment.user.account_type == 'pf' ? 'individual' : 'corporation',
           documents: [{
             type:  payment.user.account_type == 'pf' ? 'cpf' : 'cnpj',
             number: document_number
