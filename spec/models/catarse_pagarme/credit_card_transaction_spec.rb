@@ -76,11 +76,21 @@ describe CatarsePagarme::CreditCardTransaction do
           end
         end
 
-        context 'when antifraude recommends decline transaction' do
+        context 'when antifraud recommends decline transaction' do
           let(:antifraud_outcome) { double(recommendation: :DECLINE) }
 
           it 'refunds transaction' do
             expect(card_transaction.transaction).to receive(:refund)
+
+            card_transaction.process!
+          end
+        end
+
+        context 'when antifraud recommends review transaction' do
+          let(:antifraud_outcome) { double(recommendation: :REVIEW) }
+
+          it 'notifies about pending review' do
+            expect(card_transaction.payment).to receive(:notify_about_pending_review)
 
             card_transaction.process!
           end
@@ -269,7 +279,7 @@ describe CatarsePagarme::CreditCardTransaction do
     let(:antifraud_wrapper) { double }
 
     context 'when @antifraud_wrapper isn`t nil' do
-      it 'returns @antifraude_wrapper' do
+      it 'returns @antifraud_wrapper' do
         card_transaction.instance_variable_set('@antifraud_wrapper', antifraud_wrapper)
         expect(card_transaction.antifraud_wrapper).to eq antifraud_wrapper
       end
