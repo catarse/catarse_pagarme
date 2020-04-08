@@ -12,6 +12,8 @@ module CatarsePagarme
             self.transaction.capture
           elsif antifraud_outcome.recommendation == :DECLINE
             self.transaction.refund
+          elsif antifraud_outcome.recommendation == :REVIEW
+            self.payment.try(:notify_about_pending_review)
           end
         end
       end

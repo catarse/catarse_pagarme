@@ -17,6 +17,8 @@ module CatarsePagarme
       render json: { payment_status: 'failed', message: e.message }
     rescue => e
       raven_capture(e)
+
+      render json: { payment_status: 'failed', message: e.message }
     end
 
     def get_installment_json
