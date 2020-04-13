@@ -245,14 +245,15 @@ describe CatarsePagarme::AntifraudOrderWrapper do
               street: 'R. A',
               city: 'New City',
               state: 'NC',
-              zipcode: '1245'
+              zipcode: '1245',
+              country_code: 'BR'
             }
           }
         }
       }
     end
 
-    let(:transaction) { double(card: double(country: 'BRAZIL', holder_name: 'holder name')) }
+    let(:transaction) { double(card: double(holder_name: 'holder name')) }
 
     before do
       subject.attributes = attributes
@@ -267,7 +268,7 @@ describe CatarsePagarme::AntifraudOrderWrapper do
       expect(billing_address_attributes[:city]).to eq 'New City'
       expect(billing_address_attributes[:state]).to eq 'NC'
       expect(billing_address_attributes[:zip]).to eq '1245'
-      expect(billing_address_attributes[:country]).to eq 'BR'
+      expect(billing_address_attributes[:country_code]).to eq 'BR'
     end
   end
 
@@ -290,7 +291,7 @@ describe CatarsePagarme::AntifraudOrderWrapper do
       }
     end
 
-    let(:transaction) { double(card: double(country: 'BRAZIL')) }
+    let(:transaction) { double(card: double) }
 
     before do
       subject.attributes = attributes

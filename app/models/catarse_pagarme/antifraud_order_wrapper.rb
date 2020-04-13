@@ -71,14 +71,15 @@ module CatarsePagarme
 
     def customer_attributes
       customer = self.attributes.dig(:customer)
+      tax_id = customer[:document_number].present? ? { tax_id: customer[:document_number] } : {}
+
       {
         id: customer[:id].to_s,
-        tax_id: customer[:document_number],
         name: customer[:name],
         email: customer[:email],
         phone1: customer[:phone].to_h.values.join,
         created_at: self.attributes.dig(:antifraud_metadata, :register, :registered_at)
-      }
+      }.merge(tax_id)
     end
 
     def payment_attributes
@@ -99,7 +100,8 @@ module CatarsePagarme
         city: billing_data.dig(:address, :city),
         state: billing_data.dig(:address, :state),
         zip: billing_data.dig(:address, :zipcode),
-      }.merge(card_country_code)
+        country: billing_data.dig(:address, :country_code),
+      }
     end
 
     def shipping_address_attributes
@@ -138,11 +140,6 @@ module CatarsePagarme
     def card_expiration_date
       expiration_date = self.transaction.card.expiration_date
       "#{expiration_date[0..1]}20#{expiration_date[2..3]}"
-    end
-
-    def card_country_code
-      country = ::ISO3166::Country.find_country_by_name(self.transaction.card.country)
-      country.present? ? { country: country.try(:alpha2) } : {}
     end
   end
 end
