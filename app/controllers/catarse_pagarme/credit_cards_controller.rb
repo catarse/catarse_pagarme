@@ -83,11 +83,7 @@ module CatarsePagarme
     end
 
     def document_number
-      user_document = contribution.user.cpf.try(:gsub, /[-.\/_\s]/, '')
-      card_owner_document = contribution.card_owner_document.try(:gsub, /[-.\/_\s]/, '')
-      fallback_document = '00000000000'
-
-      user_document || card_owner_document || fallback_document
+      contribution.user.cpf.try(:gsub, /[-.\/_\s]/, '')
     end
 
     def phone_matches
@@ -137,7 +133,7 @@ module CatarsePagarme
 
     def address_hash
       {
-        country: contribution.country.try(:name),
+        country_code: contribution.country.try(:code),
         state: contribution.address_state,
         city: contribution.address_city,
         zipcode: contribution.address_zip_code.try(:gsub, /[-.\/_\s]/, ''),
