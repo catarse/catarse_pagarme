@@ -33,7 +33,8 @@ module CatarsePagarme
           async: false,
           postback_url: self.attributes[:postback_url],
           installments: self.attributes[:installments],
-          soft_descriptor: self.attributes[:soft_descriptor]
+          soft_descriptor: self.attributes[:soft_descriptor],
+          metadata: self.attributes[:metadata]
         }.merge(credit_card_identifier)
       )
 
