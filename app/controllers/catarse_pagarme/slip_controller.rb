@@ -46,7 +46,7 @@ module CatarsePagarme
             number: document_number
           }],
         },
-        metadata: metadata_attributes
+        metadata: metadata_attributes.merge({ second_slip: payment.generating_second_slip.to_s })
       }
     end
 
