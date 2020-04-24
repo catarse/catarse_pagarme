@@ -19,7 +19,7 @@ module CatarsePagarme
           payment_method: payment.payment_method
         }
       )
-      ::Raven.capture_exception(exception)
+      ::Raven.capture_exception(exception, level: 'fatal')
       ::Raven.user_context({})
     end
 
