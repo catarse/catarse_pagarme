@@ -8,6 +8,8 @@ module CatarsePagarme
         else
           antifraud_outcome = process_antifraud
 
+          self.payment.create_antifraud_analysis!(cost: CatarsePagarme.configuration.antifraud_tax)
+
           if antifraud_outcome.recommendation == :APPROVE
             self.transaction.capture
           elsif antifraud_outcome.recommendation == :DECLINE

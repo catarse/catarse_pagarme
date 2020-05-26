@@ -63,7 +63,7 @@ module CatarsePagarme::FeeCalculatorConcern
     end
 
     def antifraud_tax
-      CatarsePagarme.configuration.antifraud_tax.to_f
+      self.payment.antifraud_analysis.try(:cost) || 0.0
     end
 
     def cents_fee
