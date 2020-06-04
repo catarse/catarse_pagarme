@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    catarse_pagarme (2.15.0)
+    catarse_pagarme (2.16.0)
       countries (= 3.0.0)
       konduto-ruby (= 2.1.0)
       pagarme (= 2.1.4)
