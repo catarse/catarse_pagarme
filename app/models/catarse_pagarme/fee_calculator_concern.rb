@@ -9,7 +9,7 @@ module CatarsePagarme::FeeCalculatorConcern
       transaction = PagarMe::Transaction.find(self.payment.gateway_id)
       payables = transaction.payables
       cost = transaction.cost.to_f / 100.00
-      payables_fee = payables_fee.to_a.sum(&:fee).to_f / 100.00
+      payables_fee = payables.to_a.sum(&:fee).to_f / 100.00
 
       if self.payment.payment_method == ::CatarsePagarme::PaymentType::SLIP
         cost + payables_fee
