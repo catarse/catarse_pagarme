@@ -12,9 +12,9 @@ module CatarsePagarme::FeeCalculatorConcern
       payables_fee = payables.to_a.sum(&:fee).to_f / 100.00
 
       if self.payment.payment_method == ::CatarsePagarme::PaymentType::SLIP
-        cost + payables_fee
-      else
         payables_fee == 0 ? cost : payables_fee
+      else
+        cost + payables_fee
       end
     end
   end
