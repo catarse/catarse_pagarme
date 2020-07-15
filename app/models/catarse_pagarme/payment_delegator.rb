@@ -1,14 +1,13 @@
 module CatarsePagarme
   class PaymentDelegator
     attr_accessor :payment, :transaction
-    include FeeCalculatorConcern
 
     def initialize(payment)
       configure_pagarme
       self.payment = payment
     end
 
-  def change_status_by_transaction(transaction_status)
+    def change_status_by_transaction(transaction_status)
       case transaction_status
       when 'pending_review' then
         self.payment.try(:notify_about_pending_review)
@@ -32,7 +31,7 @@ module CatarsePagarme
     def update_transaction
       fill_acquirer_data
       payment.installment_value = (value_for_installment / 100.0).to_f
-      payment.gateway_fee = get_fee
+      PaymentEngines.import_payables(payment)
       payment.save!
     end
 
