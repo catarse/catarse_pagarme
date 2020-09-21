@@ -59,9 +59,9 @@ module CatarsePagarme
 
     def order_attributes
       {
-        id: self.transaction.id.to_s,
+        id: self.transaction.id.to_s[0..99],
         total_amount: self.attributes[:amount] / 100.0,
-        visitor: self.attributes.dig(:metadata, :contribution_id).to_s,
+        visitor: self.attributes.dig(:metadata, :contribution_id).to_s[0..40],
         currency: 'BRL',
         installments: self.attributes[:installments],
         purchased_at: self.transaction.date_created,
@@ -74,10 +74,10 @@ module CatarsePagarme
       tax_id = customer[:document_number].present? ? { tax_id: customer[:document_number] } : {}
 
       {
-        id: customer[:id].to_s,
-        name: customer[:name],
-        email: customer[:email],
-        phone1: customer[:phone].to_h.values.join,
+        id: customer[:id].to_s[0..99],
+        name: customer[:name].to_s[0..99],
+        email: customer[:email].to_s[0..99],
+        phone1: customer[:phone].to_h.values.join.to_s[0..99],
         created_at: self.attributes.dig(:antifraud_metadata, :register, :registered_at)
       }.merge(tax_id)
     end
@@ -95,33 +95,33 @@ module CatarsePagarme
     def billing_address_attributes
       billing_data = self.attributes.dig(:antifraud_metadata, :billing)
       {
-        name: self.transaction.card.holder_name,
-        address1: billing_data.dig(:address, :street),
-        city: billing_data.dig(:address, :city),
-        state: billing_data.dig(:address, :state),
-        zip: billing_data.dig(:address, :zipcode),
-        country: billing_data.dig(:address, :country_code),
+        name: self.transaction.card.holder_name.to_s[0..99],
+        address1: billing_data.dig(:address, :street).to_s[0..254],
+        city: billing_data.dig(:address, :city).to_s[0..99],
+        state: billing_data.dig(:address, :state).to_s[0..99],
+        zip: billing_data.dig(:address, :zipcode).to_s[0..99],
+        country: billing_data.dig(:address, :country_code).to_s[0..1],
       }
     end
 
     def shipping_address_attributes
       shipping_data = self.attributes.dig(:antifraud_metadata, :shipping)
       {
-        name: shipping_data.dig(:customer, :name),
-        address1: shipping_data.dig(:address, :street),
-        city: shipping_data.dig(:address, :city),
-        state: shipping_data.dig(:address, :state),
-        zip: shipping_data.dig(:address, :zipcode)
+        name: shipping_data.dig(:customer, :name).to_s[0..99],
+        address1: shipping_data.dig(:address, :street).to_s[0..254],
+        city: shipping_data.dig(:address, :city).to_s[0..99],
+        state: shipping_data.dig(:address, :state).to_s[0..99],
+        zip: shipping_data.dig(:address, :zipcode).to_s[0..99]
       }
     end
 
     def item_attributes
       shopping_cart_data = self.attributes.dig(:antifraud_metadata, :shopping_cart).first
       {
-        sku: self.attributes.dig(:metadata, :contribution_id).to_s,
-        product_code: self.attributes.dig(:metadata, :contribution_id).to_s,
+        sku: self.attributes.dig(:metadata, :contribution_id).to_s[0..99],
+        product_code: self.attributes.dig(:metadata, :contribution_id).to_s[0..99],
         category: 9999,
-        name: shopping_cart_data[:name],
+        name: shopping_cart_data[:name].to_s[0..99],
         unit_cost: self.attributes[:amount] / 100.0,
         quantity: 1,
         created_at: self.attributes.dig(:metadata, :project_online).to_s[0..9]
@@ -131,8 +131,8 @@ module CatarsePagarme
     def seller_attributes
       event_data = self.attributes.dig(:antifraud_metadata, :events).first
       {
-        id: event_data[:id],
-        name: event_data[:venue_name],
+        id: event_data[:id].to_s[0..99],
+        name: event_data[:venue_name].to_s[0..99],
         created_at: event_data[:date]
       }
     end
