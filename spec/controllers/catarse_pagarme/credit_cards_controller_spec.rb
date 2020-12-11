@@ -11,7 +11,7 @@ describe CatarsePagarme::CreditCardsController, type: :controller do
   let(:payment) do
     contribution.reload
     p = contribution.payments.first
-    #p.update_attributes({ state: 'pending', gateway_id: nil })
+    #p.update(state: 'pending', gateway_id: nil)
     p
   end
 

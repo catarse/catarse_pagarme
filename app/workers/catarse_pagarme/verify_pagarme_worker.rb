@@ -9,7 +9,7 @@ class CatarsePagarme::VerifyPagarmeWorker
     raise "payment not found" unless payment.present?
     raise "source not found" unless source.present? && source.try(:[], "metadata").try(:[], "key") == key
 
-    payment.update_attributes({gateway_id: source["id"]})
+    payment.update(gateway_id: source["id"])
     payment.pagarme_delegator.update_transaction
     payment.pagarme_delegator.change_status_by_transaction source["status"]
   end

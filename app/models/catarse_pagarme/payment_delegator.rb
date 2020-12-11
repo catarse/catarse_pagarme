@@ -127,7 +127,7 @@ module CatarsePagarme
       raise "unable to create a transfer" unless transfer.id.present?
 
       #avoid sending notification
-      payment.update_attributes(state: 'pending_refund')
+      payment.update(state: 'pending_refund')
       payment.payment_transfers.create!({
         user: payment.user,
         transfer_id: transfer.id,

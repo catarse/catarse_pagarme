@@ -23,7 +23,7 @@ describe CatarsePagarme::VerifyPagarmeWorker do
       allow_any_instance_of(CatarsePagarme::PaymentDelegator).to receive(:update_transaction)
       allow_any_instance_of(CatarsePagarme::PaymentDelegator).to receive(:change_status_by_transaction)
 
-      expect_any_instance_of(Payment).to receive(:update_attributes).with({gateway_id: fake_transaction["id"]})
+      expect_any_instance_of(Payment).to receive(:update).with({gateway_id: fake_transaction["id"]})
       expect_any_instance_of(CatarsePagarme::PaymentDelegator).to receive(:update_transaction)
       expect_any_instance_of(CatarsePagarme::PaymentDelegator).to receive(:change_status_by_transaction).with(fake_transaction["status"])
     end
@@ -65,4 +65,3 @@ describe CatarsePagarme::VerifyPagarmeWorker do
     end
   end
 end
-
