@@ -13,7 +13,7 @@ describe CatarsePagarme::NotificationsController, type: :controller do
   let(:contribution) { create(:contribution, value: 10, project: project) }
   let(:payment) {
     p = contribution.payments.first
-    p.update_attributes gateway_id: 'abcd'
+    p.update gateway_id: 'abcd'
     p
   }
   let(:credit_card) { create(:credit_card, subscription_id: '1542')}
@@ -48,4 +48,3 @@ describe CatarsePagarme::NotificationsController, type: :controller do
   end
 
 end
-

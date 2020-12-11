@@ -40,7 +40,7 @@ module CatarsePagarme
         }.merge(credit_card_identifier)
       )
 
-      unless payment.update_attributes(gateway: 'Pagarme', payment_method: payment_method)
+      unless payment.update(gateway: 'Pagarme', payment_method: payment_method)
         raise ::PagarMe::PagarMeError.new(payment.errors.messages.values.flatten.to_sentence)
       end
 

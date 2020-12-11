@@ -66,7 +66,7 @@ describe CatarsePagarme::SlipTransaction do
 
     context "with valid attributes" do
       before do
-        payment.should_receive(:update_attributes).at_least(1).and_call_original
+        payment.should_receive(:update).at_least(1).and_call_original
         PagarMe::Transaction.should_receive(:find_by_id).with(pagarme_transaction.id).and_return(pagarme_transaction)
         CatarsePagarme::PaymentDelegator.any_instance.should_receive(:change_status_by_transaction).with('paid')
 

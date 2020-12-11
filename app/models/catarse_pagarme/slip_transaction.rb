@@ -1,9 +1,10 @@
 module CatarsePagarme
   class SlipTransaction < TransactionBase
     def charge!
-      unless payment.update_attributes({
+      unless payment.update(
         gateway: 'Pagarme',
-        payment_method: payment_method})
+        payment_method: payment_method
+      )
 
         raise ::PagarMe::PagarMeError.new(
           payment.errors.messages.values.flatten.to_sentence)

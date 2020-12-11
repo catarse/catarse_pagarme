@@ -10,7 +10,7 @@ module CatarsePagarme
     end
 
     def change_payment_state
-      self.payment.update_attributes(attributes_to_payment)
+      self.payment.update(attributes_to_payment)
       self.payment.save!
       delegator.update_transaction
       self.payment.payment_notifications.create(contribution_id: self.payment.contribution_id, extra_data: self.transaction.to_json)
