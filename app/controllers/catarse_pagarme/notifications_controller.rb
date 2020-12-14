@@ -1,6 +1,7 @@
 module CatarsePagarme
   class NotificationsController < CatarsePagarme::ApplicationController
     skip_before_action :authenticate_user!
+    skip_before_action :verify_authenticity_token
 
     def create
       if payment
@@ -10,11 +11,11 @@ module CatarsePagarme
           delegator.change_status_by_transaction(params[:current_status])
           delegator.update_transaction
 
-          return render nothing: true, status: 200
+          render(body: nil, status: 200) and return
         end
       end
 
-      render_invalid_postback_response
+      render json: { error: 'invalid postback' }, status: 400
     end
 
     protected
@@ -27,10 +28,6 @@ module CatarsePagarme
       raw_post  = request.raw_post
       signature = request.headers['HTTP_X_HUB_SIGNATURE']
       PagarMe::Postback.valid_request_signature?(raw_post, signature)
-    end
-
-    def render_invalid_postback_response
-      render json: {error: 'invalid postback'}, status: 400
     end
   end
 end
