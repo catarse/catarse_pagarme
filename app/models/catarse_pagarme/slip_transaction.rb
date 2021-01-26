@@ -13,6 +13,11 @@ module CatarsePagarme
       self.transaction = PagarMe::Transaction.new(
         self.attributes.merge(payment_method: 'boleto', async: false)
       )
+
+      if ['flex' || 'aon'].include? payment.contribution.project.mode
+        self.transaction.attributes['amount'] += 200
+      end
+
       self.transaction.charge
 
       change_payment_state
@@ -22,5 +27,6 @@ module CatarsePagarme
     def payment_method
       PaymentType::SLIP
     end
+
   end
 end
