@@ -2,6 +2,8 @@ CatarsePagarme::Engine.routes.draw do
   resources :pagarme, only: [], path: "payment/pagarme" do
 
     member do
+      get  :pix_data, to: 'pix#pix_data'
+      get  :second_pix, to: 'pix#update'
       get  :slip_data, to: 'slip#slip_data'
       get  :second_slip, to: 'slip#update'
       get  :get_installment, to: 'credit_cards#get_installment_json'
